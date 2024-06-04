@@ -13,7 +13,7 @@ import {
 import { formatTimeAgo } from "@/utils/formatTimeAgo";
 import { useEffect, useState } from "react";
 import { RiShareForwardLine } from "react-icons/ri";
-import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from "react-icons/bi";
+import { BiLike, BiDislike, BiSolidLike } from "react-icons/bi";
 
 import { HiDownload } from "react-icons/hi";
 

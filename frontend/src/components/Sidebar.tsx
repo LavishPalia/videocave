@@ -25,7 +25,6 @@ import { Children, ElementType, ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
 import Button, { buttonStyles } from "./Button";
 import { twMerge } from "tailwind-merge";
-import { FaThumbsUp } from "react-icons/fa";
 import { BiLike } from "react-icons/bi";
 import { useGetUserSubscriptionsQuery } from "@/slices/subscriptionsApiSlice";
 import { useAppSelector } from "@/app/hooks";
