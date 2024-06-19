@@ -111,15 +111,15 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
             onMouseLeave={() => setHoveredCommentId(null)}
           >
             <img
-              src={comment.userDetails[0].avatar}
-              alt={comment.userDetails[0].fullName}
+              src={comment?.userDetails[0]?.avatar}
+              alt={comment?.userDetails[0]?.fullName}
               className="size-12 rounded-full object-cover object-center"
             />
             <div className="flex flex-col grow">
               <div className="flex gap-4">
-                <p key={comment._id}>@{comment.userDetails[0].userName}</p>
+                <p key={comment._id}>@{comment?.userDetails[0]?.userName}</p>
                 <p key={comment._id}>
-                  {formatTimeAgo(new Date(comment.updatedAt))}
+                  {formatTimeAgo(new Date(comment?.updatedAt))}
                 </p>
                 <div
                   className={`flex self-center ml-auto ${
@@ -133,7 +133,7 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
               </div>
 
               <p key={comment._id} className="w-[95%]">
-                {comment.content}
+                {comment?.content}
               </p>
 
               <div className="flex">

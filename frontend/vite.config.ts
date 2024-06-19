@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://videocave-backend.vercel.app/",
+        target: "https://videocave-backend.onrender.com",
         changeOrigin: true,
         secure: false,
       },

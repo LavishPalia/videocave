@@ -119,7 +119,7 @@ const VideoPlayerScreen = () => {
           </p>
 
           <div className="mt-2 flex gap-2 justify-between items-start">
-            <div className="flex gap-3 items-start">
+            <div className="flex flex-grow gap-3 items-start">
               <a href={`/user/${video?.data[0]?.owner.userName}`}>
                 <img
                   src={video?.data[0]?.owner.avatar}
@@ -141,9 +141,9 @@ const VideoPlayerScreen = () => {
                   <span className="text-sm">subscribers</span>
                 </p>
               </div>
-              <Button variant="dark" className="rounded-full px-3">
+              {/* <Button variant="dark" className="rounded-full px-3">
                 Join
-              </Button>
+              </Button> */}
 
               {isSubscribed ? (
                 <Button
@@ -211,12 +211,12 @@ const VideoPlayerScreen = () => {
 
           <div className="border shadow-custom bg-[#f2f2f2] p-4 my-4 rounded-md text-md dark:bg-[#09090b]">
             <p>
-              {VIEW_FORMATTER.format(video?.data[0]?.views)} views{"  "}
+              {VIEW_FORMATTER.format(video?.data[0]?.views)} views &nbsp;
               {formatTimeAgo(new Date(video?.data[0]?.createdAt))}
             </p>
             <p
-              className={`cursor-pointer ${
-                isDescriptionShown ? "" : "line-clamp-1"
+              className={`${
+                isDescriptionShown ? "" : "line-clamp-1 cursor-pointer"
               }`}
               onClick={() => setIsDescriptionShown(true)}
             >
