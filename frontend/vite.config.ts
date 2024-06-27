@@ -13,7 +13,8 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://videocave-backend.onrender.com",
+        target:
+          "https://ddb4-2402-e280-231b-1dc-8cfd-bce6-1b83-1657.ngrok-free.app",
         changeOrigin: true,
         secure: false,
       },
