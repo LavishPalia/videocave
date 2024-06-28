@@ -13,8 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target:
-          "https://ddb4-2402-e280-231b-1dc-8cfd-bce6-1b83-1657.ngrok-free.app",
+        target: process.env.NGROK_URL || "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
