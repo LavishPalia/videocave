@@ -34,9 +34,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return next(
-      new ApiError(422, "Please enter all the required fields", errors.array())
-    );
+    return next(new ApiError(422, errors.array()));
   }
 
   const { userName, email, password, fullName } = req.body;
