@@ -163,6 +163,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
   const cookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite: "None", // Allow cross-origin cookies
   };
 
   res

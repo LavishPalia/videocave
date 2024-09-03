@@ -3,7 +3,7 @@
 
 export const BASE_URL =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:5000"
+    ? "http://localhost:8000"
     : "https://videocave.onrender.com";
 
 export const USERS_URL = "/api/v1/users";
