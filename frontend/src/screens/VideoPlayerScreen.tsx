@@ -18,7 +18,7 @@ import { BiLike, BiDislike, BiSolidLike } from "react-icons/bi";
 import { HiDownload } from "react-icons/hi";
 
 import { FaCircleCheck } from "react-icons/fa6";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaEllipsisH } from "react-icons/fa";
 import { useToggleVideoLikesMutation } from "@/slices/likesApiSlice";
 import { BellRing } from "lucide-react";
@@ -103,7 +103,7 @@ const VideoPlayerScreen = () => {
   };
 
   return (
-    <div className="max-h-screen flex flex-col">
+    <div className="flex flex-col max-h-screen">
       <PageHeader />
       <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] md:gap-4 md:pr-4 lg:grid-cols-[auto,2fr,1fr] flex-grow overflow-auto">
         <Sidebar />
@@ -114,26 +114,26 @@ const VideoPlayerScreen = () => {
         >
           <VideoPlayer isLoading={isVideoLoading} video={video?.data[0]} />
 
-          <p className="text-xl md:text-2xl font-semibold mt-4">
+          <p className="mt-4 text-xl font-semibold md:text-2xl">
             {video?.data[0]?.title}
           </p>
 
-          <div className="mt-2 flex gap-2 justify-between items-start">
-            <div className="flex flex-grow gap-3 items-start">
-              <a href={`/user/${video?.data[0]?.owner.userName}`}>
+          <div className="flex items-start justify-between gap-2 mt-2">
+            <div className="flex items-start flex-grow gap-3">
+              <Link to={`/user/${video?.data[0]?.owner.userName}`}>
                 <img
                   src={video?.data[0]?.owner.avatar}
                   alt={video?.data[0]?.owner.userName}
-                  className="size-10 rounded-full object-cover object-center"
+                  className="object-cover object-center rounded-full size-10"
                 />
-              </a>
+              </Link>
               <div>
                 <span className="flex items-center gap-2">
-                  <a href={`/user/${video?.data[0]?.owner.userName}`}>
+                  <Link to={`/user/${video?.data[0]?.owner.userName}`}>
                     <h1 className="line-clamp-1">
                       {video?.data[0]?.owner.fullName}
                     </h1>
-                  </a>
+                  </Link>
                   <FaCircleCheck size={16} />
                 </span>
                 <p className="text-gray-500">
@@ -141,7 +141,7 @@ const VideoPlayerScreen = () => {
                   <span className="text-sm">subscribers</span>
                 </p>
               </div>
-              {/* <Button variant="dark" className="rounded-full px-3">
+              {/* <Button variant="dark" className="px-3 rounded-full">
                 Join
               </Button> */}
 
@@ -150,14 +150,14 @@ const VideoPlayerScreen = () => {
                   onClick={() =>
                     handleToggleSubscription(video?.data[0].owner._id)
                   }
-                  className="dark:bg-gray-700 text-sm px-3 flex items-center gap-2 text-gray-100 rounded-3xl w-max"
+                  className="flex items-center gap-2 px-3 text-sm text-gray-100 dark:bg-gray-700 rounded-3xl w-max"
                 >
                   <BellRing size={24} />
                   <span>Subscribed</span>
                 </Button>
               ) : (
                 <Button
-                  className="dark:bg-gray-200 text-gray-900 rounded-3xl w-max"
+                  className="text-gray-900 dark:bg-gray-200 rounded-3xl w-max"
                   onClick={() =>
                     handleToggleSubscription(video?.data[0].owner._id)
                   }
@@ -167,7 +167,7 @@ const VideoPlayerScreen = () => {
               )}
             </div>
 
-            <div className="flex gap-3 items-center">
+            <div className="flex items-center gap-3">
               <div className="flex items-center bg-[#31302f] rounded-full">
                 <Button
                   variant="dark"

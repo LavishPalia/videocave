@@ -64,7 +64,7 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
 
   return (
     <div className="px-4 md:px-10">
-      <h1 className="text-4xl pb-16 md:pb-8">Watch History</h1>
+      <h1 className="pb-16 text-4xl md:pb-8">Watch History</h1>
 
       {history?.data?.length === 0 ? (
         <div className="flex items-center justify-center text-xl text-gray-200">
@@ -74,7 +74,7 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
       ) : (
         history?.data?.map((item) => (
           <div
-            className="flex gap-2 md:gap-4 pb-4 relative"
+            className="relative flex gap-2 pb-4 md:gap-4"
             key={item._id}
             onMouseEnter={() => handleMouseEnter(item._id)}
             onMouseLeave={handleMouseLeave}
@@ -97,14 +97,14 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
                 hoveredVideoId === item._id ? "" : "hidden"
               } absolute top-2 right-2`}
             >
-              <Button variant="ghost" className="rounded-full p-0 m-0">
+              <Button variant="ghost" className="p-0 m-0 rounded-full">
                 <X
                   size={32}
                   onClick={() => handleRemoveVideo(item._id)}
                   className="cursor-pointer"
                 />
               </Button>
-              <Button variant="ghost" className="rounded-full p-0 m-0">
+              <Button variant="ghost" className="p-0 m-0 rounded-full">
                 <EllipsisVertical size={32} className="cursor-pointer" />
               </Button>
             </div>
