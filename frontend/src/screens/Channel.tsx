@@ -69,11 +69,11 @@ const Channel = () => {
   console.log(videos?.data);
 
   return (
-    <div className="max-h-screen flex flex-col">
+    <div className="flex flex-col max-h-screen">
       <PageHeader />
       <div className="grid grid-cols-[auto,1fr] flex-grow overflow-auto">
         <Sidebar />
-        <div className="overflow-x-hidden px-4 md:px-8 pb-4">
+        <div className="px-4 pb-4 overflow-x-hidden md:px-8">
           {(isChannelLoading || !channel) && (
             <div className="flex items-center justify-center min-h-screen">
               <Loader2 size={40} className="animate-spin" />
@@ -85,17 +85,17 @@ const Channel = () => {
               <img
                 src={channel.data[0].coverImage}
                 alt={channel.data[0].userName}
-                className="h-40 w-full object-cover object-center rounded-lg"
+                className="object-cover object-center w-full h-40 rounded-lg"
               />
 
-              <div className="mt-8 flex gap-4">
+              <div className="flex gap-4 mt-8">
                 <img
                   src={channel.data[0].avatar}
                   alt=""
-                  className="size-40 rounded-full object-cover object-center"
+                  className="object-cover object-center rounded-full size-40"
                 />
                 <div className="flex flex-col gap-3">
-                  <div className="flex gap-2 items-center">
+                  <div className="flex items-center gap-2">
                     <h1 className="text-3xl">{channel.data[0].fullName}</h1>
                     <FaCircleCheck size={16} />
                   </div>
@@ -110,7 +110,7 @@ const Channel = () => {
                       onClick={() =>
                         handleToggleSubscription(channel.data[0]._id)
                       }
-                      className="dark:bg-gray-700 text-sm px-3 flex items-center gap-2 text-gray-100 rounded-3xl w-max"
+                      className="flex items-center gap-2 px-3 text-sm text-gray-100 dark:bg-gray-700 rounded-3xl w-max"
                     >
                       <BellRing size={24} />
                       <span>Subscribed</span>
@@ -120,7 +120,7 @@ const Channel = () => {
                       onClick={() =>
                         handleToggleSubscription(channel.data[0]._id)
                       }
-                      className="dark:bg-gray-200 text-sm px-3 flex items-center gap-2 text-gray-900 rounded-3xl w-max"
+                      className="flex items-center gap-2 px-3 text-sm text-gray-900 dark:bg-gray-200 rounded-3xl w-max"
                     >
                       <Bell />
                       <span>Subscribe</span>
@@ -129,7 +129,7 @@ const Channel = () => {
                 </div>
               </div>
 
-              <div className="flex mt-4 gap-6">
+              <div className="flex gap-6 mt-4">
                 <Button
                   variant="ghost"
                   className={`dark:hover:bg-transparent tracking-wider p-0 relative
@@ -200,13 +200,13 @@ const Channel = () => {
                   }) => (
                     <div className="mb-2" key={video._id}>
                       <div className="relative">
-                        <a href={`/watch?v=${video._id}`}>
+                        <Link to={`/watch?v=${video._id}`}>
                           <img
                             src={video.thumbnail}
                             alt={video.title}
-                            className="h-40 aspect-video object-cover object-center rounded-lg"
+                            className="object-cover object-center h-40 rounded-lg aspect-video"
                           />
-                        </a>
+                        </Link>
 
                         <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark text-white text-sm px-1 py-0.5 rounded">
                           {formatDuration(video.duration)}
@@ -221,7 +221,7 @@ const Channel = () => {
                           >
                             {video.title}
                           </Link>
-                          <div className="text-secondary-marginal-text text-sm">
+                          <div className="text-sm text-secondary-marginal-text">
                             {VIEW_FORMATTER.format(video.views)} Views •{" "}
                             {formatTimeAgo(new Date(video.createdAt))}
                           </div>

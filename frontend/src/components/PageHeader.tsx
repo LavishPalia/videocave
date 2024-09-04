@@ -6,6 +6,7 @@ import { ModeToggle } from "./mode-toggle";
 import { UserDropdownMenu } from "./UserDropdownMenu";
 import { useAppSelector } from "@/app/hooks";
 import { VideoUploadModel } from "./VideoUploadModal";
+import { Link } from "react-router-dom";
 // import { useGetCurrentUserQuery } from "@/slices/usersApiSlice";
 
 const PageHeader = () => {
@@ -17,7 +18,7 @@ const PageHeader = () => {
   const { user } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="flex gap-10 lg:gap-20 justify-between pt-2 mx-4 mb-8">
+    <div className="flex justify-between gap-10 pt-2 mx-4 mb-8 lg:gap-20">
       <div
         className={`gap-4 items-center flex-shrink-0 ${
           showFullWidthSearch ? "hidden" : "flex"
@@ -26,9 +27,9 @@ const PageHeader = () => {
         <Button variant="ghost" size="icon">
           <Menu />
         </Button>
-        <a href="/">
+        <Link to="/">
           <img src={Logo} className="h-6" />
-        </a>
+        </Link>
       </div>
       <form
         className={`gap-4 flex-grow justify-center items-center ${
@@ -82,7 +83,7 @@ const PageHeader = () => {
         <Button type="button" size="icon" variant="ghost" className="md:hidden">
           <Mic />
         </Button>
-          <VideoUploadModel />
+        <VideoUploadModel />
         <Button size="icon" variant="ghost">
           <Bell />
         </Button>

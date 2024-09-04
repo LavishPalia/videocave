@@ -79,8 +79,8 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
             onMouseEnter={() => handleMouseEnter(item._id)}
             onMouseLeave={handleMouseLeave}
           >
-            <a
-              href={`watch?v=${item._id}`}
+            <Link
+              to={`/watch?v=${item._id}`}
               className="relative block min-w-20 max-h-20 md:min-w-40 md:max-h-40 aspect-video shrink-0"
             >
               <img
@@ -90,7 +90,7 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
               <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark bg-opacity-90 text-white font-semibold text-[8px] md:text-sm px-1 py-0.5 rounded">
                 {formatDuration(item.duration)}
               </div>
-            </a>
+            </Link>
 
             <div
               className={`flex gap-6 text-gray-400 ${
@@ -110,12 +110,12 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
             </div>
 
             <div className="flex flex-col w-[150px] md:w-[290px]">
-              <a
-                href={`/watch?v=${item._id}`}
+              <Link
+                to={`/watch?v=${item._id}`}
                 className="text-sm md:text-xl line-clamp-2"
               >
                 {item.title}
-              </a>
+              </Link>
               <Link
                 to={`/user/${item.owner.userName}`}
                 className="flex gap-2 items-center text-secondary-marginal-text text-[8px] md:text-xs"
