@@ -177,6 +177,7 @@ const RegisterForm = () => {
         draggable
         pauseOnHover
         theme="dark"
+        transition={Slide}
       />
     </Form>
   );
