@@ -7,7 +7,7 @@ import { Form } from "@/components/ui/form";
 
 import RegisterInput from "./RegisterInput";
 import { useRegisterMutation } from "@/slices/usersApiSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -160,9 +160,9 @@ const RegisterForm = () => {
           </form>
           <p className="text-center text-gray-400">
             Already have an account?{" "}
-            <a href="/login" className="text-purple-400 hover:underline">
+            <Link to="/login" className="text-purple-400 hover:underline">
               Log in
-            </a>
+            </Link>
           </p>
         </div>
       </div>
