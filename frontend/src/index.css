@@ -5,11 +5,11 @@
 @tailwind utilities;
 
 *::-webkit-scrollbar {
-  @apply bg-transparent w-2;
+  @apply w-2 bg-transparent;
 }
 
 *::-webkit-scrollbar-thumb {
-  @apply bg-secondary-marginal-dark rounded-full;
+  @apply rounded-full bg-secondary-marginal-dark;
 }
 
 .scrollbar-hidden::-webkit-scrollbar-thumb {
@@ -22,7 +22,7 @@
 
 @layer base {
   :root {
-    font-family: "Roboto", "Arial", sans-serif;
+    font-family: Nunito, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 

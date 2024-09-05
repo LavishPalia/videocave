@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import LoginInput from "./LoginInput";
 import { useLoginMutation } from "@/slices/usersApiSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { setUserCredentials } from "@/slices/authSlice";
 import { Loader2 } from "lucide-react";
 import { useAppDispatch } from "@/app/hooks";
@@ -71,54 +71,73 @@ const LoginForm = () => {
   }
 
   return (
-    <Form {...form}>
-      <div className="flex justify-center items-center h-screen">
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full max-w-sm"
-        >
-          <LoginInput
-            type="email"
-            name="email"
-            label="Email"
-            placeholder="Enter your email"
-            control={form.control}
-          />
-          <LoginInput
-            type="password"
-            name="password"
-            label="Password"
-            placeholder="Enter your password"
-            control={form.control}
-          />
-
-          <div className="flex flex-col gap-1">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800">
+      <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-2xl">
+        <h2 className="mb-6 text-3xl font-bold text-center text-gray-100">
+          Welcome Back!
+        </h2>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <LoginInput
+              type="email"
+              name="email"
+              label="Email"
+              placeholder="Enter your email"
+              control={form.control}
+            />
+            <LoginInput
+              type="password"
+              name="password"
+              label="Password"
+              placeholder="Enter your password"
+              control={form.control}
+            />
+            {/* <div className="flex items-center justify-between mb-6">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="bg-gray-700 border-gray-600 form-checkbox"
+                />
+                <span className="ml-2 text-sm text-gray-300">Remember me</span>
+              </label>
+              <a href="#" className="text-sm text-blue-400 hover:underline">
+                Forgot password?
+              </a>
+            </div> */}
             <Button
               type="submit"
-              className="text-2xl rounded-lg font-semibold text-white shadow-form dark:text-black"
+              className="w-full py-3 font-semibold text-white transition duration-300 ease-in-out transform rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               disabled={isLoading}
             >
               {isLoading ? (
                 <>
-                  <Loader2 size={20} className="animate-spin" />
-                  &nbsp;Loading...
+                  <Loader2 size={20} className="mr-2 animate-spin" />
+                  Logging in...
                 </>
               ) : (
-                "Login"
+                "Log In"
               )}
             </Button>
-          </div>
-        </form>
-        <ToastContainer
-          autoClose={2000}
-          hideProgressBar={true}
-          position="bottom-left"
-          theme="dark"
-          transition={Slide}
-          stacked
-        />
+          </form>
+        </Form>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-400">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-blue-400 hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
-    </Form>
+      <ToastContainer
+        autoClose={2000}
+        hideProgressBar={true}
+        position="bottom-left"
+        theme="dark"
+        transition={Slide}
+        stacked
+      />
+    </div>
   );
 };
 

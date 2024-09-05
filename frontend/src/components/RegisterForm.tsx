@@ -88,80 +88,96 @@ const RegisterForm = () => {
 
   return (
     <Form {...form}>
-      <div className="flex justify-center items-center h-screen">
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full max-w-sm"
-        >
-          <div className="flex gap-4">
+      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+        <div className="w-full max-w-md p-8 space-y-8 bg-gray-800 shadow-2xl rounded-xl">
+          <h2 className="text-3xl font-bold text-center text-purple-400">
+            Join VideoCave
+          </h2>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+            <div className="grid grid-cols-2 gap-4">
+              <RegisterInput
+                type="text"
+                name="fullName"
+                label="Full Name"
+                placeholder="John Doe"
+                control={form.control}
+                // icon={<User className="w-5 h-5 text-gray-400" />}
+              />
+              <RegisterInput
+                type="text"
+                name="userName"
+                label="Username"
+                placeholder="johndoe123"
+                control={form.control}
+                // icon={<User className="w-5 h-5 text-gray-400" />}
+              />
+            </div>
             <RegisterInput
-              type="text"
-              name="fullName"
-              label="Full Name"
-              placeholder="Ex. John Doe"
+              type="email"
+              name="email"
+              label="Email"
+              placeholder="you@example.com"
               control={form.control}
+              // icon={<Mail className="w-5 h-5 text-gray-400" />}
             />
             <RegisterInput
-              type="text"
-              name="userName"
-              label="Username"
-              placeholder="Ex. John333"
+              type="password"
+              name="password"
+              label="Password"
+              placeholder="••••••••"
               control={form.control}
+              // icon={<Lock className="w-5 h-5 text-gray-400" />}
             />
-          </div>
-          <RegisterInput
-            type="email"
-            name="email"
-            label="Email"
-            placeholder="Enter your email"
-            control={form.control}
-          />
-          <RegisterInput
-            type="password"
-            name="password"
-            label="Password"
-            placeholder="Enter your password"
-            control={form.control}
-          />
-          <RegisterInput
-            type="file"
-            name="avatar"
-            label="Profile Picture"
-            control={form.control}
-          />
-          <RegisterInput
-            type="file"
-            name="coverImage"
-            label="Cover Image"
-            control={form.control}
-          />
+            <RegisterInput
+              type="file"
+              name="avatar"
+              label="Profile Picture"
+              control={form.control}
+              // icon={<Image className="w-5 h-5 text-gray-400" />}
+            />
+            <RegisterInput
+              type="file"
+              name="coverImage"
+              label="Cover Image"
+              control={form.control}
+              // icon={<FileImage className="w-5 h-5 text-gray-400" />}
+            />
 
-          <div className="flex flex-col gap-1">
             <Button
               type="submit"
-              className="text-16 rounded-lg font-semibold text-white dark:text-gray-900  shadow-form"
+              className="w-full py-3 text-lg font-semibold text-white transition-colors duration-300 bg-purple-600 rounded-lg shadow-lg hover:bg-purple-700"
               disabled={isLoading}
             >
               {isLoading ? (
-                <>
-                  <Loader2 size={20} className="animate-spin" />
-                  &nbsp;Loading...
-                </>
+                <div className="flex items-center justify-center">
+                  <Loader2 size={24} className="mr-2 animate-spin" />
+                  <span>Registering...</span>
+                </div>
               ) : (
-                "Register"
+                "Create Account"
               )}
             </Button>
-          </div>
-        </form>
-        <ToastContainer
-          autoClose={2000}
-          hideProgressBar={true}
-          position="bottom-left"
-          theme="dark"
-          transition={Slide}
-          stacked
-        />
+          </form>
+          <p className="text-center text-gray-400">
+            Already have an account?{" "}
+            <a href="/login" className="text-purple-400 hover:underline">
+              Log in
+            </a>
+          </p>
+        </div>
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </Form>
   );
 };
