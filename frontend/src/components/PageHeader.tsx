@@ -18,17 +18,17 @@ const PageHeader = () => {
   const { user } = useAppSelector((state) => state.auth);
 
   return (
-    <div className="flex justify-between gap-10 pt-2 mx-4 mb-8 lg:gap-20">
+    <div className="flex justify-between gap-2 pt-2 mx-2 mb-4 sm:gap-4 md:gap-10 sm:mx-4 sm:mb-8 lg:gap-20">
       <div
         className={`gap-4 items-center flex-shrink-0 ${
           showFullWidthSearch ? "hidden" : "flex"
         }`}
       >
         <Button variant="ghost" size="icon">
-          <Menu />
+          <Menu size={20} />
         </Button>
         <Link to="/">
-          <img src={Logo} className="h-6" />
+          <img src={Logo} className="h-4 sm:h-6" />
         </Link>
       </div>
       <form
@@ -77,15 +77,17 @@ const PageHeader = () => {
           className="md:hidden"
           onClick={() => setShowFullWidthSearch(true)}
         >
-          <Search />
+          <Search size={20} />
         </Button>
-        <ModeToggle />
         <Button type="button" size="icon" variant="ghost" className="md:hidden">
-          <Mic />
+          <Mic size={20} />
         </Button>
+
+        <ModeToggle />
+
         <VideoUploadModel />
         <Button size="icon" variant="ghost">
-          <Bell />
+          <Bell size={20} />
         </Button>
         <UserDropdownMenu user={user} />
       </div>

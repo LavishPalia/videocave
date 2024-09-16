@@ -40,7 +40,7 @@ export function UserDropdownMenu({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="rounded-full">
-          <User />
+          <User size={20} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64 p-2 mx-8">
@@ -49,7 +49,7 @@ export function UserDropdownMenu({
             <img
               src={user?.avatar}
               alt={user?.fullName}
-              className="size-14 rounded-full object-cover object-center"
+              className="object-cover object-center rounded-full size-14"
             />
             <div className="flex flex-col">
               <p className="text-lg">{user?.fullName}</p>
@@ -60,7 +60,7 @@ export function UserDropdownMenu({
         <DropdownMenuSeparator />
         <button onClick={handleLogoutUser} className="w-full">
           <DropdownMenuItem>
-            <LogOut className="mr-2 h-4 w-4" />
+            <LogOut className="w-4 h-4 mr-2" />
             <span>Log out</span>
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>
@@ -69,12 +69,12 @@ export function UserDropdownMenu({
 
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Settings className="mr-2 h-4 w-4" />
+            <Settings className="w-4 h-4 mr-2" />
             <span>Settings</span>
             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Keyboard className="mr-2 h-4 w-4" />
+            <Keyboard className="w-4 h-4 mr-2" />
             <span>Keyboard shortcuts</span>
             <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
           </DropdownMenuItem>

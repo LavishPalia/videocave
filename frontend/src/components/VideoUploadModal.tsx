@@ -92,7 +92,7 @@ export function VideoUploadModel() {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon" className="rounded-full">
-          <Upload />
+          <Upload size={20} />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
@@ -148,13 +148,7 @@ export function VideoUploadModel() {
           </div>
           <DialogFooter>
             {isLoading ? (
-              <p
-                className="inline-flex items-center justify-center whitespace-nowrap 
-                rounded-md text-sm font-medium ring-offset-background transition-colors 
-                focus-visible:outline-none focus-visible:ring-2 
-                focus-visible:ring-ring focus-visible:ring-offset-2 
-                disabled:pointer-events-none disabled:opacity-50"
-              >
+              <p className="inline-flex items-center justify-center text-sm font-medium transition-colors rounded-md whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
                 Video upload in progress...
               </p>
             ) : (
