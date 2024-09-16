@@ -49,9 +49,9 @@ const VideoPlayerScreen = () => {
 
   // console.log(isLiked);
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
     const id = searchParams.get("v");
     if (id) {
       setVideoId(id);
@@ -84,7 +84,9 @@ const VideoPlayerScreen = () => {
       await toggleVideoLikes(videoId);
       setIsLiked((prev: boolean) => !prev);
       refetchVideo();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleToggleSubscription = async (userId: string) => {

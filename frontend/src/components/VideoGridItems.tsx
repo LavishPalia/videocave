@@ -100,13 +100,13 @@ const VideoGridItems = ({
           <div>
             {isVideoMuted ? (
               <BiVolumeMute
-                className="absolute top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal rounded-full p-1"
+                className="absolute p-1 rounded-full top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal"
                 size={20}
                 onClick={() => setIsVideoMuted(false)}
               />
             ) : (
               <GoUnmute
-                className="absolute top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal rounded-full p-1"
+                className="absolute p-1 rounded-full top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal"
                 size={20}
                 onClick={() => setIsVideoMuted(true)}
               />
@@ -119,7 +119,7 @@ const VideoGridItems = ({
         <Link to={`/user/${owner[0].userName}`} className="flex-shrink-0">
           <img
             src={owner[0].avatar}
-            className="size-10 rounded-full object-cover"
+            className="object-cover rounded-full size-10"
           />
         </Link>
 
@@ -129,11 +129,11 @@ const VideoGridItems = ({
           </Link>
           <Link
             to={`/user/${owner[0].userName}`}
-            className="text-secondary-marginal-text text-sm"
+            className="text-sm text-secondary-marginal-text"
           >
             {owner[0].fullName}
           </Link>
-          <div className="text-secondary-marginal-text text-sm">
+          <div className="text-sm text-secondary-marginal-text">
             {VIEW_FORMATTER.format(views)} Views •{" "}
             {formatTimeAgo(new Date(createdAt))}
           </div>
