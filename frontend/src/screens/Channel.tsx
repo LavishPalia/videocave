@@ -81,55 +81,49 @@ const Channel = () => {
             </div>
           )}
           {channel && (
-            <div className="grid grid-cols-1 px-4">
+            <div className="px-2 pb-4 overflow-x-hidden md:px-8">
               <img
                 src={channel.data[0].coverImage}
                 alt={channel.data[0].userName}
                 className="object-cover object-center w-full h-40 rounded-lg"
               />
 
-              <div className="flex gap-4 mt-8">
+              <div className="flex flex-col gap-4 mt-4 sm:flex-row md:mt-8">
                 <img
                   src={channel.data[0].avatar}
                   alt=""
-                  className="object-cover object-center rounded-full size-40"
+                  className="object-cover object-center mx-auto rounded-full size-24 md:size-40 sm:mx-0"
                 />
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-3xl">{channel.data[0].fullName}</h1>
+                <div className="flex flex-col gap-2 text-center md:gap-3 sm:text-left">
+                  <div className="flex items-center justify-center gap-2 sm:justify-start">
+                    <h1 className="text-2xl md:text-3xl">
+                      {channel.data[0].fullName}
+                    </h1>
                     <FaCircleCheck size={16} />
                   </div>
-                  <div className="flex gap-1">
-                    <h2>@{channel.data[0].userName} ‧ </h2>
-                    <p>{subscribersCount} Subscribers ‧ </p>
+                  <div className="flex flex-wrap justify-center gap-1 text-sm sm:justify-start md:text-base">
+                    <h2>@{channel.data[0].userName}</h2>
+                    <span className="hidden sm:inline">‧</span>
+
+                    <p>{subscribersCount} Subscribers</p>
+                    <span className="hidden sm:inline">‧</span>
+
                     <p>{videos?.data?.videos?.length || 0} Videos</p>
                   </div>
 
-                  {isSubscribed ? (
-                    <Button
-                      onClick={() =>
-                        handleToggleSubscription(channel.data[0]._id)
-                      }
-                      className="flex items-center gap-2 px-3 text-sm text-gray-100 dark:bg-gray-700 rounded-3xl w-max"
-                    >
-                      <BellRing size={24} />
-                      <span>Subscribed</span>
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() =>
-                        handleToggleSubscription(channel.data[0]._id)
-                      }
-                      className="flex items-center gap-2 px-3 text-sm text-gray-900 dark:bg-gray-200 rounded-3xl w-max"
-                    >
-                      <Bell />
-                      <span>Subscribe</span>
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() =>
+                      handleToggleSubscription(channel.data[0]._id)
+                    }
+                    className="flex items-center justify-center w-full gap-2 px-3 mt-2 text-sm text-gray-100 dark:bg-gray-700 rounded-3xl sm:w-max sm:mt-0"
+                  >
+                    {isSubscribed ? <BellRing size={20} /> : <Bell size={20} />}
+                    <span>{isSubscribed ? "Subscribed" : "Subscribe"}</span>
+                  </Button>
                 </div>
               </div>
 
-              <div className="flex gap-6 mt-4">
+              <div className="flex justify-center gap-4 mt-4 sm:justify-start md:gap-6">
                 <Button
                   variant="ghost"
                   className={`dark:hover:bg-transparent tracking-wider p-0 relative
@@ -182,7 +176,7 @@ const Channel = () => {
 
               <hr className="mt-2" />
 
-              <div className="flex flex-wrap gap-2 mt-8">
+              <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {isVideosLoading && (
                   <div className="flex items-center justify-center min-h-screen">
                     <Loader2 size={40} className="animate-spin" />
@@ -198,13 +192,13 @@ const Channel = () => {
                     views: number | bigint;
                     createdAt: Date;
                   }) => (
-                    <div className="mb-2" key={video._id}>
-                      <div className="relative">
+                    <div className="w-full mb-2" key={video._id}>
+                      <div className="relative aspect-video">
                         <Link to={`/watch?v=${video._id}`}>
                           <img
                             src={video.thumbnail}
                             alt={video.title}
-                            className="object-cover object-center h-40 rounded-lg aspect-video"
+                            className="object-cover object-center w-full h-full rounded-lg"
                           />
                         </Link>
 
@@ -213,18 +207,16 @@ const Channel = () => {
                         </div>
                       </div>
 
-                      <div className="flex gap-2">
-                        <div className="flex flex-col gap-2">
-                          <Link
-                            to={`/watch?v=${video._id}`}
-                            className="font-bold line-clamp-2 w-[250px] mt-2"
-                          >
-                            {video.title}
-                          </Link>
-                          <div className="text-sm text-secondary-marginal-text">
-                            {VIEW_FORMATTER.format(video.views)} Views •{" "}
-                            {formatTimeAgo(new Date(video.createdAt))}
-                          </div>
+                      <div className="mt-2">
+                        <Link
+                          to={`/watch?v=${video._id}`}
+                          className="text-sm font-bold line-clamp-2 md:text-base"
+                        >
+                          {video.title}
+                        </Link>
+                        <div className="mt-1 text-xs md:text-sm text-secondary-marginal-text">
+                          {VIEW_FORMATTER.format(video.views)} Views •{" "}
+                          {formatTimeAgo(new Date(video.createdAt))}
                         </div>
                       </div>
                     </div>

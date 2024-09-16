@@ -100,13 +100,13 @@ const VideoGridItems = ({
           <div>
             {isVideoMuted ? (
               <BiVolumeMute
-                className="absolute p-1 rounded-full top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal"
+                className="absolute p-1 rounded-full cursor-pointer top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal"
                 size={20}
                 onClick={() => setIsVideoMuted(false)}
               />
             ) : (
               <GoUnmute
-                className="absolute p-1 rounded-full top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal"
+                className="absolute p-1 rounded-full cursor-pointer top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal"
                 size={20}
                 onClick={() => setIsVideoMuted(true)}
               />

@@ -1,11 +1,11 @@
 import { useGetAllVideosQuery } from "@/slices/videoApiSlice";
-import { Loader2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Sidebar from "@/components/Sidebar";
 import VideoGridItems, {
   VideoGridItemProps,
 } from "@/components/VideoGridItems";
 import { useMemo } from "react";
+import VideoCardShimmer from "@/shimmers/VideoCardShimmer";
 
 const HomeScreen = () => {
   const { data: videos, isLoading } = useGetAllVideosQuery(null);
@@ -35,12 +35,13 @@ const HomeScreen = () => {
         <div className="px-4 pb-4 overflow-x-hidden md:px-8">
           {isLoading && (
             <div
-              className={`flex items-center justify-center ${
+              className={`grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] ${
                 isLoading ? "min-h-screen" : ""
               }`}
             >
-              <Loader2 size={40} className="animate-spin" />
-              &nbsp;<p className="text-3xl">Loading...</p>
+              {Array.from({ length: 30 }).map((_el, i) => {
+                return <VideoCardShimmer key={i} />;
+              })}
             </div>
           )}
           <div
