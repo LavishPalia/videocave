@@ -19,6 +19,8 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
     videoId,
     { skip: !videoId }
   );
+  console.log(comments);
+
   const { data: loggedInUser } = useGetCurrentUserQuery(null);
   const [addComment] = useAddCommentMutation();
 
@@ -34,10 +36,10 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
     try {
       if (enteredComment.trim()) {
         await addComment({ videoId, comment: enteredComment });
-        refetchComments();
         setEnteredComment("");
         setIsFocused(false);
         toast.success(`Comment added"`);
+        refetchComments();
       }
     } catch (error) {
       setEnteredComment("");
@@ -54,15 +56,15 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
   return (
     <div className="pt-4">
       <p className="text-xl">{comments?.data?.count} Comments</p>
-      <div className="pt-8 flex gap-4">
+      <div className="flex gap-4 pt-8">
         <img
           src={loggedInUser?.data?.avatar}
           alt={loggedInUser?.data?.fullName}
-          className="size-12 rounded-full object-cover object-center"
+          className="object-cover object-center rounded-full size-12"
         />
         <input
           type="text"
-          className="bg-transparent h-5 pb-1 w-full border-b-2 focus:border-b-2 focus:border-gray-100 focus:outline-none"
+          className="w-full h-5 pb-1 bg-transparent border-b-2 focus:border-b-2 focus:border-gray-100 focus:outline-none"
           placeholder="Add a comment..."
           value={enteredComment}
           onChange={handleCommentInput}
@@ -75,7 +77,7 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
           <Button
             onClick={handleCancel}
             variant="ghost"
-            className="px-4 rounded-3xl text-sm dark:hover:bg-neutral-800"
+            className="px-4 text-sm rounded-3xl dark:hover:bg-neutral-800"
           >
             Cancel
           </Button>
@@ -105,7 +107,7 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
           content: string;
         }) => (
           <div
-            className="mt-4 flex gap-4 w-full"
+            className="flex w-full gap-4 mt-4"
             key={comment._id}
             onMouseEnter={() => setHoveredCommentId(comment._id)}
             onMouseLeave={() => setHoveredCommentId(null)}
@@ -113,7 +115,7 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
             <img
               src={comment?.userDetails[0]?.avatar}
               alt={comment?.userDetails[0]?.fullName}
-              className="size-12 rounded-full object-cover object-center"
+              className="object-cover object-center rounded-full size-12"
             />
             <div className="flex flex-col grow">
               <div className="flex gap-4">

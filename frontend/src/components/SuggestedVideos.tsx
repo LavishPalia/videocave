@@ -28,12 +28,15 @@ const SuggestedVideos: React.FC<SuggestedVideosProps> = ({
   setVideoId,
 }) => {
   return (
-    <div className="relative flex flex-col gap-2 p-4 sm:p-8 md:pb-4 md:pt-0 md:px-4">
+    <div className="relative flex flex-col gap-2 p-4 sm:p-6 md:p-8 lg:pb-4 lg:pt-0 lg:px-4">
       {videos?.data?.searchedVideos?.map((item) => (
-        <div className="flex gap-2" key={item._id}>
+        <div
+          className="flex flex-col gap-2 sm:flex-row sm:gap-4"
+          key={item._id}
+        >
           <Link
             to={`?v=${item._id}`}
-            className="relative block min-w-44 max-h-24 aspect-video shrink-0"
+            className="relative block w-full sm:w-[40%] md:w-[45%] lg:w-[40%] aspect-video shrink-0"
             onClick={() => setVideoId(item._id)}
           >
             <img
@@ -45,10 +48,10 @@ const SuggestedVideos: React.FC<SuggestedVideosProps> = ({
             </div>
           </Link>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col mt-2 sm:mt-0">
             <Link
               to={`/watch?v=${item._id}`}
-              className="text-sm font-semibold line-clamp-1"
+              className="text-sm font-semibold sm:text-base line-clamp-2 sm:line-clamp-1"
             >
               {item.title}
             </Link>
@@ -57,9 +60,9 @@ const SuggestedVideos: React.FC<SuggestedVideosProps> = ({
               className="flex items-center gap-1 text-sm text-secondary-marginal-text"
             >
               {item.owner[0].fullName}
-              <FaCircleCheck size={12} />
+              <FaCircleCheck size={12} className="hidden sm:inline" />
             </Link>
-            <div className="text-sm text-secondary-marginal-text">
+            <div className="mt-1 text-xs sm:text-sm text-secondary-marginal-text sm:mt-0">
               {VIEW_FORMATTER.format(item.views)} Views •{" "}
               {formatTimeAgo(new Date(item.createdAt))}
             </div>
