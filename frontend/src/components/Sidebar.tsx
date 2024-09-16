@@ -46,7 +46,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <aside className="sticky top-0 overflow-y-auto pb-4 flex flex-col ml-1 lg:hidden scrollbar-hidden">
+      <aside className="sticky top-0 flex flex-col pb-4 ml-1 overflow-y-auto lg:hidden scrollbar-hidden">
         <SmallSiderbarItem Icon={Home} url="/" title="Home" />
         <SmallSiderbarItem Icon={Repeat} url="/shorts" title="Shorts" />
         <SmallSiderbarItem
@@ -57,7 +57,7 @@ const Sidebar = () => {
         <SmallSiderbarItem Icon={Library} url="/library" title="Library" />
       </aside>
 
-      <aside className="w-56 lg:sticky absolute top-0 overflow-y-auto scrollbar-hidden pb-4 flex-col lg:flex hidden gap-2 px-4">
+      <aside className="absolute top-0 flex-col hidden w-56 gap-2 px-4 pb-4 overflow-y-auto lg:sticky scrollbar-hidden lg:flex">
         <LargeSidebarSection>
           <LargeSidebarItem isActive Icon={Home} url="/" title="Home" />
           <LargeSidebarItem Icon={Repeat} url="/shorts" title="Shorts" />
@@ -186,7 +186,7 @@ const LargeSidebarSection = ({
   return (
     <div>
       {title && (
-        <div className="ml-4 mt-2 text-lg mb-1 font-semibold text-secondary-marginal-dark tracking-wide dark:text-gray-50">
+        <div className="mt-2 mb-1 ml-4 text-lg font-semibold tracking-wide text-secondary-marginal-dark dark:text-gray-50">
           {title}
         </div>
       )}
@@ -194,7 +194,7 @@ const LargeSidebarSection = ({
       {showExpandedButton && (
         <Button
           variant="ghost"
-          className="w-full flex items-center rounded-lg gap-4 p-3"
+          className="flex items-center w-full gap-4 p-3 rounded-lg"
           onClick={() => setIsExpanded((prevVal) => !prevVal)}
         >
           <ButtonIcon className="size-6" />
@@ -226,13 +226,13 @@ const LargeSidebarItem = ({
       {typeof Icon === "string" ? (
         <img
           src={Icon}
-          className="size-6 rounded-full object-cover object-center"
+          className="object-cover object-center rounded-full size-6"
           alt="channel-image"
         />
       ) : (
         <Icon className="size-6" />
       )}
-      <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+      <div className="overflow-hidden whitespace-nowrap text-ellipsis">
         {title}
       </div>
     </Link>

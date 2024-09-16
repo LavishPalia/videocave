@@ -19,7 +19,7 @@ import { HiDownload } from "react-icons/hi";
 
 import { FaCircleCheck } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
-import { FaEllipsisH } from "react-icons/fa";
+// import { FaEllipsisH } from "react-icons/fa";
 import { useToggleVideoLikesMutation } from "@/slices/likesApiSlice";
 import { Bell, BellRing } from "lucide-react";
 import { useToggleSubscriptionMutation } from "@/slices/subscriptionsApiSlice";
@@ -107,7 +107,7 @@ const VideoPlayerScreen = () => {
   return (
     <div className="flex flex-col max-h-screen">
       <PageHeader />
-      <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] xl:grid-cols-[auto,3fr,2fr] gap-4 flex-grow overflow-auto p-4 md:p-6 lg:p-8">
+      <div className="grid grid-cols-1 md:grid-cols-[auto,1fr] xl:grid-cols-[auto,2fr,1fr] gap-4 flex-grow overflow-auto p-2 md:p-3 lg:p-4">
         <Sidebar />
 
         <div
@@ -121,19 +121,25 @@ const VideoPlayerScreen = () => {
           </p>
 
           <div className="flex flex-col items-start justify-between gap-4 mt-4 lg:flex-row">
-            <div className="flex items-start flex-grow w-full gap-3 sm:w-auto">
-              <Link to={`/user/${video?.data[0]?.owner.userName}`}>
+            <div className="flex items-start gap-3 lg:w-1/2 xl:w-2/3 sm:w-auto">
+              <Link
+                to={`/user/${video?.data[0]?.owner.userName}`}
+                className="flex-shrink-0"
+              >
                 <img
                   src={video?.data[0]?.owner.avatar}
                   alt={video?.data[0]?.owner.userName}
                   className="object-cover object-center rounded-full size-10 sm:size-12"
                 />
               </Link>
-              <div className="flex flex-grow gap-4">
-                <div>
+              <div className="flex items-center justify-between w-full xl:flex-col xl:items-start">
+                <div className="flex-grow min-w-0 max-w-[70%] md:max-w-full">
                   <span className="flex items-center gap-2">
-                    <Link to={`/user/${video?.data[0]?.owner.userName}`}>
-                      <h1 className="text-sm line-clamp-1 sm:text-base">
+                    <Link
+                      to={`/user/${video?.data[0]?.owner.userName}`}
+                      className="truncate"
+                    >
+                      <h1 className="text-sm truncate sm:text-base">
                         {video?.data[0]?.owner.fullName}
                       </h1>
                     </Link>
@@ -149,7 +155,7 @@ const VideoPlayerScreen = () => {
                   onClick={() =>
                     handleToggleSubscription(video?.data[0].owner._id)
                   }
-                  className={`flex items-center gap-2 px-3 text-sm rounded-3xl w-max self-start ${
+                  className={`flex items-center gap-2 px-3 text-sm rounded-3xl w-max self-start flex-shrink-0 ml-2 xl:ml-0 ${
                     isSubscribed
                       ? "text-gray-100 dark:bg-gray-700"
                       : "text-gray-900 dark:bg-gray-200"
@@ -164,11 +170,11 @@ const VideoPlayerScreen = () => {
               </Button> */}
             </div>
 
-            <div className="flex flex-wrap items-center justify-start w-full gap-2 sm:gap-3 lg:w-auto lg:justify-end">
+            <div className="flex flex-wrap items-center justify-start gap-2 full sm:gap-3 lg:flex-nowrap lg:w-1/2 xl:w-1/3 lg:justify-end">
               <div className="flex items-center bg-[#31302f] rounded-full">
                 <Button
                   variant="dark"
-                  className="flex gap-1 sm:gap-2 items-center bg-[#31302f] rounded-full rounded-r-none px-2 sm:px-4 text-xs sm:text-sm"
+                  className="flex gap-1 items-center bg-[#31302f] rounded-full rounded-r-none px-2 sm:px-3 text-xs sm:text-sm"
                   onClick={handleToggleLike}
                 >
                   {isLiked ? <BiSolidLike size={20} /> : <BiLike size={20} />}
@@ -179,7 +185,7 @@ const VideoPlayerScreen = () => {
 
                 <Button
                   variant="dark"
-                  className="flex gap-1 sm:gap-2 items-center bg-[#31302f] rounded-full rounded-l-none px-2 sm:px-4"
+                  className="flex gap-1 items-center bg-[#31302f] rounded-full rounded-l-none px-2 sm:px-3"
                 >
                   <BiDislike size={20} />
                 </Button>
@@ -187,22 +193,22 @@ const VideoPlayerScreen = () => {
 
               <Button
                 variant="dark"
-                className="bg-[#31302f] flex gap-1 items-center justify-center rounded-full px-2 sm:px-4 text-xs sm:text-sm"
+                className="bg-[#31302f] flex gap-1 items-center justify-center rounded-full px-2 sm:px-3 text-xs sm:text-sm"
               >
                 <RiShareForwardLine size={24} className="text-gray-400" />
                 <p className="hidden sm:inline">Share</p>
               </Button>
               <Button
                 variant="dark"
-                className="bg-[#31302f] flex gap-1 items-center rounded-full justify-center px-2 sm:px-4 text-xs sm:text-sm"
+                className="bg-[#31302f] flex gap-1 items-center rounded-full justify-center px-2 sm:px-3 text-xs sm:text-sm"
               >
                 <HiDownload size={24} className="text-gray-400" />
                 <p className="hidden sm:inline">Download</p>
               </Button>
 
-              <Button variant="dark" size="icon">
+              {/* <Button variant="dark" size="icon" className="rounded-full">
                 <FaEllipsisH />
-              </Button>
+              </Button> */}
             </div>
           </div>
 
