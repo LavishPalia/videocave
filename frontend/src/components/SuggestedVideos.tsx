@@ -9,7 +9,7 @@ interface Video {
   thumbnail: string;
   duration: number;
   title: string;
-  owner: { _id: string; fullName: string; userName: string }[];
+  owner: { _id: string; fullName: string; userName: string };
   views: number;
   createdAt: string | number | Date;
 }
@@ -17,7 +17,7 @@ interface Video {
 interface SuggestedVideosProps {
   videos: {
     data?: {
-      searchedVideos?: Video[];
+      videos?: Video[];
     };
   };
   setVideoId: (id: string) => void;
@@ -29,7 +29,7 @@ const SuggestedVideos: React.FC<SuggestedVideosProps> = ({
 }) => {
   return (
     <div className="relative flex flex-col gap-2 p-4 sm:p-6 md:p-8 lg:pb-4 lg:pt-0 lg:px-4">
-      {videos?.data?.searchedVideos?.map((item) => (
+      {videos?.data?.videos?.map((item) => (
         <div
           className="flex flex-col gap-2 sm:flex-row sm:gap-4"
           key={item._id}
@@ -56,10 +56,10 @@ const SuggestedVideos: React.FC<SuggestedVideosProps> = ({
               {item.title}
             </Link>
             <Link
-              to={`/user/${item.owner[0].userName}`}
+              to={`/user/${item.owner.userName}`}
               className="flex items-center gap-1 text-sm text-secondary-marginal-text"
             >
-              {item.owner[0].fullName}
+              {item.owner.fullName}
               <FaCircleCheck size={12} className="hidden sm:inline" />
             </Link>
             <div className="mt-1 text-xs sm:text-sm text-secondary-marginal-text sm:mt-0">

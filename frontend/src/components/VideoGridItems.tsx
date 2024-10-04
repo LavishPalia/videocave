@@ -8,14 +8,12 @@ import { Link } from "react-router-dom";
 export type VideoGridItemProps = {
   _id: string;
   title: string;
-  owner: [
-    {
-      fullName: string;
-      _id: string;
-      avatar: string;
-      userName: string;
-    }
-  ];
+  owner: {
+    fullName: string;
+    _id: string;
+    avatar: string;
+    userName: string;
+  };
   views: number;
   createdAt: Date;
   duration: number;
@@ -100,14 +98,14 @@ const VideoGridItems = ({
           <div>
             {isVideoMuted ? (
               <BiVolumeMute
-                className="absolute p-1 rounded-full cursor-pointer top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal"
-                size={20}
+                className="absolute p-[6px] rounded-full cursor-pointer top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal"
+                size={28}
                 onClick={() => setIsVideoMuted(false)}
               />
             ) : (
               <GoUnmute
-                className="absolute p-1 rounded-full cursor-pointer top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal"
-                size={20}
+                className="absolute p-[6px] rounded-full cursor-pointer top-4 right-1 bg-secondary-marginal-dark text-secondary-marginal"
+                size={28}
                 onClick={() => setIsVideoMuted(true)}
               />
             )}
@@ -116,9 +114,9 @@ const VideoGridItems = ({
       </div>
 
       <div className="flex gap-2">
-        <Link to={`/user/${owner[0].userName}`} className="flex-shrink-0">
+        <Link to={`/user/${owner.userName}`} className="flex-shrink-0">
           <img
-            src={owner[0].avatar}
+            src={owner.avatar}
             className="object-cover rounded-full size-10"
           />
         </Link>
@@ -128,10 +126,10 @@ const VideoGridItems = ({
             {title}
           </Link>
           <Link
-            to={`/user/${owner[0].userName}`}
+            to={`/user/${owner.userName}`}
             className="text-sm text-secondary-marginal-text"
           >
-            {owner[0].fullName}
+            {owner.fullName}
           </Link>
           <div className="text-sm text-secondary-marginal-text">
             {VIEW_FORMATTER.format(views)} Views •{" "}

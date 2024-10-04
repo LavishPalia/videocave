@@ -9,7 +9,10 @@ import VideoCardShimmer from "@/shimmers/VideoCardShimmer";
 
 const HomeScreen = () => {
   const { data: videos, isLoading } = useGetAllVideosQuery(null);
-  const videoData = videos?.data?.searchedVideos;
+
+  console.log(videos);
+
+  const videoData = videos?.data?.videos;
 
   if (!isLoading && videoData?.length === 0) {
     return (

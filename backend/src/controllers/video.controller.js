@@ -383,11 +383,72 @@ const deleteVideo = asyncHandler(async (req, res, next) => {
   res.status(200).json(new ApiResponse(200, {}, "video deleted successfully"));
 });
 
+const searchVideosAndChannels = asyncHandler(async (req, res, next) => {
+  const { query, page = 1, limit = 10 } = req.query;
+
+  // Channel search pipeline
+  const channelPipeline = [
+    { $match: { userName: { $regex: new RegExp(query, "i") } } },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "_id",
+        foreignField: "owner",
+        as: "videos",
+      },
+    },
+    { $match: { "videos.0": { $exists: true } } },
+    {
+      $project: {
+        _id: 1,
+        fullName: 1,
+        avatar: 1,
+        userName: 1,
+        videoCount: { $size: "$videos" },
+      },
+    },
+    { $limit: 1 },
+  ];
+
+  // Video search pipeline
+  const videoPipeline = [
+    { $match: { $text: { $search: query } } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+      },
+    },
+    { $addFields: { owner: { $arrayElemAt: ["$owner", 0] } } },
+    { $skip: (parseInt(page) - 1) * parseInt(limit) },
+    { $limit: parseInt(limit) },
+  ];
+
+  const [matchingChannel] = await User.aggregate(channelPipeline);
+  const videos = await Video.aggregate(videoPipeline);
+  const totalVideos = await Video.countDocuments({ $text: { $search: query } });
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        channel: matchingChannel || null,
+        videos,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalVideos / parseInt(limit)),
+        totalVideos,
+      },
+      "Search results fetched successfully"
+    )
+  );
+});
+
 const getAllVideos = asyncHandler(async (req, res, next) => {
   const {
-    sortBy = "createdAt",
-    limit = 30,
-    query = "Basics",
+    sortBy = "duration",
+    limit = 100,
     page = 1,
     sortType = -1,
   } = req.query;
@@ -395,77 +456,75 @@ const getAllVideos = asyncHandler(async (req, res, next) => {
 
   const pipeline = [
     {
-      $match: {
-        $text: {
-          $search: query,
-          $language: "en",
-        },
-      },
-    },
-    {
       $lookup: {
         from: "users",
         localField: "owner",
         foreignField: "_id",
-        as: "owner",
+        as: "ownerDetails",
         pipeline: [
           {
             $project: {
-              _id: 1,
               fullName: 1,
-              avatar: 1,
               userName: 1,
+              avatar: 1,
             },
           },
         ],
       },
     },
-  ];
+    {
+      $addFields: {
+        owner: { $arrayElemAt: ["$ownerDetails", 0] },
+      },
+    },
+    {
+      $sort: {
+        [sortBy]: parseInt(sortType),
+      },
+    },
+    {
+      $skip: (parseInt(page) - 1) * parseInt(limit),
+    },
+    {
+      $limit: parseInt(limit),
+    },
+  ].filter(Boolean);
 
-  // do not use await here because we need to pass the filter created in this step to aggregatePaginate()
-  const searchedVideos = Video.aggregate(pipeline);
-  // console.log("videos returned by aggreagtion pipeline \n", searchedVideos);
+  const videos = await Video.aggregate(pipeline);
 
-  const options = {
-    page,
-    limit,
-    sort: sortBy,
-    pagination: true,
-  };
-
-  if (searchedVideos.length === 0) {
-    return next(new ApiError(400, "No videos present in the DB"));
-  }
-  const response = await Video.aggregatePaginate(searchedVideos, options);
-
-  // if (response.docs.length === 0) {
-  //   return next(new ApiError(400, "No videos present in the DB"));
-  // }
-
-  if (parseInt(sortType) === -1) {
-    response.docs = response.docs.reverse();
-  }
-
-  // console.log("pagination results \n: ", response);
+  const totalVideos = await Video.countDocuments();
 
   res.status(200).json(
     new ApiResponse(
       200,
       {
-        count: response.docs.length,
-        currentPage: response.page,
-        nextPage: response.nextPage,
-        prevPage: response.prevPage,
-        totalPages: response.totalPages,
-        hasNextPage: response.hasNextPage,
-        hasPrevPage: response.hasPrevPage,
-        totaldocs: response.totalDocs,
-        pagingCounter: response.pagingCounter,
-        searchedVideos: response.docs,
+        videos,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalVideos / parseInt(limit)),
+        totalVideos,
       },
-      "All videos fetched successfully"
+      "Videos fetched successfully"
     )
   );
+
+  // res.status(200).json(
+  //   new ApiResponse(
+  //     200,
+  //     {
+  //       count: response.docs.length,
+  //       currentPage: response.page,
+  //       nextPage: response.nextPage,
+  //       prevPage: response.prevPage,
+  //       totalPages: response.totalPages,
+  //       hasNextPage: response.hasNextPage,
+  //       hasPrevPage: response.hasPrevPage,
+  //       totaldocs: response.totalDocs,
+  //       pagingCounter: response.pagingCounter,
+  //       searchedVideos: response.docs,
+  //     },
+  //     "All videos fetched successfully"
+  //   )
+  // );
 });
 
 const togglePublishStatus = asyncHandler(async (req, res, next) => {
