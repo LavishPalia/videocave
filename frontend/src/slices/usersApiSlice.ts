@@ -55,6 +55,25 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/c/${userId}`,
       }),
     }),
+
+    // forgot password request
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/forgot-password`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // Add this to your existing usersApiSlice
+
+    resetPassword: builder.mutation({
+      query: ({ token, newPassword }) => ({
+        url: `${USERS_URL}/reset-password/${token}`,
+        method: "POST",
+        body: { newPassword },
+      }),
+    }),
   }),
 });
 
@@ -63,4 +82,6 @@ export const {
   useRegisterMutation,
   useGetCurrentUserQuery,
   useGetUserChannelDetailsQuery,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = usersApiSlice;

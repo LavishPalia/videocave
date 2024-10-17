@@ -1,3 +1,4 @@
+import nodemailer from "nodemailer";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -9,6 +10,93 @@ import {
 import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 import { isValidObjectId } from "mongoose";
+
+const forgotPassword = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
+
+  // check if user exits in th db.
+  const existingUser = await User.findOne({ email });
+
+  if (!existingUser) {
+    return next(new ApiError(404, "User not found."));
+  }
+
+  const payload = {
+    userId: existingUser._id,
+  };
+
+  // generate a token for the user containing users id.
+  const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "10m",
+  });
+
+  // send the token to the users email
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "lavishgarg1199@gmail.com",
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  });
+
+  // Email configuration
+  const mailOptions = {
+    from: "lavishgarg1199@gmail.com",
+    to: email,
+    subject: "VideoCave | Reset password request",
+    html: `
+      <h3>Hi ${existingUser.fullName}</h3>
+      <p>You recently requested to reset the password for your videocave account.</p>
+      <p>Use 
+      <a href="http://localhost:5173/reset-password/${token}">this link to reset your password</a>
+      </p>
+      <p>If you did not request to reset your password, please ignore this mail 
+      or reply to let us know. This password reset link is only valid for the next 10 minutes.</p>
+      <p>Thank you</p>
+      <p>VideoCave Support</p>
+    `,
+  };
+
+  // send the email
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      return next(new ApiError(400, err.message));
+    }
+    console.log("(parameter) info: SMTPTransport.SentMessageInfo", info);
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Password reset email sent."));
+  });
+});
+
+const resetPassword = asyncHandler(async (req, res, next) => {
+  const token = req.params.token;
+  const { newPassword } = req.body;
+
+  // console.log(token);
+  const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  // console.log(decodedToken);
+
+  if (!decodedToken) {
+    return next(new ApiError(401, "Invalid token"));
+  }
+
+  // find the user in the db with the id from the token
+  const user = await User.findOne({ _id: decodedToken.userId });
+  // console.log(user);
+
+  if (!user) {
+    return next(new ApiError(401, "no user found."));
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  res
+    .status(201)
+    .json(new ApiResponse(200, {}, "Password updated successfully"));
+});
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -645,4 +733,6 @@ export {
   getWatchHistory,
   deleteVideoFromWatchHistory,
   clearWatchHistory,
+  forgotPassword,
+  resetPassword,
 };

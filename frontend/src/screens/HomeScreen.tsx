@@ -1,11 +1,13 @@
-import { useGetAllVideosQuery } from "@/slices/videoApiSlice";
+import { useMemo } from "react";
+
 import PageHeader from "@/components/PageHeader";
 import Sidebar from "@/components/Sidebar";
 import VideoGridItems, {
   VideoGridItemProps,
 } from "@/components/VideoGridItems";
-import { useMemo } from "react";
 import VideoCardShimmer from "@/shimmers/VideoCardShimmer";
+
+import { useGetAllVideosQuery } from "@/slices/videoApiSlice";
 
 const HomeScreen = () => {
   const { data: videos, isLoading } = useGetAllVideosQuery(null);

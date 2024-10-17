@@ -13,6 +13,8 @@ import HomeScreen from "./screens/HomeScreen";
 import VideoPlayerScreen from "./screens/VideoPlayerScreen";
 import History from "./screens/History";
 import Channel from "./screens/Channel";
+import ForgetPassword from "./screens/ForgetPassword.tsx";
+import ResetPassword from "./screens/ResetPassword.tsx";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +24,14 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginForm />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgetPassword />,
+  },
+  {
+    path: "/reset-password/:token",
+    element: <ResetPassword />,
   },
   {
     path: "",

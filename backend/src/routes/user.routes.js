@@ -15,6 +15,8 @@ import {
   getWatchHistory,
   clearWatchHistory,
   deleteVideoFromWatchHistory,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/user.controller.js";
 import { check, checkSchema } from "express-validator";
 
@@ -85,6 +87,9 @@ router
 
 router.route("/logout").post(verifyToken, logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);
+
+router.route("/forgot-password").post(forgotPassword);
+router.route("/reset-password/:token").post(resetPassword);
 
 router
   .route("/change-password")

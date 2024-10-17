@@ -92,18 +92,21 @@ const LoginForm = () => {
               placeholder="Enter your password"
               control={form.control}
             />
-            {/* <div className="flex items-center justify-between mb-6">
-              <label className="flex items-center">
+            <div className="flex items-center justify-center mb-6">
+              {/* <label className="flex items-center">
                 <input
                   type="checkbox"
                   className="bg-gray-700 border-gray-600 form-checkbox"
                 />
                 <span className="ml-2 text-sm text-gray-300">Remember me</span>
-              </label>
-              <a href="#" className="text-sm text-blue-400 hover:underline">
-                Forgot password?
-              </a>
-            </div> */}
+              </label> */}
+              <Link
+                to="/forgot-password"
+                className="tracking-wide text-blue-400 hover:underline hover:underline-offset-4"
+              >
+                Forgot password? Reset it here
+              </Link>
+            </div>
             <Button
               type="submit"
               className="w-full py-3 font-semibold text-white transition duration-300 ease-in-out transform rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"

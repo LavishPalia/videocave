@@ -1,4 +1,4 @@
-import { Control, FieldPath } from "react-hook-form";
+import { Control, Path, FieldValues } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -7,24 +7,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { z } from "zod";
-import { loginFormSchema } from "./LoginForm";
 
-interface LoginInputProps {
+interface LoginInputProps<T extends FieldValues> {
   placeholder?: string;
-  name: FieldPath<z.infer<typeof loginFormSchema>>;
+  name: Path<T>;
   label: string;
-  control: Control<z.infer<typeof loginFormSchema>>;
+  control: Control<T>;
   type: string;
 }
 
-const LoginInput = ({
+const LoginInput = <T extends FieldValues>({
   placeholder,
   name,
   label,
   control,
   type,
-}: LoginInputProps) => {
+}: LoginInputProps<T>) => {
   return (
     <FormField
       control={control}
