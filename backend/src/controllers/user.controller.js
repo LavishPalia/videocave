@@ -32,6 +32,12 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
   // send the token to the users email
 
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const clientUrl =
+    process.env.NODE_ENV === "development"
+      ? "localhost:5173"
+      : "videocave.vercel.app";
+
   // Email configuration
   const mailOptions = {
     from: "lavishgarg1199@gmail.com",
@@ -41,7 +47,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
       <h3>Hi ${existingUser.fullName}</h3>
       <p>You recently requested to reset the password for your videocave account.</p>
       <p>Use 
-      <a href="http://localhost:5173/reset-password/${token}">this link to reset your password</a>
+      <a href="${protocol}://${clientUrl}/reset-password/${token}">this link to reset your password</a>
       </p>
       <p>If you did not request to reset your password, please ignore this mail 
       or reply to let us know. This password reset link is only valid for the next 10 minutes.</p>
@@ -199,6 +205,12 @@ const registerUser = asyncHandler(async (req, res, next) => {
   createdUser.emailVerificationToken = token;
   await createdUser.save();
 
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const clientUrl =
+    process.env.NODE_ENV === "development"
+      ? "localhost:5173"
+      : "videocave.vercel.app";
+
   const mailOptions = {
     from: "lavishgarg1199@gmail.com",
     to: createdUser.email,
@@ -210,7 +222,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
         <h2 style="color: #4a4a4a;">Welcome to VideoCave, ${createdUser.fullName}!</h2>
         <p>We're excited to have you on board. To get started, please verify your email address.</p>
         <div style="text-align: center; margin: 30px 0;">
-          <a href="http://localhost:5173/verify-email/${token}" style="background-color: #4CAF50; color: white; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 4px; font-size: 16px;">Verify Your Email</a>
+          <a href="${protocol}://${clientUrl}/verify-email/${token}" style="background-color: #4CAF50; color: white; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 4px; font-size: 16px;">Verify Your Email</a>
         </div>
         <p>This verification link will expire in 60 minutes for security reasons.</p>
         <p>If you didn't create an account on VideoCave, you can safely ignore this email.</p>
@@ -289,6 +301,12 @@ const resendEmailVerification = asyncHandler(async (req, res, next) => {
   user.emailVerificationToken = token;
   await user.save();
 
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const clientUrl =
+    process.env.NODE_ENV === "development"
+      ? "localhost:5173"
+      : "videocave.vercel.app";
+
   const mailOptions = {
     from: "lavishgarg1199@gmail.com",
     to: user.email,
@@ -301,7 +319,7 @@ const resendEmailVerification = asyncHandler(async (req, res, next) => {
       <p>We noticed that you haven't verified your email address for your VideoCave account yet.</p>
       <p>To ensure full access to all features, please verify your email by clicking the button below:</p>
       <div style="text-align: center; margin: 30px 0;">
-        <a href="http://localhost:5173/verify-email/${token}" style="background-color: #4CAF50; color: white; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 4px; font-size: 16px;">Verify Your Email</a>
+        <a href="${protocol}://${clientUrl}/verify-email/${token}" style="background-color: #4CAF50; color: white; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 4px; font-size: 16px;">Verify Your Email</a>
       </div>
       <p>This verification link will expire in 60 minutes for security reasons.</p>
       <p>If you didn't request this verification email, please contact our support team immediately.</p>

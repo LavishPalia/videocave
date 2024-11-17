@@ -13,9 +13,14 @@ app.use(express.static("public"));
 app.use(cookieParser());
 app.use(morgan("dev"));
 
+const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+const clientUrl =
+  process.env.NODE_ENV === "development"
+    ? "localhost:5173"
+    : "videocave.vercel.app";
+
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://videocave.vercel.app");
-  // res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Origin", `${protocol}://${clientUrl}`);
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });

@@ -301,7 +301,7 @@ const getLatestVideoFromSubscribedChannels = asyncHandler(
             },
             {
               $project: {
-                _id: 0,
+                _id: 1,
                 thumbnail: 1,
                 duration: 1,
                 views: 1,
