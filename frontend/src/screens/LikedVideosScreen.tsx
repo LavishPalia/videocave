@@ -47,7 +47,7 @@ const LikedVideosScreen = () => {
   useEffect(() => {
     const img = document.createElement("img");
     img.crossOrigin = "Anonymous";
-    img.src = likedVideos?.data[0].thumbnail;
+    img.src = likedVideos?.data[0]?.thumbnail;
 
     img.onload = () => {
       const colorthief = new ColorThief();
@@ -77,10 +77,12 @@ const LikedVideosScreen = () => {
       <div className="grid grid-cols-[auto,1fr] flex-grow overflow-auto">
         <Sidebar />
         <div className="px-4 pb-4 overflow-x-hidden md:px-8">
-          <div className={`grid gap-4 grid-cols-[360px,_minmax(0,1fr)]`}>
+          <div
+            className={`flex flex-col lg:grid gap-4 md:grid-cols-[360px,_minmax(0,1fr)]`}
+          >
             {/* left section */}
             <section
-              className="sticky top-0 flex flex-col items-start justify-start gap-4 px-4 py-2 rounded-md h-[600px]"
+              className="relative lg:sticky top-0 flex flex-col items-start justify-start gap-4 px-4 py-2 rounded-md lg:h-[600px]"
               style={{ background: gradient }}
             >
               <img
@@ -88,11 +90,17 @@ const LikedVideosScreen = () => {
                 alt="liked videos"
                 className="object-fill origin-center rounded-md aspect-video"
               />
-              <h1 className="text-2xl font-semibold">Liked Videos</h1>
+              <h1 className="mt-1 text-3xl font-semibold lg:mt-0 lg:text-2xl">
+                Liked Videos
+              </h1>
 
-              <div className="text-left">
-                <p className="text-lg">{loggedInUser.data.fullName}</p>
-                <p>{likedVideos.data.length} Videos</p>
+              <div className="flex flex-col gap-1 text-left lg:gap-0">
+                <p className="text-xl lg:text-lg">
+                  {loggedInUser.data.fullName}
+                </p>
+                <p className="text-lg lg:text-[16px]">
+                  {likedVideos.data.length} Videos
+                </p>
               </div>
             </section>
 
@@ -132,13 +140,13 @@ const LikedVideosScreen = () => {
                   <div className="flex flex-col w-[150px] md:w-[480px]">
                     <Link
                       to={`/watch?v=${video._id}`}
-                      className="text-lg font-bold md:text-xl line-clamp-3"
+                      className="text-lg font-bold md:text-xl line-clamp-2 lg:line-clamp-3"
                     >
                       {video.title}
                     </Link>
                     <Link
                       to={`/user/${video.owner.fullName}`}
-                      className="flex gap-2 items-center text-secondary-marginal-text text-[8px] md:text-xs"
+                      className="flex flex-wrap gap-2 items-center text-secondary-marginal-text text-[10px] lg:text-xs"
                     >
                       <p className="font-medium">{video.owner.fullName}</p>
 
