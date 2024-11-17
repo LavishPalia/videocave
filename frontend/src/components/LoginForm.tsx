@@ -22,7 +22,7 @@ type ErrorResponse = {
   };
 };
 
-function isErrorReponse(obj: any): obj is ErrorResponse {
+function isErrorResponse(obj: any): obj is ErrorResponse {
   return (
     obj &&
     typeof obj.status === "number" &&
@@ -57,13 +57,21 @@ const LoginForm = () => {
     try {
       const response = await login({ ...userData }).unwrap();
 
+      // console.log(response);
       dispatch(setUserCredentials({ ...response.data?.user! }));
+
+      if (!response.data?.user.isEmailVerified) {
+        toast.info("Please verify your email first");
+        navigate("/verify-email");
+        return;
+      }
+
       toast.success(`Logged In Successfully`);
       setTimeout(() => {
         navigate("/");
       }, 800); // Delay of 2 seconds to allow the toast to be visible
     } catch (err: unknown) {
-      if (isErrorReponse(err)) {
+      if (isErrorResponse(err)) {
         console.error(err);
         toast.error(`${err?.data?.error}`);
       }
@@ -74,7 +82,10 @@ const LoginForm = () => {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800">
       <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-2xl">
         <h2 className="mb-6 text-3xl font-bold text-center text-gray-100">
-          Welcome Back!
+          Welcome to{" "}
+          <span className="inline-block text-transparent transition-all delay-100 bg-transparent hover:scale-105 bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+            VideoCave!
+          </span>
         </h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

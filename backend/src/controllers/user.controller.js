@@ -1,4 +1,3 @@
-import nodemailer from "nodemailer";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -10,6 +9,7 @@ import {
 import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 import { isValidObjectId } from "mongoose";
+import { transporter } from "../utils/nodemailer.js";
 
 const forgotPassword = asyncHandler(async (req, res, next) => {
   const { email } = req.body;
@@ -31,13 +31,6 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   });
 
   // send the token to the users email
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "lavishgarg1199@gmail.com",
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-  });
 
   // Email configuration
   const mailOptions = {
@@ -194,9 +187,145 @@ const registerUser = asyncHandler(async (req, res, next) => {
     );
   }
 
+  const payload = {
+    userId: createdUser._id,
+  };
+
+  // user email verification
+  const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "60m",
+  });
+
+  createdUser.emailVerificationToken = token;
+  await createdUser.save();
+
+  const mailOptions = {
+    from: "lavishgarg1199@gmail.com",
+    to: createdUser.email,
+    subject: `${createdUser.fullName}, verify your email address for VideoCave`,
+    html: `
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+      <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #4a4a4a;">Welcome to VideoCave, ${createdUser.fullName}!</h2>
+        <p>We're excited to have you on board. To get started, please verify your email address.</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="http://localhost:5173/verify-email/${token}" style="background-color: #4CAF50; color: white; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 4px; font-size: 16px;">Verify Your Email</a>
+        </div>
+        <p>This verification link will expire in 60 minutes for security reasons.</p>
+        <p>If you didn't create an account on VideoCave, you can safely ignore this email.</p>
+        <p>Thank you for joining our community!</p>
+        <p>Best regards,<br>The VideoCave Team</p>
+      </div>
+    </body>
+    </html>
+  `,
+  };
+
+  // send the email
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      return next(new ApiError(400, err.message));
+    }
+    console.log("(parameter) info: SMTPTransport.SentMessageInfo", info);
+  });
+
   res
     .status(201)
     .json(new ApiResponse(200, createdUser, "User registered successfully"));
+});
+
+const verifyEmail = asyncHandler(async (req, res, next) => {
+  const token = req.params.token;
+  if (!token) {
+    return next(new ApiError(400, "Invalid token"));
+  }
+
+  const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  if (!payload) {
+    return next(new ApiError(400, "Invalid token"));
+  }
+
+  const user = await User.findById(payload.userId);
+  if (!user) {
+    return next(new ApiError(400, "User not found"));
+  }
+
+  if (user.isEmailVerified) {
+    return next(new ApiError(400, "Email is already verified"));
+  }
+
+  user.isEmailVerified = true;
+  user.emailVerificationToken = "";
+  await user.save();
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, user, "Email verified successfully"));
+});
+
+const resendEmailVerification = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
+
+  console.log(req.body);
+
+  if (!email) {
+    return next(new ApiError(400, "Invalid email"));
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return next(new ApiError(400, "User not found"));
+  }
+
+  const payload = {
+    userId: user._id,
+  };
+
+  const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "60m",
+  });
+
+  user.emailVerificationToken = token;
+  await user.save();
+
+  const mailOptions = {
+    from: "lavishgarg1199@gmail.com",
+    to: user.email,
+    subject: `${user.fullName}, verify your email address for VideoCave`,
+    html: `
+  <html>
+  <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2 style="color: #4a4a4a;">Hello ${user.fullName},</h2>
+      <p>We noticed that you haven't verified your email address for your VideoCave account yet.</p>
+      <p>To ensure full access to all features, please verify your email by clicking the button below:</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="http://localhost:5173/verify-email/${token}" style="background-color: #4CAF50; color: white; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 4px; font-size: 16px;">Verify Your Email</a>
+      </div>
+      <p>This verification link will expire in 60 minutes for security reasons.</p>
+      <p>If you didn't request this verification email, please contact our support team immediately.</p>
+      <p>Thank you for being part of the VideoCave community!</p>
+      <p>Best regards,<br>The VideoCave Team</p>
+    </div>
+  </body>
+  </html>
+  `,
+  };
+
+  // resend the email
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      return next(new ApiError(400, err.message));
+    }
+    console.log("(parameter) info: SMTPTransport.SentMessageInfo", info);
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, {}, "Email verification link sent successfully")
+      );
+  });
 });
 
 const loginUser = asyncHandler(async (req, res, next) => {
@@ -205,6 +334,8 @@ const loginUser = asyncHandler(async (req, res, next) => {
     perform data validation and sanity
     find user in DB
     if found, cross check the provided password against existing users in database
+
+    if password matches, check email verification status
     generate access and refresh token and send to frontend in cookies
     send success response
   */
@@ -218,11 +349,6 @@ const loginUser = asyncHandler(async (req, res, next) => {
   }
 
   const { userName, email, password } = req.body;
-  // console.log(userName, email, password);
-
-  if (!email && !userName) {
-    return next(new ApiError(400, "Email or username is missing"));
-  }
 
   const user = await User.findOne({
     $or: [{ userName }, { email }],
@@ -230,7 +356,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new ApiError(400, "User does not eixst, please create your account.")
+      new ApiError(400, "User does not eixst, please create an account.")
     );
   }
 
@@ -269,6 +395,28 @@ const loginUser = asyncHandler(async (req, res, next) => {
         "User Logged In successfully..."
       )
     );
+});
+
+const checkEmailVerificationStatus = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id).select(
+    "isEmailVerified email fullName"
+  );
+
+  if (!user) {
+    return next(new ApiError(404, "User not found"));
+  }
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        isEmailVerified: user.isEmailVerified,
+        email: user.email,
+        fullName: user.fullName,
+      },
+      "Email verification status fetched successfully"
+    )
+  );
 });
 
 const logoutUser = asyncHandler(async (req, res, next) => {
@@ -639,7 +787,75 @@ const getWatchHistory = asyncHandler(async (req, res, next) => {
     },
   ];
 
-  const user = await User.aggregate(pipeline);
+  const newPipeline = [
+    {
+      $match: {
+        _id: req.user._id,
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        watchHistory: {
+          $ifNull: ["$watchHistory", []],
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        let: { watchHistoryIds: "$watchHistory" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $in: ["$_id", "$$watchHistoryIds"],
+              },
+            },
+          },
+          {
+            $addFields: {
+              customOrder: {
+                $indexOfArray: ["$$watchHistoryIds", "$_id"],
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    userName: 1,
+                    fullName: 1,
+                    avatar: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              owner: {
+                $first: "$owner",
+              },
+            },
+          },
+          {
+            $sort: {
+              customOrder: 1, // Sort by the custom index to preserve the order
+            },
+          },
+        ],
+        as: "watchHistory",
+      },
+    },
+  ];
+
+  const user = await User.aggregate(newPipeline);
   // console.log(user)
 
   if (!user) {
@@ -735,4 +951,7 @@ export {
   clearWatchHistory,
   forgotPassword,
   resetPassword,
+  verifyEmail,
+  resendEmailVerification,
+  checkEmailVerificationStatus,
 };

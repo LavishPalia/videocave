@@ -8,8 +8,17 @@ import VideoGridItems, {
 import VideoCardShimmer from "@/shimmers/VideoCardShimmer";
 
 import { useGetAllVideosQuery } from "@/slices/videoApiSlice";
+import { useAppSelector } from "@/app/hooks";
+import { useNavigate } from "react-router-dom";
 
 const HomeScreen = () => {
+  const { user } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  if (!user?.isEmailVerified) {
+    navigate("/verify-email");
+  }
+
   const { data: videos, isLoading } = useGetAllVideosQuery(null);
 
   console.log(videos);

@@ -59,6 +59,7 @@ export interface LoginApiReponse {
     userName: string;
     email: string;
     fullName: string;
+    isEmailVerified: boolean;
   };
   accessToken: string;
   refreshToken: string;

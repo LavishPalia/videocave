@@ -1,16 +1,16 @@
 import { USERS_URL } from "@/constants";
 import { apiSlice } from "./apiSlice";
-import { IResponse, LoginApiReponse } from "@/types";
+// import { IResponse, LoginApiReponse } from "@/types";
 
-type LoginParams = {
-  email: string;
-  password: string;
-};
+// type LoginParams = {
+//   email: string;
+//   password: string;
+// };
 
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // login request to backend
-    login: builder.mutation<IResponse<LoginApiReponse>, LoginParams>({
+    login: builder.mutation({
       query: (userData) => ({
         url: `${USERS_URL}/login`,
         method: "POST",
@@ -74,6 +74,27 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: { newPassword },
       }),
     }),
+
+    // request for verification of email
+    verifyEmail: builder.mutation({
+      query: (token) => ({
+        url: `${USERS_URL}/verify-email/${token}`,
+        method: "POST",
+      }),
+    }),
+
+    // resend verification email
+    resendVerificationEmail: builder.mutation({
+      query: (data) => {
+        console.log(data);
+
+        return {
+          url: `${USERS_URL}/resend-verification-email`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
@@ -84,4 +105,6 @@ export const {
   useGetUserChannelDetailsQuery,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useResendVerificationEmailMutation,
+  useVerifyEmailMutation,
 } = usersApiSlice;

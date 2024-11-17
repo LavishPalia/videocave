@@ -7,30 +7,12 @@ import { Form } from "@/components/ui/form";
 
 import RegisterInput from "./RegisterInput";
 import { useRegisterMutation } from "@/slices/usersApiSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-type ErrorResponse = {
-  status: number;
-  data: {
-    error: string;
-    success: boolean;
-    errors: any[];
-  };
-};
-
-function isErrorReponse(obj: any): obj is ErrorResponse {
-  return (
-    obj &&
-    typeof obj.status === "number" &&
-    obj.data &&
-    typeof obj.data.error === "string" &&
-    typeof obj.data.success === "boolean" &&
-    Array.isArray(obj.data.errors)
-  );
-}
+import { useState } from "react";
+import EmailVerificationModal from "./EmailVerificationModal";
 
 export const registerFormSchema = z.object({
   email: z.string().email(),
@@ -55,9 +37,10 @@ export const registerFormSchema = z.object({
 });
 
 const RegisterForm = () => {
-  const [register, { isLoading }] = useRegisterMutation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
-  const navigate = useNavigate();
+  const [register, { isLoading }] = useRegisterMutation();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof registerFormSchema>>({
@@ -71,18 +54,21 @@ const RegisterForm = () => {
   const onSubmit = async (userData: z.infer<typeof registerFormSchema>) => {
     try {
       toast.info(`User Registration in progress..."`);
-      await register({ ...userData }).unwrap();
+      const response = await register({ ...userData }).unwrap();
 
-      toast.success("User Registered.");
+      console.log(response);
 
-      setTimeout(() => navigate("/login"), 2000);
+      toast.success(
+        "User Registered. Please check your email for verification."
+      );
+
+      setRegisteredEmail(userData.email);
+      setIsModalOpen(true);
 
       console.log("user registered successfully");
-    } catch (err: unknown) {
-      if (isErrorReponse(err)) {
-        console.error("error registering user", err);
-        toast.error(`${err?.data?.error}`);
-      }
+    } catch (err: any) {
+      console.error("error registering user", err);
+      toast.error(`${err?.data?.error}`);
     }
   };
 
@@ -166,6 +152,12 @@ const RegisterForm = () => {
           </p>
         </div>
       </div>
+
+      <EmailVerificationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        email={registeredEmail}
+      />
       <ToastContainer
         position="bottom-right"
         autoClose={3000}

@@ -41,6 +41,14 @@ const userSchema = new mongoose.Schema(
         ref: "Video",
       },
     ],
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerificationToken: {
+      type: String,
+      default: undefined,
+    },
     refreshToken: { type: String },
   },
   {

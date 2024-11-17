@@ -17,6 +17,9 @@ import {
   deleteVideoFromWatchHistory,
   forgotPassword,
   resetPassword,
+  verifyEmail,
+  resendEmailVerification,
+  checkEmailVerificationStatus,
 } from "../controllers/user.controller.js";
 import { check, checkSchema } from "express-validator";
 
@@ -65,6 +68,9 @@ router.route("/register").post(
   registerUser
 );
 
+router.route("/verify-email/:token").post(verifyEmail);
+router.route("/resend-verification-email").post(resendEmailVerification);
+
 router
   .route("/login")
   .post(
@@ -84,6 +90,10 @@ router
     ],
     loginUser
   );
+
+router
+  .route("/check-email-verification-status")
+  .get(verifyToken, checkEmailVerificationStatus);
 
 router.route("/logout").post(verifyToken, logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);
