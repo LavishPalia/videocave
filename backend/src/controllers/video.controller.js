@@ -19,7 +19,7 @@ const publishVideo = asyncHandler(async (req, res, next) => {
   //   console.log(req.files);
   if (!req.files || !req.files.videoFile || !req.files.thumbnail) {
     return next(
-      new ApiError(400, "Please select a video and a thubnail image to upload")
+      new ApiError(400, "Please select a video and a thumbnail image to upload")
     );
   }
 
@@ -157,12 +157,13 @@ const getVideoById = asyncHandler(async (req, res, next) => {
   ];
 
   video = await Video.aggregate(pipeline);
-  console.log(video);
+  // console.log(video);
 
   // TODO: write a pipeline to fetch details like owner, subscriber count, isSubscribed, like count etc
 
   // check if the videoId already exists in the watchHistory of the user
   const currentWatchHistory = req.user.watchHistory;
+  // console.log({ currentWatchHistory });
 
   const index = currentWatchHistory?.findIndex(
     (history) => history.toString() === videoId

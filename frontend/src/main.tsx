@@ -15,6 +15,9 @@ import History from "./screens/History";
 import Channel from "./screens/Channel";
 import ForgetPassword from "./screens/ForgetPassword.tsx";
 import ResetPassword from "./screens/ResetPassword.tsx";
+import EmailVerificationConfirmation from "./screens/EmailVerificationConfirmation.tsx";
+import VerifyEmailScreen from "./screens/VerifyEmailScreen.tsx";
+import PlayListScreen from "./screens/PlayListScreen.tsx";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +35,10 @@ const router = createBrowserRouter([
   {
     path: "/reset-password/:token",
     element: <ResetPassword />,
+  },
+  {
+    path: "/verify-email/:token",
+    element: <EmailVerificationConfirmation />,
   },
   {
     path: "",
@@ -52,6 +59,14 @@ const router = createBrowserRouter([
       {
         path: "history",
         element: <History />,
+      },
+      {
+        path: "verify-email",
+        element: <VerifyEmailScreen />,
+      },
+      {
+        path: "playlist",
+        element: <PlayListScreen />,
       },
     ],
   },

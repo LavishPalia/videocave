@@ -93,19 +93,25 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
             </Link>
 
             <div
-              className={`flex gap-6 text-gray-400 ${
+              className={`flex gap-2 text-gray-400 ${
                 hoveredVideoId === item._id ? "" : "hidden"
               } absolute top-2 right-2`}
             >
-              <Button variant="ghost" className="p-0 m-0 rounded-full">
+              <Button
+                variant="ghost"
+                className="rounded-full dark:hover:bg-gray-900"
+              >
                 <X
-                  size={32}
+                  size={28}
                   onClick={() => handleRemoveVideo(item._id)}
                   className="cursor-pointer"
                 />
               </Button>
-              <Button variant="ghost" className="p-0 m-0 rounded-full">
-                <EllipsisVertical size={32} className="cursor-pointer" />
+              <Button
+                variant="ghost"
+                className="rounded-full dark:hover:bg-gray-900"
+              >
+                <EllipsisVertical size={28} className="cursor-pointer" />
               </Button>
             </div>
 

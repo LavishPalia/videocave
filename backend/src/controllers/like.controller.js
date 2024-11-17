@@ -137,25 +137,74 @@ const getLikedVideos = asyncHandler(async (req, res, next) => {
       },
     },
     {
-      $group: {
-        _id: null,
-        data: {
-          $push: "$video",
+      $match: {
+        video: {
+          $exists: true,
         },
       },
     },
     {
       $lookup: {
         from: "videos",
-        localField: "data",
+        localField: "video",
         foreignField: "_id",
-        as: "likedVideosData",
+        as: "video",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    fullName: 1,
+                    userName: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              owner: {
+                $first: "$owner",
+              },
+            },
+          },
+          {
+            $project: {
+              thumbnail: 1,
+              duration: 1,
+              views: 1,
+              title: 1,
+              createdAt: 1,
+              owner: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        video: {
+          $first: "$video",
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        video: {
+          $push: "$video",
+        },
       },
     },
     {
       $project: {
+        video: 1,
         _id: 0,
-        likedVideosData: 1,
       },
     },
   ];
@@ -172,7 +221,7 @@ const getLikedVideos = asyncHandler(async (req, res, next) => {
     .json(
       new ApiResponse(
         200,
-        { userLikedVideos: likedVideos[0]?.likedVideosData || [] },
+        likedVideos[0]?.video.reverse() || [],
         "liked videos fetched successfully"
       )
     );

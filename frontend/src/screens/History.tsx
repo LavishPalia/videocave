@@ -8,6 +8,7 @@ import {
 import WatchHistory from "@/components/WatchHistory";
 import { FaRegTrashAlt } from "react-icons/fa";
 import Button from "@/components/Button";
+import { useEffect } from "react";
 
 const History = () => {
   const {
@@ -15,6 +16,8 @@ const History = () => {
     isLoading,
     refetch: refetchHistory,
   } = useGetWatchHistoryQuery(null);
+
+  // console.log(history);
 
   const [deleteVideoFromWatchHistory] =
     useDeleteVideoFromWatchHistoryMutation();
@@ -26,13 +29,17 @@ const History = () => {
     refetchHistory();
   };
 
+  useEffect(() => {
+    refetchHistory();
+  }, []);
+
   return (
-    <div className="max-h-screen flex flex-col">
+    <div className="flex flex-col max-h-screen">
       <PageHeader />
       <div className="flex flex-grow overflow-hidden">
         <Sidebar />
-        <div className="flex flex-col-reverse xl:flex-row flex-grow overflow-y-auto">
-          <div className="flex-grow px-4 md:px-8 pb-4">
+        <div className="flex flex-col-reverse flex-grow overflow-y-auto xl:flex-row">
+          <div className="flex-grow px-4 pb-4 md:px-8">
             <WatchHistory
               history={history}
               isLoading={isLoading}
@@ -40,11 +47,11 @@ const History = () => {
               refetchHistory={refetchHistory}
             />
           </div>
-          <div className="px-4 pb-4 md:px-10 w-full xl:w-1/4 sticky top-0">
-            <div className="rounded shadow-md relative">
+          <div className="sticky top-0 w-full px-4 pb-4 md:px-10 xl:w-1/4">
+            <div className="relative rounded shadow-md">
               <Button
                 variant="ghost"
-                className="flex gap-3 items-center rounded-3xl md:ml-4 xl:mt-12 xl:ml-0"
+                className="flex items-center gap-3 rounded-3xl md:ml-4 xl:mt-12 xl:ml-0"
                 onClick={handleClearHistory}
               >
                 <FaRegTrashAlt />

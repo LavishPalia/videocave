@@ -7,10 +7,18 @@ export const likesApiSlice = apiSlice.injectEndpoints({
     toggleVideoLikes: builder.mutation({
       query: (videoId) => ({
         url: `${LIKES_URL}/toggle/v/${videoId}`,
-        method: "POST"
+        method: "POST",
+      }),
+    }),
+
+    // liked videos of a user
+    getLikedVideos: builder.query({
+      query: () => ({
+        url: `${LIKES_URL}/videos`,
       }),
     }),
   }),
 });
 
-export const { useToggleVideoLikesMutation } = likesApiSlice;
+export const { useToggleVideoLikesMutation, useGetLikedVideosQuery } =
+  likesApiSlice;
