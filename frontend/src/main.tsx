@@ -18,6 +18,7 @@ import ResetPassword from "./screens/ResetPassword.tsx";
 import EmailVerificationConfirmation from "./screens/EmailVerificationConfirmation.tsx";
 import VerifyEmailScreen from "./screens/VerifyEmailScreen.tsx";
 import PlayListScreen from "./screens/PlayListScreen.tsx";
+import SubscriptionsScreen from "./screens/SubscriptionsScreen.tsx";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <HomeScreen />,
+      },
+      {
+        path: "/subscriptions",
+        element: <SubscriptionsScreen />,
       },
       {
         path: "user/:username",

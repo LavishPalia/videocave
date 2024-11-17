@@ -17,8 +17,18 @@ export const subscriptionsApiSlice = apiSlice.injectEndpoints({
         method: "POST",
       }),
     }),
+
+    //
+    getLatestVideoFromSubscribedChannels: builder.query({
+      query: (userId) => ({
+        url: `${SUBSCRIPTIONS_URL}/u/${userId}/latest`,
+      }),
+    }),
   }),
 });
 
-export const { useGetUserSubscriptionsQuery, useToggleSubscriptionMutation } =
-  subscriptionsApiSlice;
+export const {
+  useGetUserSubscriptionsQuery,
+  useToggleSubscriptionMutation,
+  useGetLatestVideoFromSubscribedChannelsQuery,
+} = subscriptionsApiSlice;

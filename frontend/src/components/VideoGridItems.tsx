@@ -74,7 +74,7 @@ const VideoGridItems = ({
       onMouseLeave={() => setIsVideoPlaying(false)}
     >
       <div className="relative overflow-hidden aspect-video">
-        <Link to={`watch?v=${_id}`} className="relative aspect-video">
+        <Link to={`/watch?v=${_id}`} className="relative aspect-video">
           <img
             src={thumbnail}
             className={`block w-full h-full object-cover transition-[border-radius] duration-200 ${
@@ -121,7 +121,7 @@ const VideoGridItems = ({
           />
         </Link>
 
-        <div className="flex flex-col w-[80%]">
+        <div className="flex flex-col w-[70%]">
           <Link to={`/watch?v=${_id}`} className="font-bold line-clamp-2">
             {title}
           </Link>

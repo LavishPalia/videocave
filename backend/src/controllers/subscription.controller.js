@@ -234,4 +234,144 @@ const getUserSubscriptions = asyncHandler(async (req, res, next) => {
   );
 });
 
-export { toogleSubscription, getChannelSubscribers, getUserSubscriptions };
+const getLatestVideoFromSubscribedChannels = asyncHandler(
+  async (req, res, next) => {
+    const { subscriberId } = req.params;
+
+    if (!subscriberId) {
+      return next(new ApiError(400, "Subscriber Id is missing"));
+    }
+
+    if (!isValidObjectId(subscriberId)) {
+      return next(new ApiError(400, "Invlaid  Subscriber ID"));
+    }
+
+    const subscriber = await User.findById(subscriberId);
+
+    if (!subscriber) {
+      return next(new ApiError(400, "Subscriber doesn't exist in DB"));
+    }
+
+    const pipeline = [
+      {
+        $match: {
+          subscriber: new mongoose.Types.ObjectId(subscriberId),
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          channel: 1,
+        },
+      },
+      {
+        $lookup: {
+          from: "videos",
+          let: { channels: "$channel" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$owner", "$$channels"],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                pipeline: [
+                  {
+                    $project: {
+                      _id: 0,
+                      fullName: 1,
+                      userName: 1,
+                      avatar: 1,
+                    },
+                  },
+                ],
+                as: "owner",
+              },
+            },
+            {
+              $addFields: {
+                owner: { $first: "$owner" },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                thumbnail: 1,
+                duration: 1,
+                views: 1,
+                owner: 1,
+                title: 1,
+                createdAt: 1,
+                videoFile: 1,
+              },
+            },
+          ],
+          as: "video",
+        },
+      },
+      {
+        $unwind: "$video",
+      },
+      {
+        $sort: {
+          "video.createdAt": -1,
+        },
+      },
+      {
+        $group: {
+          _id: "$channel",
+          latestVideo: {
+            $first: "$video",
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          latestVideo: 1,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          latestVideos: {
+            $push: "$latestVideo",
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          latestVideos: 1,
+        },
+      },
+    ];
+
+    const latestVideosData = await Subscription.aggregate(pipeline);
+
+    console.log("latest video from subscribed channels \n", latestVideosData);
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          latestVideosData[0].latestVideos || [],
+          "Latest video from Subscribed channels fetched successfully"
+        )
+      );
+  }
+);
+
+export {
+  toogleSubscription,
+  getChannelSubscribers,
+  getUserSubscriptions,
+  getLatestVideoFromSubscribedChannels,
+};

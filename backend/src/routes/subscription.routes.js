@@ -4,6 +4,7 @@ import {
   getUserSubscriptions,
   getChannelSubscribers,
   toogleSubscription,
+  getLatestVideoFromSubscribedChannels,
 } from "../controllers/subscription.controller.js";
 
 const router = express.Router();
@@ -16,5 +17,9 @@ router
   .get(getChannelSubscribers);
 
 router.route("/u/:subscriberId").get(getUserSubscriptions);
+
+router
+  .route("/u/:subscriberId/latest")
+  .get(getLatestVideoFromSubscribedChannels);
 
 export default router;
