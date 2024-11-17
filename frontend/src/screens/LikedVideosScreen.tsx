@@ -45,23 +45,25 @@ const LikedVideosScreen = () => {
   });
 
   useEffect(() => {
-    const img = document.createElement("img");
-    img.crossOrigin = "Anonymous";
-    img.src = likedVideos?.data[0]?.thumbnail;
+    if (likedVideos?.data?.length > 0) {
+      const img = document.createElement("img");
+      img.crossOrigin = "Anonymous";
+      img.src = likedVideos?.data[0]?.thumbnail;
 
-    img.onload = () => {
-      const colorthief = new ColorThief();
-      const dominantColor = colorthief.getColor(img);
-      const palette = colorthief.getPalette(img, 2);
+      img.onload = () => {
+        const colorthief = new ColorThief();
+        const dominantColor = colorthief.getColor(img);
+        const palette = colorthief.getPalette(img, 2);
 
-      const gradient = `linear-gradient(
-  to bottom, 
-  rgba(${dominantColor.join(",")}, 0.9), 
-  rgba(${palette[1].join(",")}, 0.03)
-)`;
+        const gradient = `linear-gradient(
+          to bottom, 
+          rgba(${dominantColor.join(",")}, 0.9), 
+          rgba(${palette[1].join(",")}, 0.03)
+        )`;
 
-      setGradient(gradient);
-    };
+        setGradient(gradient);
+      };
+    }
   }, [likedVideos]);
 
   if (likedVideosLoading)
@@ -70,6 +72,14 @@ const LikedVideosScreen = () => {
         Loading...
       </div>
     );
+
+  if (!likedVideos?.data?.length) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-3xl">
+        No liked videos found.
+      </div>
+    );
+  }
 
   return (
     <section className="flex flex-col max-h-screen">
