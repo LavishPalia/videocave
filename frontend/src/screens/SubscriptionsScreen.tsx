@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import PageHeader from "@/components/PageHeader";
 import Sidebar from "@/components/Sidebar";
@@ -13,25 +13,25 @@ import { useGetLatestVideoFromSubscribedChannelsQuery } from "@/slices/subscript
 const SubscriptionsScreen = () => {
   const { user } = useAppSelector((state) => state.auth);
 
-  const { data: latestVideos, isLoading } =
-    useGetLatestVideoFromSubscribedChannelsQuery(user?._id);
+  const {
+    data: latestVideos,
+    isLoading,
+    refetch: refetchLatestVideos,
+  } = useGetLatestVideoFromSubscribedChannelsQuery(user?._id);
 
   console.log(latestVideos);
 
-  const videoData = latestVideos?.data;
+  const videoData = latestVideos?.data || [];
+  const noVideosFound = !isLoading && videoData.length === 0;
 
-  if (!isLoading && videoData?.length === 0) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-3xl">No videos found.</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    refetchLatestVideos();
+  }, [latestVideos]);
 
   const renderedVideos = useMemo(
     () =>
       videoData?.map((video: VideoGridItemProps) => {
-        console.log(video);
+        // console.log(video);
 
         return <VideoGridItems key={video._id} {...video} />;
       }),
@@ -44,7 +44,7 @@ const SubscriptionsScreen = () => {
       <div className="grid grid-cols-[auto,1fr] flex-grow overflow-auto">
         <Sidebar />
         <div className="px-4 pb-4 overflow-x-hidden md:px-8">
-          {isLoading && (
+          {isLoading ? (
             <div
               className={`grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] ${
                 isLoading ? "min-h-screen" : ""
@@ -54,6 +54,15 @@ const SubscriptionsScreen = () => {
                 return <VideoCardShimmer key={i} />;
               })}
             </div>
+          ) : (
+            noVideosFound && (
+              <div className="flex flex-col items-center justify-start min-h-screen">
+                <p className="text-2xl">No Subscriptions Found.</p>
+                <p className="text-3xl">
+                  Start subscribing to channels to see their latest videos
+                </p>
+              </div>
+            )
           )}
           <div
             className={`grid gap-4 ${

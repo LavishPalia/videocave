@@ -362,7 +362,7 @@ const getLatestVideoFromSubscribedChannels = asyncHandler(
       .json(
         new ApiResponse(
           200,
-          latestVideosData[0].latestVideos || [],
+          latestVideosData[0]?.latestVideos || [],
           "Latest video from Subscribed channels fetched successfully"
         )
       );
