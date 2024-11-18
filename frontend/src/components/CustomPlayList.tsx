@@ -108,7 +108,7 @@ const CustomPlaylist = ({ playlist, queryParams }: PlaylistProps) => {
 
       <div
         className={`flex flex-col gap-2 rounded-b-lg overflow-y-scroll transition-all duration-300 ${
-          isCollapsed ? "max-h-0 hidden" : "max-h-[400px]"
+          isCollapsed ? "max-h-0 hidden" : "max-h-[380px]"
         }`}
       >
         {playlist?.data.videos.map((video: Video, index: number) => (
@@ -117,13 +117,13 @@ const CustomPlaylist = ({ playlist, queryParams }: PlaylistProps) => {
             ref={
               index + 1 === Number(queryParams.index) ? currentVideoRef : null
             }
-            className={`relative flex items-center gap-2 px-1 py-2 ${
+            className={`relative flex items-start gap-2 px-1 py-2 ${
               index + 1 === Number(queryParams.index)
                 ? "bg-[#301818] shadow-md"
                 : ""
             }`}
           >
-            <p>{index + 1}</p>
+            <p className="self-center">{index + 1}</p>
             <Link
               to={`/watch?v=${video._id}&list=${playlist.data._id}&index=${
                 index + 1
