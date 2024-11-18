@@ -22,7 +22,7 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
   console.log(comments);
 
   const { data: loggedInUser } = useGetCurrentUserQuery(null);
-  const [addComment] = useAddCommentMutation();
+  const [addComment, { isLoading: isAddingComment }] = useAddCommentMutation();
 
   const handleCommentInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEnteredComment(e.target.value);
@@ -89,7 +89,7 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
                 ? "text-gray-500"
                 : "dark:bg-[#3ea6ff] text-black dark:hover:dark:bg-[#3ea5ffdd]"
             }`}
-            disabled={enteredComment === ""}
+            disabled={enteredComment === "" || isAddingComment}
           >
             Comment
           </Button>

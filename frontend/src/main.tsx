@@ -19,6 +19,7 @@ import EmailVerificationConfirmation from "./screens/EmailVerificationConfirmati
 import VerifyEmailScreen from "./screens/VerifyEmailScreen.tsx";
 import PlayListScreen from "./screens/PlayListScreen.tsx";
 import SubscriptionsScreen from "./screens/SubscriptionsScreen.tsx";
+import PlaylistsScreen from "./screens/PlaylistsScreen.tsx";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/subscriptions",
         element: <SubscriptionsScreen />,
+      },
+      {
+        path: "/playlists",
+        element: <PlaylistsScreen />,
       },
       {
         path: "user/:username",

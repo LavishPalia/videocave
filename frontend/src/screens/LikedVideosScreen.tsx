@@ -22,6 +22,7 @@ interface ILikedVideo {
   createdAt: string;
   owner: {
     fullName: string;
+    userName: string;
     _id: string;
   };
 }
@@ -156,7 +157,7 @@ const LikedVideosScreen = () => {
                         {video.title}
                       </Link>
                       <Link
-                        to={`/user/${video.owner.fullName}`}
+                        to={`/user/${video.owner.userName}`}
                         className="flex flex-wrap gap-2 items-center text-secondary-marginal-text text-[10px] lg:text-xs"
                       >
                         <p className="font-medium">{video.owner.fullName}</p>

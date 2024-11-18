@@ -6,6 +6,8 @@ import { Video } from "../models/Video.model.js";
 import mongoose, { isValidObjectId } from "mongoose";
 
 const authorizedOwner = (userId, req) => {
+  console.log({ userId });
+
   return userId.toString() === req.user._id.toString();
 };
 
@@ -59,14 +61,15 @@ const getUserPlaylists = asyncHandler(async (req, res, next) => {
         from: "videos",
         localField: "videos",
         foreignField: "_id",
-        as: "playlistVideos",
+        as: "videos",
       },
     },
     {
       $project: {
         name: 1,
         description: 1,
-        playlistVideos: 1,
+        videos: 1,
+        updatedAt: 1,
       },
     },
   ];
@@ -78,11 +81,7 @@ const getUserPlaylists = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json(
-      new ApiResponse(
-        200,
-        { playlists: userPlaylists },
-        "user playlists fetched successfully"
-      )
+      new ApiResponse(200, userPlaylists, "user playlists fetched successfully")
     );
 });
 
@@ -97,18 +96,83 @@ const getPlaylistById = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, "Invalid playlist Id"));
   }
 
-  const playlist = await Playlist.findById(playlistId);
+  const pipeline = [
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(playlistId),
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "videos",
+        foreignField: "_id",
+        as: "videos",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    userName: 1,
+                    fullName: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              owner: {
+                $first: "$owner",
+              },
+            },
+          },
+          {
+            $project: {
+              title: 1,
+              views: 1,
+              owner: 1,
+              updatedAt: 1,
+              duration: 1,
+              thumbnail: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        description: 1,
+        owner: 1,
+        videos: 1,
+        updatedAt: 1,
+      },
+    },
+  ];
+
+  const playlist = await Playlist.aggregate(pipeline);
+
+  console.log(playlist);
 
   if (!playlist) {
     return next(new ApiError(400, "Playlist doesn't exist in DB"));
   }
 
-  if (!authorizedOwner(playlist.owner, req)) {
-    return next(new ApiError(401, "unauthorized request"));
+  if (!authorizedOwner(playlist[0].owner, req)) {
+    return next(
+      new ApiError(401, "unauthorized request, you don't own this playlist")
+    );
   }
+
   res
     .status(200)
-    .json(new ApiResponse(200, playlist, "playlist fetched successfully"));
+    .json(new ApiResponse(200, playlist[0], "playlist fetched successfully"));
 });
 
 const addVideoToPlaylist = asyncHandler(async (req, res, next) => {
