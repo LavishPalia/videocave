@@ -50,6 +50,12 @@ const getUserPlaylists = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, "Invalid user Id"));
   }
 
+  if (!authorizedOwner(userId, req)) {
+    return next(
+      new ApiError(401, "unauthorized access, you don't own this user")
+    );
+  }
+
   const pipeline = [
     {
       $match: {
@@ -57,11 +63,29 @@ const getUserPlaylists = asyncHandler(async (req, res, next) => {
       },
     },
     {
+      $unwind: "$videos", // Unwind the videos array
+    },
+    {
       $lookup: {
-        from: "videos",
+        from: "videos", // Lookup details for each video
         localField: "videos",
         foreignField: "_id",
-        as: "videos",
+        as: "videoDetails",
+      },
+    },
+    {
+      $unwind: "$videoDetails", // Flatten the videoDetails array
+    },
+    {
+      $group: {
+        _id: "$_id", // Rebuild each playlist
+        name: { $first: "$name" },
+        description: { $first: "$description" },
+        owner: { $first: "$owner" },
+        videos: {
+          $push: "$videoDetails", // Rebuild the videos array in the original order
+        },
+        updatedAt: { $first: "$updatedAt" },
       },
     },
     {
@@ -103,46 +127,44 @@ const getPlaylistById = asyncHandler(async (req, res, next) => {
       },
     },
     {
+      $unwind: "$videos", // Unwind the videos array to process each video separately
+    },
+    {
       $lookup: {
         from: "videos",
         localField: "videos",
         foreignField: "_id",
-        as: "videos",
-        pipeline: [
-          {
-            $lookup: {
-              from: "users",
-              localField: "owner",
-              foreignField: "_id",
-              as: "owner",
-              pipeline: [
-                {
-                  $project: {
-                    userName: 1,
-                    fullName: 1,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $addFields: {
-              owner: {
-                $first: "$owner",
-              },
-            },
-          },
-          {
-            $project: {
-              title: 1,
-              views: 1,
-              owner: 1,
-              updatedAt: 1,
-              duration: 1,
-              thumbnail: 1,
-            },
-          },
-        ],
+        as: "videoDetails",
+      },
+    },
+    {
+      $unwind: "$videoDetails", // Unwind the resulting array from the $lookup
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "videoDetails.owner",
+        foreignField: "_id",
+        as: "ownerDetails",
+      },
+    },
+    {
+      $addFields: {
+        "videoDetails.owner": {
+          $arrayElemAt: ["$ownerDetails", 0], // Add the first ownerDetails element to the video
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "$_id", // Reconstruct the original playlist structure
+        name: { $first: "$name" },
+        description: { $first: "$description" },
+        owner: { $first: "$owner" },
+        videos: {
+          $push: "$videoDetails", // Rebuild the videos array in the original order
+        },
+        updatedAt: { $first: "$updatedAt" },
       },
     },
     {
@@ -158,7 +180,7 @@ const getPlaylistById = asyncHandler(async (req, res, next) => {
 
   const playlist = await Playlist.aggregate(pipeline);
 
-  console.log(playlist);
+  // console.log(playlist);
 
   if (!playlist) {
     return next(new ApiError(400, "Playlist doesn't exist in DB"));

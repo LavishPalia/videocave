@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { formatDuration } from "@/utils/formatDuration";
@@ -31,9 +31,20 @@ interface PlaylistProps {
 const CustomPlaylist = ({ playlist, queryParams }: PlaylistProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const currentVideoRef = useRef<HTMLDivElement | null>(null);
+
   const toggleCollapse = () => {
     setIsCollapsed((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (currentVideoRef.current) {
+      currentVideoRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [playlist, queryParams]);
 
   return (
     <div className="mx-4 mb-4 border rounded-lg">
@@ -103,7 +114,14 @@ const CustomPlaylist = ({ playlist, queryParams }: PlaylistProps) => {
         {playlist?.data.videos.map((video: Video, index: number) => (
           <div
             key={video._id}
-            className="relative flex items-center gap-2 px-1 py-2"
+            ref={
+              index + 1 === Number(queryParams.index) ? currentVideoRef : null
+            }
+            className={`relative flex items-center gap-2 px-1 py-2 ${
+              index + 1 === Number(queryParams.index)
+                ? "bg-[#301818] shadow-md"
+                : ""
+            }`}
           >
             <p>{index + 1}</p>
             <Link
