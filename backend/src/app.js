@@ -6,7 +6,29 @@ import morgan from "morgan";
 
 const app = express();
 
-app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
+const allowedOrigins = [
+  "https://videocave.vercel.app",
+  "http://localhost:5173", // Add other allowed origins as necessary
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
+  })
+);
+
+// Handle Preflight Requests
+app.options("*", cors());
+
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
