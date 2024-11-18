@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { formatDuration } from "@/utils/formatDuration";
 import { formatTimeAgo } from "@/utils/formatTimeAgo";
 import { VIEW_FORMATTER } from "@/components/VideoGridItems";
@@ -34,8 +33,8 @@ const SuggestedVideos: React.FC<SuggestedVideosProps> = ({
           className="flex flex-col gap-2 sm:flex-row sm:gap-4"
           key={item._id}
         >
-          <Link
-            to={`?v=${item._id}`}
+          <a
+            href={`?v=${item._id}`}
             className="relative block w-full sm:w-[40%] md:w-[45%] lg:w-[40%] aspect-video shrink-0"
             onClick={() => setVideoId(item._id)}
           >
@@ -46,22 +45,22 @@ const SuggestedVideos: React.FC<SuggestedVideosProps> = ({
             <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark bg-opacity-65 text-white font-semibold text-xs px-1 py-0.5 rounded">
               {formatDuration(item.duration)}
             </div>
-          </Link>
+          </a>
 
           <div className="flex flex-col mt-2 sm:mt-0">
-            <Link
-              to={`/watch?v=${item._id}`}
+            <a
+              href={`/watch?v=${item._id}`}
               className="text-sm font-semibold sm:text-base line-clamp-2 sm:line-clamp-1"
             >
               {item.title}
-            </Link>
-            <Link
-              to={`/user/${item.owner.userName}`}
+            </a>
+            <a
+              href={`/user/${item.owner.userName}`}
               className="flex items-center gap-1 text-sm text-secondary-marginal-text"
             >
               {item.owner.fullName}
               <FaCircleCheck size={12} className="hidden sm:inline" />
-            </Link>
+            </a>
             <div className="mt-1 text-xs sm:text-sm text-secondary-marginal-text sm:mt-0">
               {VIEW_FORMATTER.format(item.views)} Views •{" "}
               {formatTimeAgo(new Date(item.createdAt))}

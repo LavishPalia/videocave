@@ -25,16 +25,24 @@ import { Bell, BellRing } from "lucide-react";
 import { useToggleSubscriptionMutation } from "@/slices/subscriptionsApiSlice";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useGetPlaylistByIdQuery } from "@/slices/playlistApiSlice";
+import CustomPlaylist from "@/components/CustomPlayList";
 
 const VideoPlayerScreen = () => {
   const [videoId, setVideoId] = useState("");
+  const [queryParams, setQueryParams] = useState<{
+    list: string | null;
+    index: string | number;
+  }>({
+    list: null,
+    index: 1,
+  });
 
   const {
     data: video,
     isLoading: isVideoLoading,
     refetch: refetchVideo,
   } = useGetVideoByIdQuery(videoId, { skip: !videoId });
-  console.log(video?.data[0]?.isSubscribed);
 
   const [isDescriptionShown, setIsDescriptionShown] = useState(false);
   const [isLiked, setIsLiked] = useState(video?.data[0]?.isLiked);
@@ -45,16 +53,23 @@ const VideoPlayerScreen = () => {
     video?.data[0]?.subscribers
   );
 
-  console.log(isSubscribed);
-
-  // console.log(isLiked);
   const location = useLocation();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
+
     const id = searchParams.get("v");
+    const list = searchParams.get("list");
+    const index = searchParams.get("index") || 1;
+
+    // console.log(list, index);
+
     if (id) {
       setVideoId(id);
+    }
+
+    if (list) {
+      setQueryParams({ list, index });
     }
   }, [location.search]);
 
@@ -78,6 +93,17 @@ const VideoPlayerScreen = () => {
       setSubscribersCount(video?.data[0]?.subscribers);
     }
   }, [video]);
+
+  const {
+    data: playlist,
+    // isLoading: isPlaylistLoading,
+    // error: playlistError,
+  } = useGetPlaylistByIdQuery(queryParams.list, {
+    skip: !queryParams.list, // Skip query if no `list` parameter
+  });
+
+  // console.log(playlist);
+  console.log(playlist?.data?.videos?.length, queryParams.index);
 
   const handleToggleLike = async () => {
     try {
@@ -111,7 +137,7 @@ const VideoPlayerScreen = () => {
         <div className="overflow-y-auto sticky top-0 h-[calc(100vh-64px)] scrollbar-hidden">
           <Sidebar />
         </div>
-        <div className="px-4 pb-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] md:px-8">
+        <div className="px-4 pb-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] md:px-4">
           <div
             key={videoId}
             className="w-full max-w-[1000px] flex flex-col mx-auto relative group"
@@ -235,13 +261,21 @@ const VideoPlayerScreen = () => {
               </button>
             </div>
             <CommentsSection videoId={videoId} />
-            <div className="block xl:hidden">
+            <div className="block mt-4 xl:hidden">
+              <CustomPlaylist
+                playlist={playlist}
+                queryParams={{ index: Number(queryParams.index) }}
+              />
               <SuggestedVideos videos={videos} setVideoId={setVideoId} />
             </div>
           </div>
         </div>
 
         <div className="hidden overflow-y-auto xl:block">
+          <CustomPlaylist
+            playlist={playlist}
+            queryParams={{ index: Number(queryParams.index) }}
+          />
           <SuggestedVideos videos={videos} setVideoId={setVideoId} />
         </div>
       </div>

@@ -186,6 +186,8 @@ const addVideoToPlaylist = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, "Invalid video id or playlist id"));
   }
 
+  // console.log("189 ", videoId, playlistId);
+
   // find playlist and if found add the video id in the videos array
   const playlist = await Playlist.findById(playlistId);
 
@@ -205,6 +207,12 @@ const addVideoToPlaylist = asyncHandler(async (req, res, next) => {
   // check if the video is published: true or not
   const video = await Video.findOne({ _id: videoId });
 
+  if (!video) {
+    return next(new ApiError(400, "Video doesn't exist in DB"));
+  }
+
+  // console.log("214 ", video);
+
   if (!video.isPublished) {
     return next(
       new ApiError(
@@ -222,7 +230,7 @@ const addVideoToPlaylist = asyncHandler(async (req, res, next) => {
     { new: true }
   );
 
-  //   console.log(updatedPlaylist);
+  // console.log("233 ", updatedPlaylist);
 
   res
     .status(200)
