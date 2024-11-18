@@ -26,7 +26,7 @@ const SubscriptionsScreen = () => {
 
   useEffect(() => {
     refetchLatestVideos();
-  }, [latestVideos]);
+  }, []);
 
   const renderedVideos = useMemo(
     () =>
