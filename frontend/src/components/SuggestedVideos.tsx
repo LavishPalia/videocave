@@ -2,6 +2,7 @@ import { formatDuration } from "@/utils/formatDuration";
 import { formatTimeAgo } from "@/utils/formatTimeAgo";
 import { VIEW_FORMATTER } from "@/components/VideoGridItems";
 import { FaCircleCheck } from "react-icons/fa6";
+import VideoOptionsMenu from "./dropdowns/VideoOptionsMenu";
 
 interface Video {
   _id: string;
@@ -30,7 +31,7 @@ const SuggestedVideos: React.FC<SuggestedVideosProps> = ({
     <div className="relative flex flex-col gap-2 p-4 sm:p-6 md:p-8 lg:pb-4 lg:pt-0 lg:px-4">
       {videos?.data?.videos?.map((item) => (
         <div
-          className="flex flex-col gap-2 sm:flex-row sm:gap-4"
+          className="relative flex flex-col gap-2 sm:flex-row sm:gap-4"
           key={item._id}
         >
           <a
@@ -50,7 +51,7 @@ const SuggestedVideos: React.FC<SuggestedVideosProps> = ({
           <div className="flex flex-col mt-2 sm:mt-0">
             <a
               href={`/watch?v=${item._id}`}
-              className="text-sm font-semibold sm:text-base line-clamp-2 sm:line-clamp-1"
+              className="text-sm font-semibold sm:text-[0.9rem] line-clamp-2 w-[80%]"
             >
               {item.title}
             </a>
@@ -66,6 +67,7 @@ const SuggestedVideos: React.FC<SuggestedVideosProps> = ({
               {formatTimeAgo(new Date(item.createdAt))}
             </div>
           </div>
+          <VideoOptionsMenu videoId={item._id} />
         </div>
       ))}
     </div>

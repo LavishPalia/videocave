@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -106,11 +105,8 @@ const CreatePlaylist = ({ videoId, close }: CreatePlaylistProps) => {
             <DialogTitle className="text-xl font-semibold">
               Save Video to...
             </DialogTitle>
-            <DialogDescription className="text-sm text-gray-400">
-              Select the playlist(s) to which you want to add the video.
-            </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-4 py-4 ">
+          <div className="flex flex-col gap-4 max-h-[300px] overflow-y-auto">
             {localPlaylists.map((playlist) => {
               const inputId = playlist.name.toLowerCase().replace(" ", "-");
               return (
