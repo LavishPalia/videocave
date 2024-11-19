@@ -9,29 +9,10 @@ import { useLoginMutation } from "@/slices/usersApiSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { setUserCredentials } from "@/slices/authSlice";
 import { Loader2 } from "lucide-react";
-import { useAppDispatch } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-type ErrorResponse = {
-  status: number;
-  data: {
-    error: string;
-    success: boolean;
-    errors: any[];
-  };
-};
-
-function isErrorResponse(obj: any): obj is ErrorResponse {
-  return (
-    obj &&
-    typeof obj.status === "number" &&
-    obj.data &&
-    typeof obj.data.error === "string" &&
-    typeof obj.data.success === "boolean" &&
-    Array.isArray(obj.data.errors)
-  );
-}
+import { useEffect } from "react";
 
 export const loginFormSchema = z.object({
   email: z.string().email(),
@@ -43,6 +24,13 @@ const LoginForm = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { isLoggedIn } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, []);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -70,11 +58,9 @@ const LoginForm = () => {
       setTimeout(() => {
         navigate("/");
       }, 800); // Delay of 2 seconds to allow the toast to be visible
-    } catch (err: unknown) {
-      if (isErrorResponse(err)) {
-        console.error(err);
-        toast.error(`${err?.data?.error}`);
-      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(`${err?.data?.error}`);
     }
   }
 
