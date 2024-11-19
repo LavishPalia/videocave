@@ -16,8 +16,33 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
         url: `${PLAYLISTS_URL}/${playlistId}`,
       }),
     }),
+
+    // fetch all playlist names and video flag
+    getVideoFlagAndPlayListNames: builder.query({
+      query: (videoId) => ({
+        url: `${PLAYLISTS_URL}/contains-video/${videoId}`,
+      }),
+    }),
+
+    addVideoToPlaylist: builder.mutation({
+      query: ({ videoId, playlistId }) => ({
+        url: `${PLAYLISTS_URL}/add/${videoId}/${playlistId}`,
+        method: "PATCH",
+      }),
+    }),
+    removeVideoFromPlaylist: builder.mutation({
+      query: ({ playlistId, videoId }) => ({
+        url: `${PLAYLISTS_URL}/remove/${videoId}/${playlistId}`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
-export const { useGetUserPlaylistsQuery, useGetPlaylistByIdQuery } =
-  playlistApiSlice;
+export const {
+  useGetUserPlaylistsQuery,
+  useGetPlaylistByIdQuery,
+  useGetVideoFlagAndPlayListNamesQuery,
+  useAddVideoToPlaylistMutation,
+  useRemoveVideoFromPlaylistMutation,
+} = playlistApiSlice;

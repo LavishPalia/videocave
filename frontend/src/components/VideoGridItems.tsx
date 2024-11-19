@@ -4,6 +4,7 @@ import { GoUnmute } from "react-icons/go";
 import { BiVolumeMute } from "react-icons/bi";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import VideoOptionsMenu from "./dropdowns/VideoOptionsMenu";
 
 export type VideoGridItemProps = {
   _id: string;
@@ -113,14 +114,13 @@ const VideoGridItems = ({
         )}
       </div>
 
-      <div className="flex gap-2">
+      <div className="relative flex gap-2">
         <Link to={`/user/${owner.userName}`} className="flex-shrink-0">
           <img
             src={owner.avatar}
             className="object-cover rounded-full size-10"
           />
         </Link>
-
         <div className="flex flex-col w-[70%]">
           <Link to={`/watch?v=${_id}`} className="font-bold line-clamp-2">
             {title}
@@ -136,6 +136,8 @@ const VideoGridItems = ({
             {formatTimeAgo(new Date(createdAt))}
           </div>
         </div>
+
+        <VideoOptionsMenu videoId={_id} />
       </div>
     </div>
   );

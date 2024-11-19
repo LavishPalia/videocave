@@ -431,6 +431,39 @@ const deletePlaylist = asyncHandler(async (req, res, next) => {
     .json(new ApiResponse(200, {}, "playlist deleted successfully"));
 });
 
+const fetchPlaylistsWithVideoFlag = asyncHandler(async (req, res, next) => {
+  const { videoId } = req.params;
+
+  if (!videoId) {
+    return next(new ApiError(400, "video id is missing."));
+  }
+
+  if (!isValidObjectId(videoId)) {
+    return next(new ApiError(400, "invalid video id"));
+  }
+
+  const pipeline = [
+    {
+      $match: {
+        owner: new mongoose.Types.ObjectId(req.user._id), // Match playlists owned by this user
+      },
+    },
+    {
+      $project: {
+        name: 1, // Include playlist name
+        containsVideo: {
+          $in: [new mongoose.Types.ObjectId(videoId), "$videos"], // Check if video exists in the videos array
+        },
+      },
+    },
+  ];
+
+  const playlists = await Playlist.aggregate(pipeline);
+  console.log(playlists);
+
+  res.status(200).json(new ApiResponse(200, playlists, "playlists fetched"));
+});
+
 export {
   createPlaylist,
   getPlaylistById,
@@ -439,4 +472,5 @@ export {
   getUserPlaylists,
   updatePlaylist,
   deletePlaylist,
+  fetchPlaylistsWithVideoFlag,
 };

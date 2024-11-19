@@ -3,7 +3,7 @@ import Logo from "../assets/Logo.png";
 import Button from "../components/Button";
 import { useState } from "react";
 import { ModeToggle } from "./mode-toggle";
-import { UserDropdownMenu } from "./UserDropdownMenu";
+import { UserDropdownMenu } from "./dropdowns/UserDropdownMenu";
 import { useAppSelector } from "@/app/hooks";
 import { VideoUploadModel } from "./VideoUploadModal";
 import { Link } from "react-router-dom";
