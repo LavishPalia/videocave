@@ -262,20 +262,24 @@ const VideoPlayerScreen = () => {
             </div>
             <CommentsSection videoId={videoId} />
             <div className="block mt-4 xl:hidden">
-              <CustomPlaylist
-                playlist={playlist}
-                queryParams={{ index: Number(queryParams.index) }}
-              />
+              {playlist && (
+                <CustomPlaylist
+                  playlist={playlist}
+                  queryParams={{ index: Number(queryParams.index) }}
+                />
+              )}
               <SuggestedVideos videos={videos} setVideoId={setVideoId} />
             </div>
           </div>
         </div>
 
         <div className="hidden overflow-y-auto xl:block">
-          <CustomPlaylist
-            playlist={playlist}
-            queryParams={{ index: Number(queryParams.index) }}
-          />
+          {playlist && (
+            <CustomPlaylist
+              playlist={playlist}
+              queryParams={{ index: Number(queryParams.index) }}
+            />
+          )}
           <SuggestedVideos videos={videos} setVideoId={setVideoId} />
         </div>
       </div>
