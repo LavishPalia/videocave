@@ -58,9 +58,9 @@ const CustomPlaylist = ({ playlist, queryParams }: PlaylistProps) => {
                 }`}
           </h1>
           <div className="flex gap-2 text-[12px] mt-1 ">
-            <Link to={`/playlist?list=${playlist?.data._id}`}>
+            <a href={`/playlist?list=${playlist?.data._id}`}>
               {playlist?.data.name}
-            </Link>
+            </a>
             -
             <p>
               {queryParams.index} / {playlist?.data.videos.length}

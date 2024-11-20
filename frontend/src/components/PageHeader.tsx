@@ -6,7 +6,6 @@ import { ModeToggle } from "./mode-toggle";
 import { UserDropdownMenu } from "./dropdowns/UserDropdownMenu";
 import { useAppSelector } from "@/app/hooks";
 import { VideoUploadModel } from "./VideoUploadModal";
-import { Link } from "react-router-dom";
 // import { useGetCurrentUserQuery } from "@/slices/usersApiSlice";
 
 const PageHeader = () => {
@@ -27,9 +26,9 @@ const PageHeader = () => {
         <Button variant="ghost" size="icon">
           <Menu size={20} />
         </Button>
-        <Link to="/">
+        <a href="/">
           <img src={Logo} className="h-4 sm:h-6" />
-        </Link>
+        </a>
       </div>
       <form
         className={`gap-4 flex-grow justify-center items-center ${

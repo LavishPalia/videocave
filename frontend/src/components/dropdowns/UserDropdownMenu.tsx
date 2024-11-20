@@ -14,7 +14,6 @@ import { logoutUser } from "@/slices/authSlice";
 import { useAppDispatch } from "@/app/hooks";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Link } from "react-router-dom";
 
 export function UserDropdownMenu({
   user,
@@ -45,7 +44,7 @@ export function UserDropdownMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64 p-2 mx-8">
         <DropdownMenuGroup>
-          <Link to={`/user/${user?.userName}`} className="flex gap-2 mt-2 mb-4">
+          <a href={`/user/${user?.userName}`} className="flex gap-2 mt-2 mb-4">
             <img
               src={user?.avatar}
               alt={user?.fullName}
@@ -55,7 +54,7 @@ export function UserDropdownMenu({
               <p className="text-lg">{user?.fullName}</p>
               <p className="text-sm">@{user?.userName}</p>
             </div>
-          </Link>
+          </a>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <button onClick={handleLogoutUser} className="w-full">

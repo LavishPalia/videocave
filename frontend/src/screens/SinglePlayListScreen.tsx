@@ -130,7 +130,9 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                   </p> */}
                   <p>Playlist</p> •
                   <p className="text-lg lg:text-[16px]">
-                    {playlist?.data?.videos?.length} Videos
+                    {noVideosFound
+                      ? "0 Videos"
+                      : `${playlist?.data?.videos?.length} Videos`}
                   </p>
                 </div>
 
@@ -144,7 +146,7 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                 {noVideosFound ? (
                   <div className="flex flex-col items-center justify-start min-h-screen max-w-[600px] mx-auto text-center">
                     <p className="text-2xl"> No Videos in the playlist.</p>
-                    <p className="text-3xl">
+                    <p className="text-2xl">
                       Start exploring the world of videos and find your
                       favorites.
                     </p>

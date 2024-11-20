@@ -1,7 +1,6 @@
 import { EllipsisVertical, Loader2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Sidebar from "@/components/Sidebar";
-import { Link } from "react-router-dom";
 import { formatTimeAgo } from "@/utils/formatTimeAgo";
 
 import { useAppSelector } from "@/app/hooks";
@@ -9,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useGetUserPlaylistsQuery } from "@/slices/playlistApiSlice";
 import NoThumbnail from "../assets/no_thumbnail.png";
 import Button from "@/components/Button";
-import { useEffect } from "react";
 
 interface IPlaylist {
   name: string;
@@ -29,17 +27,10 @@ const PlaylistsScreen = () => {
   const { user } = useAppSelector((state) => state.auth);
   const userId = user?._id;
 
-  const {
-    data: playlists,
-    isLoading: isPlaylistsLoading,
-    refetch: refetchPlaylists,
-  } = useGetUserPlaylistsQuery(userId);
+  const { data: playlists, isLoading: isPlaylistsLoading } =
+    useGetUserPlaylistsQuery(userId);
 
   // console.log(playlists);
-
-  useEffect(() => {
-    refetchPlaylists();
-  }, [refetchPlaylists]);
 
   const noPlaylistsFound = !isPlaylistsLoading && playlists?.data?.length === 0;
 
@@ -75,19 +66,19 @@ const PlaylistsScreen = () => {
                     key={playlist._id}
                     className="flex flex-col rounded-lg shadow-md"
                   >
-                    <Link to={watchUrl} className="block">
+                    <a href={watchUrl} className="block">
                       <img
                         src={playlist?.videos[0]?.thumbnail || NoThumbnail}
                         alt={playlist.name}
                         className="object-cover w-full h-48 rounded-lg"
                       />
-                    </Link>
+                    </a>
                     <div className="relative py-2">
-                      <Link to={watchUrl}>
+                      <a href={watchUrl}>
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 max-w-[70%]">
                           {playlist.name}
                         </h2>
-                      </Link>
+                      </a>
                       <div className="flex items-center gap-2 my-2">
                         <p className="text-sm text-muted-foreground">
                           updated {formatTimeAgo(new Date(playlist.updatedAt))}{" "}
@@ -99,9 +90,9 @@ const PlaylistsScreen = () => {
                         </p>
                       </div>
 
-                      <Link to={`/playlist?list=${playlist._id}`}>
+                      <a href={`/playlist?list=${playlist._id}`}>
                         View full playlist
-                      </Link>
+                      </a>
 
                       <Button
                         variant="ghost"

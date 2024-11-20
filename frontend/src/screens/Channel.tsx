@@ -194,13 +194,13 @@ const Channel = () => {
                   }) => (
                     <div className="w-full mb-2" key={video._id}>
                       <div className="relative aspect-video">
-                        <Link to={`/watch?v=${video._id}`}>
+                        <a href={`/watch?v=${video._id}`}>
                           <img
                             src={video.thumbnail}
                             alt={video.title}
                             className="object-cover object-center w-full h-full rounded-lg"
                           />
-                        </Link>
+                        </a>
 
                         <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark text-white text-sm px-1 py-0.5 rounded">
                           {formatDuration(video.duration)}

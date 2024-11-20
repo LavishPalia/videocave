@@ -75,7 +75,7 @@ const VideoGridItems = ({
       onMouseLeave={() => setIsVideoPlaying(false)}
     >
       <div className="relative overflow-hidden aspect-video">
-        <Link to={`/watch?v=${_id}`} className="relative aspect-video">
+        <a href={`/watch?v=${_id}`} className="relative aspect-video">
           <img
             src={thumbnail}
             className={`block w-full h-full object-cover transition-[border-radius] duration-200 ${
@@ -94,7 +94,7 @@ const VideoGridItems = ({
           <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark text-white text-sm px-1 py-0.5 rounded">
             {formatDuration(remainingDuration)}
           </div>
-        </Link>
+        </a>
         {isVideoPlaying && (
           <div>
             {isVideoMuted ? (
@@ -115,16 +115,16 @@ const VideoGridItems = ({
       </div>
 
       <div className="relative flex gap-2">
-        <Link to={`/user/${owner.userName}`} className="flex-shrink-0">
+        <a href={`/user/${owner.userName}`} className="flex-shrink-0">
           <img
             src={owner.avatar}
             className="object-cover rounded-full size-10"
           />
-        </Link>
+        </a>
         <div className="flex flex-col w-[70%]">
-          <Link to={`/watch?v=${_id}`} className="font-bold line-clamp-2">
+          <a href={`/watch?v=${_id}`} className="font-bold line-clamp-2">
             {title}
-          </Link>
+          </a>
           <Link
             to={`/user/${owner.userName}`}
             className="text-sm text-secondary-marginal-text"
