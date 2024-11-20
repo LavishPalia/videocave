@@ -1,11 +1,29 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 // import WatchLaterScreen from "../screens/WatchLaterScreen";
 import LikedVideosScreen from "../screens/LikedVideosScreen";
 import SinglePlayListScreen from "./SinglePlayListScreen";
+import { useEffect } from "react";
 
 const PlayListScreen = () => {
   const [searchParams] = useSearchParams();
   const listType = searchParams.get("list")!;
+
+  const navigate = useNavigate();
+
+  console.log(listType);
+  console.log(!listType);
+
+  useEffect(() => {
+    if (!listType) {
+      navigate("/playlists", {
+        replace: true,
+      });
+    }
+  }, [listType, navigate]);
+
+  if (!listType) {
+    return null;
+  }
 
   switch (listType) {
     case "WL":
