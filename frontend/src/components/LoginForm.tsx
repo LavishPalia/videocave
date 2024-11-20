@@ -24,10 +24,10 @@ const LoginForm = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isLoggedIn } = useAppSelector((state) => state.auth);
+  const { isLoggedIn, user } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && user.isEmailVerified) {
       navigate("/");
     }
   }, []);
