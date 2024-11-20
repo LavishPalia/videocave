@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaCircleCheck } from "react-icons/fa6";
+import Channel_Cover from "../assets/channel_cover.png";
 
 const Channel = () => {
   const [activeTab, setActiveTab] = useState("Videos");
@@ -83,7 +84,7 @@ const Channel = () => {
           {channel && (
             <div className="px-2 pb-4 overflow-x-hidden md:px-8">
               <img
-                src={channel.data[0].coverImage}
+                src={channel.data[0].coverImage || Channel_Cover}
                 alt={channel.data[0].userName}
                 className="object-cover object-center w-full h-40 rounded-lg"
               />
