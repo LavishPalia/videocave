@@ -63,7 +63,10 @@ const getUserPlaylists = asyncHandler(async (req, res, next) => {
       },
     },
     {
-      $unwind: "$videos", // Unwind the videos array
+      $unwind: {
+        path: "$videos", // Unwind the videos array
+        preserveNullAndEmptyArrays: true, // Include playlists without videos
+      },
     },
     {
       $lookup: {
@@ -74,7 +77,16 @@ const getUserPlaylists = asyncHandler(async (req, res, next) => {
       },
     },
     {
-      $unwind: "$videoDetails", // Flatten the videoDetails array
+      // Optional: Skip unwinding if no videoDetails
+      $addFields: {
+        videoDetails: { $ifNull: ["$videoDetails", []] }, // Ensure it's an empty array if no match
+      },
+    },
+    {
+      $unwind: {
+        path: "$videoDetails", // Flatten the videoDetails array
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $group: {
@@ -127,44 +139,62 @@ const getPlaylistById = asyncHandler(async (req, res, next) => {
       },
     },
     {
-      $unwind: "$videos", // Unwind the videos array to process each video separately
-    },
-    {
       $lookup: {
-        from: "videos",
-        localField: "videos",
-        foreignField: "_id",
-        as: "videoDetails",
+        from: "videos", // Lookup video details
+        localField: "videos", // Match field in the playlist
+        foreignField: "_id", // Match field in the videos collection
+        as: "videoDetails", // Store video details here
       },
     },
     {
-      $unwind: "$videoDetails", // Unwind the resulting array from the $lookup
+      $addFields: {
+        // Ensure the videos field is always an array, even if empty
+        videos: {
+          $ifNull: ["$videos", []], // If videos field is null, default to empty array
+        },
+        videoDetails: {
+          $ifNull: ["$videoDetails", []], // If videoDetails field is null, default to empty array
+        },
+      },
+    },
+    {
+      $unwind: {
+        path: "$videoDetails", // Unwind the videoDetails array
+        preserveNullAndEmptyArrays: true, // Preserve the playlist even if no videoDetails
+      },
     },
     {
       $lookup: {
-        from: "users",
-        localField: "videoDetails.owner",
-        foreignField: "_id",
+        from: "users", // Lookup the owner details for each video
+        localField: "videoDetails.owner", // Match owner field in videoDetails
+        foreignField: "_id", // Match user collection
         as: "ownerDetails",
       },
     },
     {
       $addFields: {
+        // Add owner details to video
         "videoDetails.owner": {
-          $arrayElemAt: ["$ownerDetails", 0], // Add the first ownerDetails element to the video
+          $arrayElemAt: ["$ownerDetails", 0], // Get the first owner details from the array
         },
       },
     },
     {
       $group: {
-        _id: "$_id", // Reconstruct the original playlist structure
+        _id: "$_id", // Rebuild the playlist object
         name: { $first: "$name" },
         description: { $first: "$description" },
         owner: { $first: "$owner" },
-        videos: {
-          $push: "$videoDetails", // Rebuild the videos array in the original order
-        },
         updatedAt: { $first: "$updatedAt" },
+        videos: {
+          $push: {
+            $cond: {
+              if: { $ne: ["$videoDetails", null] }, // Only push non-null videoDetails
+              then: "$videoDetails", // Push video details into the videos array
+              else: "$$REMOVE", // Remove null entries
+            },
+          },
+        },
       },
     },
     {
@@ -172,8 +202,14 @@ const getPlaylistById = asyncHandler(async (req, res, next) => {
         name: 1,
         description: 1,
         owner: 1,
-        videos: 1,
         updatedAt: 1,
+        videos: {
+          $cond: {
+            if: { $eq: [{ $size: "$videos" }, 0] }, // Check if videos array is empty
+            then: [], // Return an empty array if no videos
+            else: "$videos", // Otherwise, return the populated videos array
+          },
+        },
       },
     },
   ];
@@ -336,7 +372,7 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res, next) => {
 
   res
     .status(200)
-    .json(new ApiResponse(200, updatedPlaylist, "testing in progress"));
+    .json(new ApiResponse(200, updatedPlaylist, "Video removed from playlist"));
 });
 
 const updatePlaylist = asyncHandler(async (req, res, next) => {

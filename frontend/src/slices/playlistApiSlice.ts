@@ -30,10 +30,28 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
       }),
     }),
+
     removeVideoFromPlaylist: builder.mutation({
-      query: ({ playlistId, videoId }) => ({
+      query: ({ videoId, playlistId }) => ({
         url: `${PLAYLISTS_URL}/remove/${videoId}/${playlistId}`,
         method: "PATCH",
+      }),
+    }),
+
+    // crete new playlist
+    createPlaylist: builder.mutation({
+      query: (data) => ({
+        url: PLAYLISTS_URL,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // delete playlist
+    deletePlaylist: builder.mutation({
+      query: (playlistId) => ({
+        url: `${PLAYLISTS_URL}/${playlistId}`,
+        method: "DELETE",
       }),
     }),
   }),
@@ -45,4 +63,6 @@ export const {
   useGetVideoFlagAndPlayListNamesQuery,
   useAddVideoToPlaylistMutation,
   useRemoveVideoFromPlaylistMutation,
+  useCreatePlaylistMutation,
+  useDeletePlaylistMutation,
 } = playlistApiSlice;

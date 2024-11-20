@@ -1,4 +1,4 @@
-import { Clock, EllipsisVertical } from "lucide-react";
+import { Clock, EllipsisVertical, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,21 +9,35 @@ import {
 import { RiPlayList2Line, RiShareForwardLine } from "react-icons/ri";
 import CreatePlaylist from "../CreatePlaylist";
 import React, { useState } from "react";
+import NewPlaylist from "../NewPlaylist";
 
 interface VideoOptionsMenuProps {
   videoId: string;
+  listId?: string;
+  playlistName?: string;
+  onDeleteVideoFromPlaylist?: (videoId: string) => void;
 }
 
-const VideoOptionsMenu = ({ videoId }: VideoOptionsMenuProps) => {
+const VideoOptionsMenu = ({
+  videoId,
+  listId,
+  playlistName,
+  onDeleteVideoFromPlaylist,
+}: VideoOptionsMenuProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
+
+  const [dialogState, setDialogState] = useState<"none" | "create" | "new">(
+    "none"
+  );
+
+  const openCreatePlaylist = () => setDialogState("create");
+  const openNewPlaylist = () => setDialogState("new");
+  const closeDialogs = () => setDialogState("none");
 
   const handleCreatePlaylistClick = () => {
-    setIsCreatingPlaylist(true);
+    openCreatePlaylist();
     setDropdownOpen(false); // Close the dropdown
   };
-
-  const closeCreatePlaylist = () => setIsCreatingPlaylist(false);
 
   return (
     <>
@@ -43,33 +57,55 @@ const VideoOptionsMenu = ({ videoId }: VideoOptionsMenuProps) => {
               className="flex items-center justify-start gap-2 p-1 rounded-md cursor-pointer hover:bg-secondary-marginal-dark"
               onClick={() => setDropdownOpen(false)}
             >
-              <Clock size={24} />
-              <span className="text-lg">Save to Watch Later</span>
+              <Clock size={20} />
+              <span className="text-[16px]">Save to Watch Later</span>
             </div>
             <div
               className="flex items-center justify-start gap-2 p-1 rounded-md cursor-pointer hover:bg-secondary-marginal-dark"
               onClick={handleCreatePlaylistClick}
             >
-              <RiPlayList2Line size={24} />
-              <span className="text-lg">Save to Playlist</span>
+              <RiPlayList2Line size={20} />
+              <span className="text-[16px]">Save to Playlist</span>
             </div>
+            {listId && playlistName && (
+              <div
+                className="flex items-center justify-start gap-2 p-1 rounded-md cursor-pointer hover:bg-secondary-marginal-dark"
+                onClick={() => {
+                  if (onDeleteVideoFromPlaylist) {
+                    onDeleteVideoFromPlaylist(videoId);
+                  }
+                  setDropdownOpen(false);
+                }}
+              >
+                <Trash2 size={20} />
+                <span className="text-[16px]">Remove from {playlistName}</span>
+              </div>
+            )}
             <div
               className="flex items-center justify-start gap-2 p-1 rounded-md cursor-pointer hover:bg-secondary-marginal-dark"
               onClick={() => setDropdownOpen(false)}
             >
-              <RiShareForwardLine size={24} />
-              <span className="text-lg">Share</span>
+              <RiShareForwardLine size={20} />
+              <span className="text-[16px]">Share</span>
             </div>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {isCreatingPlaylist && (
+      {dialogState === "create" && (
         <CreatePlaylist
           videoId={videoId}
-          close={closeCreatePlaylist} // Pass the close function
+          close={closeDialogs} // Pass the close function
+          openNew={openNewPlaylist}
         />
       )}
+
+      {
+        // New playlist dialog
+        dialogState === "new" && (
+          <NewPlaylist close={closeDialogs} videoId={videoId} />
+        )
+      }
     </>
   );
 };

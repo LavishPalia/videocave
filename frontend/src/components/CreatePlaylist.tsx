@@ -18,7 +18,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 interface CreatePlaylistProps {
   videoId: string;
-  close: () => void; // Add close prop
+  close: () => void;
+  openNew: () => void;
 }
 
 interface IPlaylist {
@@ -27,7 +28,7 @@ interface IPlaylist {
   containsVideo: boolean;
 }
 
-const CreatePlaylist = ({ videoId, close }: CreatePlaylistProps) => {
+const CreatePlaylist = ({ videoId, close, openNew }: CreatePlaylistProps) => {
   const { data: playlistsData, refetch: refetchPlaylists } =
     useGetVideoFlagAndPlayListNamesQuery(videoId);
 
@@ -87,6 +88,11 @@ const CreatePlaylist = ({ videoId, close }: CreatePlaylistProps) => {
     }
   };
 
+  const handleNewPlaylist = () => {
+    close();
+    openNew();
+  };
+
   return (
     <>
       <ToastContainer
@@ -99,6 +105,7 @@ const CreatePlaylist = ({ videoId, close }: CreatePlaylistProps) => {
         theme="dark"
         transition={Slide}
       />
+      {/* CreatePlaylist Dialog */}
       <Dialog open={true} onOpenChange={close}>
         <DialogContent className="sm:max-w-[325px] bg-[#202021] text-white rounded-lg shadow-lg p-4">
           <DialogHeader>
@@ -120,7 +127,10 @@ const CreatePlaylist = ({ videoId, close }: CreatePlaylistProps) => {
                       handleCheckboxChange(playlist._id, playlist.containsVideo)
                     }
                   />
-                  <label htmlFor={inputId} className="text-base cursor-pointer">
+                  <label
+                    htmlFor={inputId}
+                    className="text-[15px] tracking-wide cursor-pointer"
+                  >
                     {playlist.name}
                   </label>
                 </div>
@@ -129,9 +139,10 @@ const CreatePlaylist = ({ videoId, close }: CreatePlaylistProps) => {
           </div>
           <DialogFooter>
             <Button
-              type="submit"
+              type="button"
               className="w-full bg-[#383838] text-white rounded-3xl"
               variant="secondary"
+              onClick={handleNewPlaylist}
             >
               <Plus className="mr-2" />
               <p className="text-lg">New Playlist</p>

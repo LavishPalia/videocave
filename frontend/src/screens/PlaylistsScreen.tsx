@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useGetUserPlaylistsQuery } from "@/slices/playlistApiSlice";
 import NoThumbnail from "../assets/no_thumbnail.png";
 import Button from "@/components/Button";
+import { useEffect } from "react";
 
 interface IPlaylist {
   name: string;
@@ -28,10 +29,17 @@ const PlaylistsScreen = () => {
   const { user } = useAppSelector((state) => state.auth);
   const userId = user?._id;
 
-  const { data: playlists, isLoading: isPlaylistsLoading } =
-    useGetUserPlaylistsQuery(userId);
+  const {
+    data: playlists,
+    isLoading: isPlaylistsLoading,
+    refetch: refetchPlaylists,
+  } = useGetUserPlaylistsQuery(userId);
 
-  console.log(playlists);
+  // console.log(playlists);
+
+  useEffect(() => {
+    refetchPlaylists();
+  }, [refetchPlaylists]);
 
   const noPlaylistsFound = !isPlaylistsLoading && playlists?.data?.length === 0;
 
