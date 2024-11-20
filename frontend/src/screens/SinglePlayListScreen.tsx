@@ -87,7 +87,7 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
       }
       refetch();
 
-      toast.success("Video removed from playlist");
+      toast.success(`Removed from ${playlist?.data?.name}`);
     } catch (error) {
       console.log("error removing video from playlist", error);
       toast.error("Failed to remove video from playlist");
