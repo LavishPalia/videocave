@@ -7,7 +7,7 @@ import { Form } from "@/components/ui/form";
 import LoginInput from "./LoginInput";
 import { useLoginMutation } from "@/slices/usersApiSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { setUserCredentials } from "@/slices/authSlice";
+import { clearLogoutMessage, setUserCredentials } from "@/slices/authSlice";
 import { Loader2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Slide, toast, ToastContainer } from "react-toastify";
@@ -24,7 +24,19 @@ const LoginForm = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isLoggedIn, user } = useAppSelector((state) => state.auth);
+  const { isLoggedIn, user, logoutMessage } = useAppSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (logoutMessage) {
+      toast.info(logoutMessage, {
+        autoClose: 4000,
+      });
+
+      dispatch(clearLogoutMessage());
+    }
+  }, [logoutMessage, dispatch]);
 
   useEffect(() => {
     if (isLoggedIn && user.isEmailVerified) {
@@ -45,8 +57,7 @@ const LoginForm = () => {
     try {
       const response = await login({ ...userData }).unwrap();
 
-      // console.log(response);
-      dispatch(setUserCredentials({ ...response.data?.user! }));
+      dispatch(setUserCredentials(response.data));
 
       if (!response.data?.user.isEmailVerified) {
         toast.info("Please verify your email first");
@@ -135,7 +146,6 @@ const LoginForm = () => {
         position="bottom-left"
         theme="dark"
         transition={Slide}
-        stacked
       />
     </div>
   );

@@ -33,8 +33,6 @@ interface IPlayListVideo {
 }
 
 const SinglePlayListScreen = ({ listId }: { listId: string }) => {
-  console.log("SinglePlayListScreen rendered");
-
   const [gradient, setGradient] = useState("");
 
   const {
@@ -60,8 +58,6 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
       const dominantColor = colorthief.getColor(img);
       const palette = colorthief.getPalette(img, 2);
 
-      console.log({ dominantColor, palette });
-
       const gradient = `linear-gradient(
           to bottom, 
           rgba(${dominantColor.join(",")}, 0.9), 
@@ -74,7 +70,7 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
 
   useEffect(() => {
     refetch();
-  });
+  }, []);
 
   const handleRemoveVideoFromPlaylist = async (videoId: string) => {
     try {

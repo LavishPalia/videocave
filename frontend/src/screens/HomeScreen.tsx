@@ -21,7 +21,7 @@ const HomeScreen = () => {
 
   const { data: videos, isLoading } = useGetAllVideosQuery(null);
 
-  console.log(videos);
+  // console.log(videos);
 
   const videoData = videos?.data?.videos;
 

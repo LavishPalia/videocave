@@ -475,7 +475,9 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
     process.env.REFRESH_TOKEN_SECRET
   );
 
-  const user = await User.findById(decodedUser._id);
+  const user = await User.findById(decodedUser._id).select(
+    "-password -createdAt -updatedAt -coverImage -watchHistory -emailVerificationToken -__v"
+  );
 
   if (!user) {
     return next(new ApiError(401, "Invalid refresh token"));
@@ -489,6 +491,8 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
     user._id
   );
 
+  user.refreshToken = undefined;
+
   const cookieOptions = {
     httpOnly: true,
     secure: true,
@@ -501,7 +505,7 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
     .json(
       new ApiResponse(
         200,
-        { accessToken, refreshToken },
+        { user, accessToken, refreshToken },
         "access token refreshed successfully!"
       )
     );
