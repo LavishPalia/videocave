@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { EllipsisVertical, Loader2, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { formatDuration } from "@/utils/formatDuration";
 import { VIEW_FORMATTER } from "@/components/VideoGridItems";
 import { FaCircleCheck } from "react-icons/fa6";
-import Button from "./Button";
+import VideoOptionsMenu from "./dropdowns/VideoOptionsMenu";
+import { Button } from "@/components/ui/button";
 
 interface WatchHistoryProps {
   history: {
@@ -33,20 +34,9 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
   deleteVideoFromWatchHistory,
   refetchHistory,
 }) => {
-  const [hoveredVideoId, setHoveredVideoId] = useState<string | null>(null);
-
-  const handleMouseEnter = useCallback(
-    (videoId: string) => {
-      if (videoId !== hoveredVideoId) {
-        setHoveredVideoId(videoId);
-      }
-    },
-    [hoveredVideoId]
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    setHoveredVideoId(null);
-  }, []);
+  useEffect(() => {
+    // Add any cleanup logic here if needed
+  }, []); // Empty dependency array ensures this runs only on mount
 
   const handleRemoveVideo = async (videoId: string) => {
     await deleteVideoFromWatchHistory(videoId);
@@ -73,12 +63,7 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
         </div>
       ) : (
         history?.data?.map((item) => (
-          <div
-            className="relative flex gap-2 pb-4 md:gap-4"
-            key={item._id}
-            onMouseEnter={() => handleMouseEnter(item._id)}
-            onMouseLeave={handleMouseLeave}
-          >
+          <div className="relative flex gap-2 pb-4 md:gap-4" key={item._id}>
             <Link
               to={`/watch?v=${item._id}`}
               className="relative block min-w-20 max-h-20 md:min-w-40 md:max-h-40 aspect-video shrink-0"
@@ -92,28 +77,17 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
               </div>
             </Link>
 
-            <div
-              className={`flex gap-2 text-gray-400 ${
-                hoveredVideoId === item._id ? "" : "hidden"
-              } absolute top-2 right-2`}
-            >
+            <div className="absolute top-0 right-0 flex gap-2">
               <Button
                 variant="ghost"
-                className="rounded-full dark:hover:bg-gray-900"
+                size="icon"
+                className="absolute top-1 right-10"
+                onClick={() => handleRemoveVideo(item._id)}
               >
-                <X
-                  size={28}
-                  onClick={() => handleRemoveVideo(item._id)}
-                  className="cursor-pointer"
-                />
-              </Button>
-              <Button
-                variant="ghost"
-                className="rounded-full dark:hover:bg-gray-900"
-              >
-                <EllipsisVertical size={28} className="cursor-pointer" />
+                <X size={28} className="cursor-pointer" />
               </Button>
             </div>
+            <VideoOptionsMenu videoId={item._id} playlistName="Watch Later" />
 
             <div className="flex flex-col w-[150px] md:w-[290px]">
               <Link
