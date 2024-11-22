@@ -132,13 +132,14 @@ const NewPlaylist = ({ close, videoId }: INewPlaylistProps) => {
                   playlistDescription === ""
                 }
               >
-                {isLoading && (
+                {isLoading ? (
                   <>
                     <Loader2 className="mr-2 animate-spin" />
                     <p>Creating...</p>
                   </>
+                ) : (
+                  "Create"
                 )}
-                Create
               </Button>
             </div>
           </DialogFooter>

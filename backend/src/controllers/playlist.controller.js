@@ -101,6 +101,11 @@ const getUserPlaylists = asyncHandler(async (req, res, next) => {
       },
     },
     {
+      $sort: {
+        updatedAt: -1,
+      },
+    },
+    {
       $project: {
         name: 1,
         description: 1,
@@ -490,6 +495,11 @@ const fetchPlaylistsWithVideoFlag = asyncHandler(async (req, res, next) => {
         containsVideo: {
           $in: [new mongoose.Types.ObjectId(videoId), "$videos"], // Check if video exists in the videos array
         },
+      },
+    },
+    {
+      $sort: {
+        containsVideo: -1,
       },
     },
   ];

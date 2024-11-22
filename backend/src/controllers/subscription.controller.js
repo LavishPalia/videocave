@@ -243,7 +243,7 @@ const getLatestVideoFromSubscribedChannels = asyncHandler(
     }
 
     if (!isValidObjectId(subscriberId)) {
-      return next(new ApiError(400, "Invlaid  Subscriber ID"));
+      return next(new ApiError(400, "Invalid Subscriber ID"));
     }
 
     const subscriber = await User.findById(subscriberId);
@@ -274,6 +274,11 @@ const getLatestVideoFromSubscribedChannels = asyncHandler(
                 $expr: {
                   $eq: ["$owner", "$$channels"],
                 },
+              },
+            },
+            {
+              $sort: {
+                createdAt: -1, // Ensure videos are sorted by creation date
               },
             },
             {
@@ -319,15 +324,10 @@ const getLatestVideoFromSubscribedChannels = asyncHandler(
         $unwind: "$video",
       },
       {
-        $sort: {
-          "video.createdAt": -1,
-        },
-      },
-      {
         $group: {
           _id: "$channel",
           latestVideo: {
-            $first: "$video",
+            $first: "$video", // Take the latest video
           },
         },
       },
@@ -335,6 +335,11 @@ const getLatestVideoFromSubscribedChannels = asyncHandler(
         $project: {
           _id: 0,
           latestVideo: 1,
+        },
+      },
+      {
+        $sort: {
+          "latestVideo.createdAt": -1, // Ensure consistent sorting of final array
         },
       },
       {
