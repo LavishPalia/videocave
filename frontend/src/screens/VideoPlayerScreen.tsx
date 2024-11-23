@@ -133,10 +133,8 @@ const VideoPlayerScreen = () => {
   return (
     <div className="flex flex-col max-h-screen">
       <PageHeader />
-      <div className="grid grid-cols-[auto,1fr] xl:grid-cols-[auto,2fr,1fr] gap-4 h-[calc(100vh-64px)] p-2 md:p-3 lg:p-4">
-        <div className="overflow-y-auto sticky top-0 h-[calc(100vh-64px)] scrollbar-hidden">
-          <Sidebar />
-        </div>
+      <div className="grid grid-cols-[auto,1fr] xl:grid-cols-[auto,2fr,1fr] gap-4 h-[calc(100vh-64px)]">
+        <Sidebar />
         <div className="px-4 pb-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] md:px-4">
           <div
             key={videoId}
