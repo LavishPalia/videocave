@@ -43,6 +43,10 @@ const router = createBrowserRouter([
     element: <EmailVerificationConfirmation />,
   },
   {
+    path: "verify-email",
+    element: <VerifyEmailScreen />,
+  },
+  {
     path: "",
     element: <PrivateRoutes />,
     children: [
@@ -69,10 +73,6 @@ const router = createBrowserRouter([
       {
         path: "history",
         element: <History />,
-      },
-      {
-        path: "verify-email",
-        element: <VerifyEmailScreen />,
       },
       {
         path: "playlist",

@@ -6,6 +6,7 @@ import { ModeToggle } from "./mode-toggle";
 import { UserDropdownMenu } from "./dropdowns/UserDropdownMenu";
 import { useAppSelector } from "@/app/hooks";
 import { VideoUploadModel } from "./VideoUploadModal";
+import { useSidebarContext } from "@/contexts/SidebarContext";
 // import { useGetCurrentUserQuery } from "@/slices/usersApiSlice";
 
 const PageHeader = () => {
@@ -13,23 +14,11 @@ const PageHeader = () => {
 
   // const { data } = useGetCurrentUserQuery(null);
   // console.log(data);
-
   const { user } = useAppSelector((state) => state.auth);
 
   return (
     <div className="flex justify-between gap-2 pt-2 mx-2 mb-4 sm:gap-4 md:gap-10 sm:mx-4 sm:mb-8 lg:gap-20">
-      <div
-        className={`gap-4 items-center flex-shrink-0 ${
-          showFullWidthSearch ? "hidden" : "flex"
-        }`}
-      >
-        <Button variant="ghost" size="icon">
-          <Menu size={20} />
-        </Button>
-        <a href="/">
-          <img src={Logo} className="h-4 sm:h-6" />
-        </a>
-      </div>
+      <PageHeaderFirstSection hidden={showFullWidthSearch} />
       <form
         className={`gap-4 flex-grow justify-center items-center ${
           showFullWidthSearch ? "flex" : "hidden md:flex "
@@ -95,3 +84,28 @@ const PageHeader = () => {
 };
 
 export default PageHeader;
+
+interface PageHeaderFirstSectionProps {
+  hidden?: boolean;
+}
+
+export function PageHeaderFirstSection({
+  hidden = false,
+}: PageHeaderFirstSectionProps) {
+  const { toggle } = useSidebarContext();
+
+  return (
+    <div
+      className={`gap-4 items-center flex-shrink-0 ${
+        hidden ? "hidden" : "flex"
+      }`}
+    >
+      <Button variant="ghost" size="icon" onClick={toggle}>
+        <Menu size={20} />
+      </Button>
+      <a href="/">
+        <img src={Logo} className="h-4 sm:h-6" />
+      </a>
+    </div>
+  );
+}

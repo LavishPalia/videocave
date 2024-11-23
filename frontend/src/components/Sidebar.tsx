@@ -8,7 +8,6 @@ import {
   Gamepad2,
   History,
   Home,
-  Library,
   Lightbulb,
   Music2,
   Newspaper,
@@ -29,6 +28,8 @@ import { BiLike } from "react-icons/bi";
 import { useGetUserSubscriptionsQuery } from "@/slices/subscriptionsApiSlice";
 import { useAppSelector } from "@/app/hooks";
 import { BiSolidPlaylist } from "react-icons/bi";
+import { useSidebarContext } from "@/contexts/SidebarContext";
+import { PageHeaderFirstSection } from "./PageHeader";
 
 type channelDetail = {
   _id: string;
@@ -43,21 +44,48 @@ const Sidebar = () => {
   const userId = user?._id;
 
   const { data: subscriptions } = useGetUserSubscriptionsQuery(userId);
+  const { isLargeOpen, isSmallOpen, close } = useSidebarContext();
 
   return (
     <>
-      <aside className="sticky top-0 flex flex-col pb-4 ml-1 overflow-y-auto lg:hidden scrollbar-hidden">
+      <aside
+        className={`sticky top-0 flex flex-col pb-4 ml-1 overflow-y-auto ${
+          isLargeOpen ? "lg:hidden" : "lg:flex"
+        } scrollbar-hidden`}
+      >
         <SmallSiderbarItem Icon={Home} url="/" title="Home" />
-        <SmallSiderbarItem Icon={Repeat} url="/shorts" title="Shorts" />
+        <SmallSiderbarItem Icon={History} url="/history" title="History" />
+        <SmallSiderbarItem
+          Icon={BiLike}
+          url="/playlist?list=LL"
+          title="Liked Videos"
+        />
+        <SmallSiderbarItem
+          Icon={BiSolidPlaylist}
+          url="/playlists"
+          title="Playlists"
+        />
+
         <SmallSiderbarItem
           Icon={Clapperboard}
           url="/subscriptions"
           title="Subscriptions"
         />
-        <SmallSiderbarItem Icon={Library} url="/library" title="Library" />
       </aside>
-
-      <aside className="absolute top-0 flex-col hidden w-56 gap-2 px-4 pb-4 overflow-y-auto lg:sticky scrollbar-hidden lg:flex">
+      {isSmallOpen && (
+        <div
+          onClick={close}
+          className="lg:hidden fixed inset-0 z-[999] dark:bg-gray-950 opacity-50"
+        />
+      )}
+      <aside
+        className={`absolute top-0 flex-col w-56 gap-2 px-4 pb-4 overflow-y-auto lg:sticky scrollbar-hidden ${
+          isLargeOpen ? "lg:flex" : "lg:hidden"
+        } ${isSmallOpen ? "flex z-[999] bg-black max-h-screen" : "hidden"}`}
+      >
+        <div className="sticky top-0 p-2 px-2 pb-4 bg-black lg:hidden">
+          <PageHeaderFirstSection />
+        </div>
         <LargeSidebarSection>
           <LargeSidebarItem isActive Icon={Home} url="/" title="Home" />
           <LargeSidebarItem Icon={Repeat} url="/shorts" title="Shorts" />
