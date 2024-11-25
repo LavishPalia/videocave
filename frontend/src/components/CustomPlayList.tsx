@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { formatDuration } from "@/utils/formatDuration";
 import Button from "./Button";
@@ -79,8 +78,8 @@ const CustomPlaylist = ({ playlist, queryParams }: PlaylistProps) => {
         <header className="relative px-2 py-2 bg-[#202021] shadow-md">
           <h1 className="text-xl">{playlist?.data.name}</h1>
           <div className="flex gap-2 text-[12px] ">
-            <Link
-              to={`/user/${
+            <a
+              href={`/user/${
                 playlist?.data.videos[Number(queryParams.index) - 1]?.owner
                   .userName
               }`}
@@ -89,7 +88,7 @@ const CustomPlaylist = ({ playlist, queryParams }: PlaylistProps) => {
                 playlist?.data.videos[Number(queryParams.index) - 1]?.owner
                   .fullName
               }
-            </Link>
+            </a>
             -
             <p>
               {queryParams.index} / {playlist?.data.videos.length}
@@ -124,8 +123,8 @@ const CustomPlaylist = ({ playlist, queryParams }: PlaylistProps) => {
             }`}
           >
             <p className="self-center">{index + 1}</p>
-            <Link
-              to={`/watch?v=${video._id}&list=${playlist.data._id}&index=${
+            <a
+              href={`/watch?v=${video._id}&list=${playlist.data._id}&index=${
                 index + 1
               }`}
               className="relative block w-full sm:w-[40%] md:w-[45%] lg:w-[35%] aspect-video shrink-0"
@@ -138,23 +137,23 @@ const CustomPlaylist = ({ playlist, queryParams }: PlaylistProps) => {
               <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark bg-opacity-65 text-white font-semibold text-xs px-1 py-0.5 rounded">
                 {formatDuration(video.duration)}
               </div>
-            </Link>
+            </a>
 
             <div className="flex flex-col mt-2 sm:mt-0">
-              <Link
-                to={`/watch?v=${video._id}&list=${playlist.data._id}&index=${
+              <a
+                href={`/watch?v=${video._id}&list=${playlist.data._id}&index=${
                   index + 1
                 }`}
                 className="text-sm font-semibold line-clamp-2 w-[90%]"
               >
                 {video.title}
-              </Link>
-              <Link
-                to={`/user/${video.owner.userName}`}
+              </a>
+              <a
+                href={`/user/${video.owner.userName}`}
                 className="text-xs text-gray-400"
               >
                 {video.owner.fullName}
-              </Link>
+              </a>
             </div>
           </div>
         ))}

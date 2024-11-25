@@ -7,7 +7,6 @@ import Sidebar from "@/components/Sidebar";
 import { VIEW_FORMATTER } from "@/components/VideoGridItems";
 import { formatDuration } from "@/utils/formatDuration";
 import { Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
   useGetPlaylistByIdQuery,
@@ -154,8 +153,8 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                         className="relative flex gap-2 pb-4 md:gap-4"
                         key={video._id}
                       >
-                        <Link
-                          to={`/watch?v=${video._id}&list=${listId}&index=${
+                        <a
+                          href={`/watch?v=${video._id}&list=${listId}&index=${
                             index + 1
                           }`}
                           className="relative block min-w-20 max-h-20 md:min-w-40 md:max-h-40 aspect-video shrink-0"
@@ -168,7 +167,7 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                           <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark bg-opacity-90 text-white font-semibold text-[8px] md:text-sm px-1 py-0.5 rounded">
                             {formatDuration(video.duration)}
                           </div>
-                        </Link>
+                        </a>
 
                         <div
                           className={`flex gap-6 text-gray-400 absolute top-12 right-2`}
@@ -184,14 +183,14 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                         </div>
 
                         <div className="flex flex-col w-[150px] md:w-[480px]">
-                          <Link
-                            to={`/watch?v=${video._id}&list=${listId}&index=${index}`}
+                          <a
+                            href={`/watch?v=${video._id}&list=${listId}&index=${index}`}
                             className="text-lg font-bold md:text-xl line-clamp-2 lg:line-clamp-3"
                           >
                             {video.title}
-                          </Link>
-                          <Link
-                            to={`/user/${video.owner.userName}`}
+                          </a>
+                          <a
+                            href={`/user/${video.owner.userName}`}
                             className="flex flex-wrap gap-2 items-center text-secondary-marginal-text text-[10px] lg:text-xs"
                           >
                             <p className="font-medium">
@@ -205,7 +204,7 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                             <div>
                               {formatTimeAgo(new Date(video.updatedAt))}
                             </div>
-                          </Link>
+                          </a>
                         </div>
                       </div>
                     )

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Loader2, X } from "lucide-react";
 import { formatDuration } from "@/utils/formatDuration";
 import { VIEW_FORMATTER } from "@/components/VideoGridItems";
@@ -64,8 +63,8 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
       ) : (
         history?.data?.map((item) => (
           <div className="relative flex gap-2 pb-4 md:gap-4" key={item._id}>
-            <Link
-              to={`/watch?v=${item._id}`}
+            <a
+              href={`/watch?v=${item._id}`}
               className="relative block min-w-20 max-h-20 md:min-w-40 md:max-h-40 aspect-video shrink-0"
             >
               <img
@@ -76,7 +75,7 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
               <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark bg-opacity-90 text-white font-semibold text-[8px] md:text-sm px-1 py-0.5 rounded">
                 {formatDuration(item.duration)}
               </div>
-            </Link>
+            </a>
 
             <div className="absolute top-0 right-0 flex gap-2">
               <Button
@@ -91,14 +90,14 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
             <VideoOptionsMenu videoId={item._id} playlistName="Watch Later" />
 
             <div className="flex flex-col w-[150px] md:w-[290px]">
-              <Link
-                to={`/watch?v=${item._id}`}
+              <a
+                href={`/watch?v=${item._id}`}
                 className="text-sm md:text-xl line-clamp-2"
               >
                 {item.title}
-              </Link>
-              <Link
-                to={`/user/${item.owner.userName}`}
+              </a>
+              <a
+                href={`/user/${item.owner.userName}`}
                 className="flex gap-2 items-center text-secondary-marginal-text text-[8px] md:text-xs"
               >
                 <p>{item.owner.fullName}</p>
@@ -106,7 +105,7 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
                 <div className="text-secondary-marginal-text">
                   {VIEW_FORMATTER.format(item.views)} Views
                 </div>
-              </Link>
+              </a>
               <div className="line-clamp-2 mt-4 text-secondary-marginal-text text-[8px] md:text-xs w-[150px] md:w-[380px]">
                 {item.description}
               </div>

@@ -18,7 +18,7 @@ import { BiLike, BiDislike, BiSolidLike } from "react-icons/bi";
 import { HiDownload } from "react-icons/hi";
 
 import { FaCircleCheck } from "react-icons/fa6";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 // import { FaEllipsisH } from "react-icons/fa";
 import { useToggleVideoLikesMutation } from "@/slices/likesApiSlice";
 import { Bell, BellRing } from "lucide-react";
@@ -147,8 +147,8 @@ const VideoPlayerScreen = () => {
 
             <div className="flex flex-col items-start justify-between gap-4 mt-4 lg:flex-row">
               <div className="flex items-start gap-3 lg:w-1/2 xl:w-2/3 sm:w-auto">
-                <Link
-                  to={`/user/${video?.data[0]?.owner.userName}`}
+                <a
+                  href={`/user/${video?.data[0]?.owner.userName}`}
                   className="flex-shrink-0"
                 >
                   <img
@@ -157,18 +157,18 @@ const VideoPlayerScreen = () => {
                     className="object-cover object-center rounded-full size-10 sm:size-12"
                     loading="lazy"
                   />
-                </Link>
+                </a>
                 <div className="flex items-center justify-between w-full xl:flex-col xl:items-start">
                   <div className="flex-grow min-w-0 max-w-[70%] md:max-w-full">
                     <span className="flex items-center gap-2">
-                      <Link
-                        to={`/user/${video?.data[0]?.owner.userName}`}
+                      <a
+                        href={`/user/${video?.data[0]?.owner.userName}`}
                         className="truncate"
                       >
                         <h1 className="text-sm truncate sm:text-base">
                           {video?.data[0]?.owner.fullName}
                         </h1>
-                      </Link>
+                      </a>
                       <FaCircleCheck size={16} />
                     </span>
                     <p className="text-sm text-gray-500 sm:text-base">

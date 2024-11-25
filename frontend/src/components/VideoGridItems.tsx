@@ -3,7 +3,6 @@ import { formatTimeAgo } from "@/utils/formatTimeAgo";
 import { GoUnmute } from "react-icons/go";
 import { BiVolumeMute } from "react-icons/bi";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import VideoOptionsMenu from "./dropdowns/VideoOptionsMenu";
 
 export type VideoGridItemProps = {
@@ -135,12 +134,12 @@ const VideoGridItems = ({
           <a href={`/watch?v=${_id}`} className="font-bold line-clamp-2">
             {title}
           </a>
-          <Link
-            to={`/user/${owner.userName}`}
+          <a
+            href={`/user/${owner.userName}`}
             className="text-sm text-secondary-marginal-text"
           >
             {owner.fullName}
-          </Link>
+          </a>
           <div className="text-sm text-secondary-marginal-text">
             {VIEW_FORMATTER.format(views)} Views •{" "}
             {formatTimeAgo(new Date(createdAt))}

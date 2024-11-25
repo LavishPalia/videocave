@@ -1,7 +1,7 @@
 import { Bell, BellRing, Loader2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Sidebar from "@/components/Sidebar";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   useGetCurrentUserQuery,
   useGetUserChannelDetailsQuery,
@@ -227,12 +227,12 @@ const Channel = () => {
                       </div>
 
                       <div className="mt-2">
-                        <Link
-                          to={`/watch?v=${video._id}`}
+                        <a
+                          href={`/watch?v=${video._id}`}
                           className="text-sm font-bold line-clamp-2 md:text-base"
                         >
                           {video.title}
-                        </Link>
+                        </a>
                         <div className="mt-1 text-xs md:text-sm text-secondary-marginal-text">
                           {VIEW_FORMATTER.format(video.views)} Views •{" "}
                           {formatTimeAgo(new Date(video.createdAt))}

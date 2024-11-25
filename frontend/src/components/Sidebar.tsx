@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 import { Children, ElementType, ReactNode, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Button, { buttonStyles } from "./Button";
 import { twMerge } from "tailwind-merge";
 import { BiLike } from "react-icons/bi";
@@ -211,8 +211,8 @@ const SmallSiderbarItem = ({
   isActive,
 }: SmallSiderbarItemProps) => {
   return (
-    <Link
-      to={url}
+    <a
+      href={url}
       className={twMerge(
         buttonStyles({ variant: "ghost" }),
         `py-2 sm:py-4 px-0 sm:px-1 flex flex-col items-center rounded-lg gap-1 mt-1 ${
@@ -224,7 +224,7 @@ const SmallSiderbarItem = ({
     >
       <Icon className="size-4 sm:size-6" />
       <div className="text-[10px]">{title}</div>
-    </Link>
+    </a>
   );
 };
 
@@ -271,8 +271,8 @@ const LargeSidebarItem = ({
   isActive,
 }: LargeSiderbarItemProps) => {
   return (
-    <Link
-      to={url}
+    <a
+      href={url}
       className={twMerge(
         buttonStyles({ variant: "ghost" }),
         `w-full flex items-center rounded-lg gap-4 p-3 mt-1 hover:text-black ${
@@ -295,7 +295,7 @@ const LargeSidebarItem = ({
       <div className="overflow-hidden whitespace-nowrap text-ellipsis">
         {title}
       </div>
-    </Link>
+    </a>
   );
 };
 
