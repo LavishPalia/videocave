@@ -85,7 +85,6 @@ export function UserDropdownMenu({
         position="bottom-left"
         theme="dark"
         transition={Slide}
-        stacked
       />
     </DropdownMenu>
   );

@@ -234,7 +234,6 @@ const Channel = () => {
         position="bottom-left"
         theme="dark"
         transition={Slide}
-        stacked
       />
     </div>
   );

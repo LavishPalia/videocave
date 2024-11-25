@@ -85,9 +85,10 @@ const RegisterForm = () => {
   };
 
   return (
-    <Form {...form}>
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
-        <div className="w-full max-w-lg p-8 space-y-8 bg-gray-800 shadow-2xl rounded-xl">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      {/* left section */}
+      <Form {...form}>
+        <div className="w-full max-w-lg p-8 space-y-8 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl rounded-l-xl min-h-[656px] h-full">
           <h2 className="text-3xl font-bold text-center text-purple-400">
             Join VideoCave
           </h2>
@@ -178,7 +179,65 @@ const RegisterForm = () => {
             </Link>
           </p>
         </div>
-      </div>
+      </Form>
+
+      {/* Right side */}
+      <section className="w-full max-w-xl p-8 space-y-8 text-gray-200 shadow-2xl bg-gradient-to-br from-gray-800 to-gray-900 rounded-r-xl">
+        <h1 className="text-3xl font-bold text-center text-purple-400">
+          Registration Guidelines
+        </h1>
+        <p className="text-center text-gray-400">
+          Follow these tips to complete your registration without any errors.
+        </p>
+
+        {/* Full Name Guidelines */}
+        <div className="space-y-2">
+          <h2 className="flex items-center text-lg font-semibold text-purple-300">
+            <span className="mr-2">🔤</span> Full Name
+          </h2>
+          <ul className="pl-6 space-y-1 list-disc">
+            <li>Only use English alphabets [(a-z) or (A-Z)] and spaces.</li>
+            <li>
+              Example: <span className="text-purple-400">John Doe</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Email Guidelines */}
+        <div className="space-y-2">
+          <h2 className="flex items-center text-lg font-semibold text-purple-300">
+            <span className="mr-2">📧</span> Email
+          </h2>
+          <ul className="pl-6 space-y-1 list-disc">
+            <li>Provide an accessible email address for verification.</li>
+            <li>
+              Use a valid format such as{" "}
+              <span className="text-purple-400">you@example.com</span>.
+            </li>
+            <li>
+              Example:{" "}
+              <span className="text-purple-400">john.doe@gmail.com</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Password Guidelines */}
+        <div className="space-y-2">
+          <h2 className="flex items-center text-lg font-semibold text-purple-300">
+            <span className="mr-2">🔒</span> Password
+          </h2>
+          <ul className="pl-6 space-y-1 list-disc">
+            <li>At least 8 characters long.</li>
+            <li>Includes at least one uppercase letter.</li>
+            <li>Includes at least one lowercase letter.</li>
+            <li>Includes at least one digit.</li>
+            <li>Includes at least one special character (e.g., @, $, !).</li>
+            <li>
+              Example: <span className="text-purple-400">Secure@123</span>
+            </li>
+          </ul>
+        </div>
+      </section>
 
       <EmailVerificationModal
         isOpen={isModalOpen}
@@ -198,7 +257,7 @@ const RegisterForm = () => {
         theme="dark"
         transition={Slide}
       />
-    </Form>
+    </div>
   );
 };
 

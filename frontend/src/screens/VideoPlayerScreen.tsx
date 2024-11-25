@@ -288,7 +288,6 @@ const VideoPlayerScreen = () => {
         position="bottom-left"
         theme="dark"
         transition={Slide}
-        stacked
       />
     </div>
   );

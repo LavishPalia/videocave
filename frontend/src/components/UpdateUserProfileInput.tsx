@@ -31,7 +31,7 @@ const UpdateUserProfileInput = ({
       name={name}
       render={({ field: { value, onChange, ...fieldProps } }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className="text-base">{label}</FormLabel>
           <FormControl>
             <Input
               placeholder={placeholder}

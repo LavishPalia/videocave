@@ -33,7 +33,7 @@ const RegisterInput = ({
       name={name}
       render={({ field: { value, onChange, ...fieldProps } }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className="text-base">{label}</FormLabel>
           <FormControl>
             <div className="relative flex items-center">
               <Input

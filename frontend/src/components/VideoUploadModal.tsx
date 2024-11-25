@@ -163,7 +163,6 @@ export function VideoUploadModel() {
         position="bottom-left"
         theme="dark"
         transition={Slide}
-        stacked
       />
     </Dialog>
   );

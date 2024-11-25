@@ -105,7 +105,6 @@ const VerifyEmailScreen = () => {
         position="bottom-left"
         theme="dark"
         transition={Slide}
-        stacked
       />
     </div>
   );
