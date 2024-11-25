@@ -134,7 +134,7 @@ const RegisterForm = () => {
             />
 
             <RegisterInput
-              type={isPasswordVisible ? "text" : "password"}
+              type={isConfirmPasswordVisible ? "text" : "password"}
               name="confirmPassword"
               label="Confirm Password"
               placeholder="••••••••"
