@@ -3,23 +3,13 @@ import {
   ChevronUp,
   Clapperboard,
   Clock,
-  Film,
-  Flame,
-  Gamepad2,
   History,
   Home,
-  Lightbulb,
-  Music2,
-  Newspaper,
   PlaySquare,
-  Podcast,
-  Radio,
-  Shirt,
-  ShoppingBag,
-  Trophy,
 } from "lucide-react";
+
 import { Children, ElementType, ReactNode, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Button, { buttonStyles } from "./Button";
 import { twMerge } from "tailwind-merge";
 import { BiLike } from "react-icons/bi";
@@ -37,6 +27,10 @@ type channelDetail = {
 };
 
 const Sidebar = () => {
+  const location = useLocation();
+
+  const currentPath = location.pathname + location.search;
+
   const { user } = useAppSelector((state) => state.auth);
   // console.log(user?._id);
   const userId = user?._id;
@@ -51,23 +45,36 @@ const Sidebar = () => {
           isLargeOpen ? "lg:hidden" : "lg:flex"
         } scrollbar-hidden`}
       >
-        <SmallSiderbarItem Icon={Home} url="/" title="Home" />
-        <SmallSiderbarItem Icon={History} url="/history" title="History" />
+        <SmallSiderbarItem
+          Icon={Home}
+          url="/"
+          title="Home"
+          isActive={currentPath === "/"}
+        />
+        <SmallSiderbarItem
+          Icon={History}
+          url="/history"
+          title="History"
+          isActive={currentPath === "/history"}
+        />
         <SmallSiderbarItem
           Icon={BiLike}
           url="/playlist?list=LL"
           title="Liked Videos"
+          isActive={currentPath === "/playlist?list=LL"}
         />
         <SmallSiderbarItem
           Icon={BiSolidPlaylist}
           url="/playlists"
           title="Playlists"
+          isActive={currentPath === "/playlists"}
         />
 
         <SmallSiderbarItem
           Icon={Clapperboard}
           url="/subscriptions"
           title="Subscriptions"
+          isActive={currentPath === "/subscriptions"}
         />
       </aside>
       {isSmallOpen && (
@@ -85,38 +92,53 @@ const Sidebar = () => {
           <PageHeaderFirstSection />
         </div>
         <LargeSidebarSection>
-          <LargeSidebarItem isActive Icon={Home} url="/" title="Home" />
+          <LargeSidebarItem
+            isActive={currentPath === "/"}
+            Icon={Home}
+            url="/"
+            title="Home"
+          />
           {/* <LargeSidebarItem Icon={Repeat} url="/shorts" title="Shorts" /> */}
           <LargeSidebarItem
             Icon={Clapperboard}
             url="/subscriptions"
             title="Subscriptions"
+            isActive={currentPath === "/subscriptions"}
           />
         </LargeSidebarSection>
         <hr />
 
         <LargeSidebarSection title="You">
           {/* <LargeSidebarItem Icon={User} title="Your Channel" url="/library" /> */}
-          <LargeSidebarItem Icon={History} title="History" url="/history" />
+          <LargeSidebarItem
+            Icon={History}
+            title="History"
+            url="/history"
+            isActive={currentPath === "/history"}
+          />
           <LargeSidebarItem
             Icon={BiSolidPlaylist}
             title="Playlists"
             url="/playlists"
+            isActive={currentPath === "/playlists"}
           />
           <LargeSidebarItem
             Icon={PlaySquare}
             title="Your Videos"
             url="/your-videos"
+            isActive={currentPath === "/your-videos"}
           />
           <LargeSidebarItem
             Icon={Clock}
             title="Watch Later"
             url="/playlist?list=WL"
+            isActive={currentPath === "/playlist?list=WL"}
           />
           <LargeSidebarItem
             Icon={BiLike}
             title="Liked Videos"
             url="/playlist?list=LL"
+            isActive={currentPath === "/playlist?list=LL"}
           />
         </LargeSidebarSection>
         <hr />
@@ -129,13 +151,14 @@ const Sidebar = () => {
                 Icon={channel.avatar}
                 title={channel.fullName}
                 url={`/user/${channel.userName}`}
+                isActive={currentPath === `/user/${channel.userName}`}
               />
             )
           )}
         </LargeSidebarSection>
         <hr />
 
-        <LargeSidebarSection title="Explore">
+        {/* <LargeSidebarSection title="Explore">
           <LargeSidebarItem Icon={Flame} title="Trending" url="/trending" />
           <LargeSidebarItem
             Icon={ShoppingBag}
@@ -155,7 +178,7 @@ const Sidebar = () => {
             url="/fashion-beauty"
           />
           <LargeSidebarItem Icon={Podcast} title="Podcasts" url="/podcasts" />
-        </LargeSidebarSection>
+        </LargeSidebarSection> */}
       </aside>
     </>
   );
@@ -165,6 +188,7 @@ type SmallSiderbarItemProps = {
   Icon: ElementType;
   title: string;
   url: string;
+  isActive: boolean;
 };
 
 type LargeSiderbarItemProps = {
@@ -180,13 +204,22 @@ type LargeSiderbarSectionProps = {
   title?: string;
 };
 
-const SmallSiderbarItem = ({ Icon, title, url }: SmallSiderbarItemProps) => {
+const SmallSiderbarItem = ({
+  Icon,
+  title,
+  url,
+  isActive,
+}: SmallSiderbarItemProps) => {
   return (
     <Link
       to={url}
       className={twMerge(
         buttonStyles({ variant: "ghost" }),
-        "py-4 px-1 flex flex-col items-center rounded-lg gap-1"
+        `py-4 px-1 flex flex-col items-center rounded-lg gap-1 mt-1 ${
+          isActive
+            ? "font-bold dark:bg-gray-300 bg-neutral-100 hover:bg-secondary-marginal text-black"
+            : undefined
+        }`
       )}
     >
       <Icon className="size-6" />
@@ -242,7 +275,7 @@ const LargeSidebarItem = ({
       to={url}
       className={twMerge(
         buttonStyles({ variant: "ghost" }),
-        `w-full flex items-center rounded-lg gap-4 p-3 hover:text-black ${
+        `w-full flex items-center rounded-lg gap-4 p-3 mt-1 hover:text-black ${
           isActive
             ? "font-bold dark:bg-gray-300 bg-neutral-100 hover:bg-secondary-marginal text-black"
             : undefined
