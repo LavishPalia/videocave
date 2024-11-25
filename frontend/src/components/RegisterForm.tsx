@@ -9,8 +9,7 @@ import RegisterInput from "./RegisterInput";
 import { useRegisterMutation } from "@/slices/usersApiSlice";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { Slide, toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { useState } from "react";
 import EmailVerificationModal from "./EmailVerificationModal";
 
@@ -243,19 +242,6 @@ const RegisterForm = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         email={registeredEmail}
-      />
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Slide}
       />
     </div>
   );

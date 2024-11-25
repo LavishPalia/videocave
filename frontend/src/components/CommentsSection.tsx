@@ -7,8 +7,7 @@ import { useGetCurrentUserQuery } from "@/slices/usersApiSlice";
 import Button from "@/components/Button";
 import { formatTimeAgo } from "@/utils/formatTimeAgo";
 import { ThumbsDown, ThumbsUp, EllipsisVertical } from "lucide-react";
-import { Slide, toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 const CommentsSection = ({ videoId }: { videoId: string }) => {
   const [enteredComment, setEnteredComment] = useState("");
@@ -152,14 +151,6 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
           </div>
         )
       )}
-      <ToastContainer
-        autoClose={2000}
-        hideProgressBar={true}
-        position="bottom-left"
-        theme="dark"
-        transition={Slide}
-        stacked
-      />
     </div>
   );
 };

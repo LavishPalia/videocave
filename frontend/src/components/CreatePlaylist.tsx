@@ -13,8 +13,7 @@ import {
 } from "@/slices/playlistApiSlice";
 import { Plus } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import { Slide, toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 interface CreatePlaylistProps {
   videoId: string;
@@ -95,16 +94,6 @@ const CreatePlaylist = ({ videoId, close, openNew }: CreatePlaylistProps) => {
 
   return (
     <>
-      <ToastContainer
-        position="bottom-left"
-        autoClose={2000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        pauseOnHover
-        theme="dark"
-        transition={Slide}
-      />
       {/* CreatePlaylist Dialog */}
       <Dialog open={true} onOpenChange={close}>
         <DialogContent className="sm:max-w-[325px] bg-[#202021] text-white rounded-lg shadow-lg p-4">

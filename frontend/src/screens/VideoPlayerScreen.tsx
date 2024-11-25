@@ -23,8 +23,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useToggleVideoLikesMutation } from "@/slices/likesApiSlice";
 import { Bell, BellRing } from "lucide-react";
 import { useToggleSubscriptionMutation } from "@/slices/subscriptionsApiSlice";
-import { toast, ToastContainer, Slide } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { useGetPlaylistByIdQuery } from "@/slices/playlistApiSlice";
 import CustomPlaylist from "@/components/CustomPlayList";
 
@@ -281,14 +280,6 @@ const VideoPlayerScreen = () => {
           <SuggestedVideos videos={videos} setVideoId={setVideoId} />
         </div>
       </div>
-
-      <ToastContainer
-        autoClose={2000}
-        hideProgressBar={true}
-        position="bottom-left"
-        theme="dark"
-        transition={Slide}
-      />
     </div>
   );
 };

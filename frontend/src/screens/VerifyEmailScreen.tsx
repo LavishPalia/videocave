@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2, Mail } from "lucide-react";
-import { Slide, toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { useResendVerificationEmailMutation } from "@/slices/usersApiSlice";
 import { useAppSelector } from "@/app/hooks";
@@ -99,13 +99,6 @@ const VerifyEmailScreen = () => {
           )}
         </div>
       </div>
-      <ToastContainer
-        autoClose={2000}
-        hideProgressBar={true}
-        position="bottom-left"
-        theme="dark"
-        transition={Slide}
-      />
     </div>
   );
 };

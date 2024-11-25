@@ -14,8 +14,7 @@ import {
 } from "@/slices/subscriptionsApiSlice";
 import { useAppSelector } from "@/app/hooks";
 import { useEffect, useState } from "react";
-import { Slide, toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { FaCircleCheck } from "react-icons/fa6";
 import Channel_Cover from "../assets/channel_cover.png";
 
@@ -29,36 +28,40 @@ const Channel = () => {
     useGetUserChannelDetailsQuery(username);
 
   // Added conditional check for channelId
-  const channelId = channel?.data[0]?._id;
+  const channelId = channel?.data?._id;
   const { data: videos, isLoading: isVideosLoading } = useGetChannelVideosQuery(
     channelId,
     { skip: !channelId }
   );
 
-  const [toggleSubscription] = useToggleSubscriptionMutation();
+  const [toggleSubscription, { isLoading: isTogglingSubscription }] =
+    useToggleSubscriptionMutation();
+
   const { refetch: refetchSubscriptions } =
     useGetUserSubscriptionsQuery(userId);
 
-  const [isSubscribed, setIsSubscribed] = useState(
-    channel?.data[0]?.isSubscribed
-  );
+  const [isSubscribed, setIsSubscribed] = useState(channel?.data?.isSubscribed);
   const [subscribersCount, setSubscribersCount] = useState<number>(
-    channel?.data[0]?.subscribersCount
+    channel?.data?.subscribersCount
   );
 
   useEffect(() => {
-    setIsSubscribed(channel?.data[0]?.isSubscribed);
-    setSubscribersCount(channel?.data[0]?.subscribersCount);
+    setIsSubscribed(channel?.data?.isSubscribed);
+    setSubscribersCount(channel?.data?.subscribersCount);
   }, [channel]);
 
   const handleToggleSubscription = async (userId: string) => {
     setIsSubscribed((prev: boolean) => !prev);
-    setSubscribersCount((prev) => (isSubscribed ? prev - 1 : prev + 1));
-
+    const newSubscribersCount = isSubscribed
+      ? subscribersCount - 1
+      : subscribersCount + 1;
+    setSubscribersCount(newSubscribersCount);
     try {
-      await toggleSubscription(userId);
+      await toggleSubscription(userId).unwrap();
       refetchSubscriptions();
-      toast.success(`Subscription ${isSubscribed ? "removed" : "added"}!`);
+      toast.success(`Subscription ${isSubscribed ? "removed" : "added"}!`, {
+        autoClose: 500,
+      });
     } catch (error) {
       setIsSubscribed((prev: boolean) => !prev);
       setSubscribersCount((prev) => (isSubscribed ? prev + 1 : prev - 1));
@@ -84,26 +87,26 @@ const Channel = () => {
           {channel && (
             <div className="px-2 pb-4 overflow-x-hidden md:px-8">
               <img
-                src={channel.data[0].coverImage || Channel_Cover}
-                alt={channel.data[0].userName}
+                src={channel.data.coverImage || Channel_Cover}
+                alt={channel.data.userName}
                 className="object-cover object-center w-full h-40 rounded-lg"
               />
 
               <div className="flex flex-col gap-4 mt-4 sm:flex-row md:mt-8">
                 <img
-                  src={channel.data[0].avatar}
+                  src={channel.data.avatar}
                   alt=""
                   className="object-cover object-center mx-auto rounded-full size-24 md:size-40 sm:mx-0"
                 />
                 <div className="flex flex-col gap-2 text-center md:gap-3 sm:text-left">
                   <div className="flex items-center justify-center gap-2 sm:justify-start">
                     <h1 className="text-2xl md:text-3xl">
-                      {channel.data[0].fullName}
+                      {channel.data.fullName}
                     </h1>
                     <FaCircleCheck size={16} />
                   </div>
                   <div className="flex flex-wrap justify-center gap-1 text-sm sm:justify-start md:text-base">
-                    <h2>@{channel.data[0].userName}</h2>
+                    <h2>@{channel.data.userName}</h2>
                     <span className="hidden sm:inline">‧</span>
 
                     <p>{subscribersCount} Subscribers</p>
@@ -113,10 +116,9 @@ const Channel = () => {
                   </div>
 
                   <Button
-                    onClick={() =>
-                      handleToggleSubscription(channel.data[0]._id)
-                    }
+                    onClick={() => handleToggleSubscription(channel.data._id)}
                     className="flex items-center justify-center w-full gap-2 px-3 mt-2 text-sm text-gray-100 dark:bg-gray-700 rounded-3xl sm:w-max sm:mt-0"
+                    disabled={isTogglingSubscription}
                   >
                     {isSubscribed ? <BellRing size={20} /> : <Bell size={20} />}
                     <span>{isSubscribed ? "Subscribed" : "Subscribe"}</span>
@@ -228,13 +230,6 @@ const Channel = () => {
           )}
         </div>
       </div>
-      <ToastContainer
-        autoClose={2000}
-        hideProgressBar={true}
-        position="bottom-left"
-        theme="dark"
-        transition={Slide}
-      />
     </div>
   );
 };

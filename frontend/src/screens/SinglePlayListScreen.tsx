@@ -15,8 +15,7 @@ import {
 } from "@/slices/playlistApiSlice";
 import { formatTimeAgo } from "@/utils/formatTimeAgo";
 import VideoOptionsMenu from "@/components/dropdowns/VideoOptionsMenu";
-import { Slide, toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 interface IPlayListVideo {
   _id: string;
@@ -215,17 +214,6 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
           )}
         </div>
       </div>
-
-      <ToastContainer
-        position="bottom-left"
-        autoClose={2000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        pauseOnHover
-        theme="dark"
-        transition={Slide}
-      />
     </section>
   );
 };

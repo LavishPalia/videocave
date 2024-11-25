@@ -14,7 +14,7 @@ import { Upload } from "lucide-react";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { Textarea } from "./ui/textarea";
 import { usePublishVideoMutation } from "@/slices/videoApiSlice";
-import { Slide, toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 type ErrorResponse = {
@@ -157,13 +157,6 @@ export function VideoUploadModel() {
           </DialogFooter>
         </form>
       </DialogContent>
-      <ToastContainer
-        autoClose={2000}
-        hideProgressBar={true}
-        position="bottom-left"
-        theme="dark"
-        transition={Slide}
-      />
     </Dialog>
   );
 }

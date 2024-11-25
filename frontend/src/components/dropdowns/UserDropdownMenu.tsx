@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { logoutUser } from "@/slices/authSlice";
 import { useAppDispatch } from "@/app/hooks";
-import { Slide, toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export function UserDropdownMenu({
@@ -79,13 +79,6 @@ export function UserDropdownMenu({
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
-      <ToastContainer
-        autoClose={2000}
-        hideProgressBar={true}
-        position="bottom-left"
-        theme="dark"
-        transition={Slide}
-      />
     </DropdownMenu>
   );
 }

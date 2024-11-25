@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useResetPasswordMutation } from "../slices/usersApiSlice";
-import { Slide, toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 interface ResetPasswordFormData {
   newPassword: string;
@@ -149,20 +148,6 @@ const ResetPassword: React.FC = () => {
           </ul>
         </div>
       </section>
-
-      <ToastContainer
-        position="bottom-right"
-        autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Slide}
-      />
     </div>
   );
 };

@@ -6,8 +6,7 @@ import { Form } from "@/components/ui/form";
 import LoginInput from "../components/LoginInput";
 import { useForgotPasswordMutation } from "@/slices/usersApiSlice";
 import { Loader2 } from "lucide-react";
-import { Slide, toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { useState } from "react";
 
 const forgotPasswordSchema = z.object({
@@ -82,13 +81,6 @@ const ForgetPassword = () => {
           </form>
         </Form>
       </div>
-      <ToastContainer
-        autoClose={2000}
-        hideProgressBar={true}
-        position="bottom-left"
-        theme="dark"
-        transition={Slide}
-      />
     </div>
   );
 };

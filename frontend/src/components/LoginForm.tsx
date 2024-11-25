@@ -10,8 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { clearLogoutMessage, setUserCredentials } from "@/slices/authSlice";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { Slide, toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 
 export const loginFormSchema = z.object({
@@ -159,13 +158,6 @@ const LoginForm = () => {
           </p>
         </div>
       </div>
-      <ToastContainer
-        autoClose={2000}
-        hideProgressBar={true}
-        position="bottom-left"
-        theme="dark"
-        transition={Slide}
-      />
     </div>
   );
 };

@@ -12,7 +12,7 @@ import {
 } from "@/slices/playlistApiSlice";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { Slide, toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface INewPlaylistProps {
@@ -59,16 +59,6 @@ const NewPlaylist = ({ close, videoId }: INewPlaylistProps) => {
 
   return (
     <>
-      <ToastContainer
-        position="bottom-left"
-        autoClose={2000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        pauseOnHover
-        theme="dark"
-        transition={Slide}
-      />
       <Dialog open={true} onOpenChange={close}>
         <DialogContent className="sm:max-w-[325px] bg-[#383838] text-white rounded-3xl px-6 py-5">
           <DialogHeader>

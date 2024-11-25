@@ -790,7 +790,7 @@ const getUserChannelDetails = asyncHandler(async (req, res, next) => {
     .json(
       new ApiResponse(
         200,
-        channelDetails,
+        channelDetails[0],
         "Channel details fetched successfully"
       )
     );

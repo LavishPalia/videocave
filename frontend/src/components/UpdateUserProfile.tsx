@@ -8,8 +8,7 @@ import { Form } from "@/components/ui/form";
 import { useUpdateProfileDetailsMutation } from "@/slices/usersApiSlice";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { Slide, toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import UpdateUserProfileInput from "./UpdateUserProfileInput";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
@@ -138,20 +137,6 @@ const UpdateUserProfile = () => {
           </form>
         </div>
       </div>
-
-      <ToastContainer
-        position="bottom-right"
-        autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Slide}
-      />
     </Form>
   );
 };

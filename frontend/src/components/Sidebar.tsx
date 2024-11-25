@@ -88,7 +88,7 @@ const Sidebar = () => {
         </div>
         <LargeSidebarSection>
           <LargeSidebarItem isActive Icon={Home} url="/" title="Home" />
-          <LargeSidebarItem Icon={Repeat} url="/shorts" title="Shorts" />
+          {/* <LargeSidebarItem Icon={Repeat} url="/shorts" title="Shorts" /> */}
           <LargeSidebarItem
             Icon={Clapperboard}
             url="/subscriptions"
@@ -98,7 +98,7 @@ const Sidebar = () => {
         <hr />
 
         <LargeSidebarSection title="You">
-          <LargeSidebarItem Icon={User} title="Your Channel" url="/library" />
+          {/* <LargeSidebarItem Icon={User} title="Your Channel" url="/library" /> */}
           <LargeSidebarItem Icon={History} title="History" url="/history" />
           <LargeSidebarItem
             Icon={BiSolidPlaylist}

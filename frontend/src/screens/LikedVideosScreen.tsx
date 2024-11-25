@@ -43,7 +43,7 @@ const LikedVideosScreen = () => {
 
   useEffect(() => {
     refetchLikedVideos();
-  });
+  }, [refetchLikedVideos]);
 
   useEffect(() => {
     if (likedVideos?.data?.length > 0) {
