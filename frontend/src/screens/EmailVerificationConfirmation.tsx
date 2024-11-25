@@ -9,7 +9,7 @@ const EmailVerificationConfirmation: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { token } = useParams<{ token: string }>();
-  const [countdown, setCountdown] = useState(20);
+  const [countdown, setCountdown] = useState(3);
   const [verificationStatus, setVerificationStatus] = useState<
     "pending" | "success" | "error"
   >("pending");
