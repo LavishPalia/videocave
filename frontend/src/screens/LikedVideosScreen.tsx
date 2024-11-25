@@ -160,8 +160,7 @@ const LikedVideosScreen = () => {
                         to={`/user/${video.owner.userName}`}
                         className="flex flex-wrap gap-2 items-center text-secondary-marginal-text text-[10px] lg:text-xs"
                       >
-                        <p className="font-medium">{video.owner.fullName}</p>
-
+                        <p className="font-medium">{video.owner.fullName}</p> •
                         <div className="text-secondary-marginal-text">
                           {VIEW_FORMATTER.format(video.views)} Views
                         </div>

@@ -2,7 +2,10 @@ import { Bell, BellRing, Loader2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Sidebar from "@/components/Sidebar";
 import { Link, useParams } from "react-router-dom";
-import { useGetUserChannelDetailsQuery } from "@/slices/usersApiSlice";
+import {
+  useGetCurrentUserQuery,
+  useGetUserChannelDetailsQuery,
+} from "@/slices/usersApiSlice";
 import Button from "@/components/Button";
 import { useGetChannelVideosQuery } from "@/slices/videoApiSlice";
 import { formatDuration } from "@/utils/formatDuration";
@@ -39,6 +42,8 @@ const Channel = () => {
 
   const { refetch: refetchSubscriptions } =
     useGetUserSubscriptionsQuery(userId);
+
+  const { data: loggedInUser } = useGetCurrentUserQuery(null);
 
   const [isSubscribed, setIsSubscribed] = useState(channel?.data?.isSubscribed);
   const [subscribersCount, setSubscribersCount] = useState<number>(
@@ -107,22 +112,30 @@ const Channel = () => {
                   </div>
                   <div className="flex flex-wrap justify-center gap-1 text-sm sm:justify-start md:text-base">
                     <h2>@{channel.data.userName}</h2>
-                    <span className="hidden sm:inline">‧</span>
+                    <span className="hidden sm:inline">•</span>
 
                     <p>{subscribersCount} Subscribers</p>
-                    <span className="hidden sm:inline">‧</span>
+                    <span className="hidden sm:inline">•</span>
 
                     <p>{videos?.data?.videos?.length || 0} Videos</p>
                   </div>
-
-                  <Button
-                    onClick={() => handleToggleSubscription(channel.data._id)}
-                    className="flex items-center justify-center w-full gap-2 px-3 mt-2 text-sm text-gray-100 dark:bg-gray-700 rounded-3xl sm:w-max sm:mt-0"
-                    disabled={isTogglingSubscription}
-                  >
-                    {isSubscribed ? <BellRing size={20} /> : <Bell size={20} />}
-                    <span>{isSubscribed ? "Subscribed" : "Subscribe"}</span>
-                  </Button>
+                  {loggedInUser?.data?._id === channel?.data?._id && (
+                    <p>email : {channel.data.email}</p>
+                  )}
+                  {loggedInUser?.data?._id !== channel?.data?._id && (
+                    <Button
+                      onClick={() => handleToggleSubscription(channel.data._id)}
+                      className="flex items-center justify-center w-full gap-2 px-3 mt-2 text-sm text-gray-100 dark:bg-gray-700 rounded-3xl sm:w-max sm:mt-0"
+                      disabled={isTogglingSubscription}
+                    >
+                      {isSubscribed ? (
+                        <BellRing size={20} />
+                      ) : (
+                        <Bell size={20} />
+                      )}
+                      <span>{isSubscribed ? "Subscribed" : "Subscribe"}</span>
+                    </Button>
+                  )}
                 </div>
               </div>
 
