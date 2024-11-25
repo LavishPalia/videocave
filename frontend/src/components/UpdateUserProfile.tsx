@@ -89,13 +89,13 @@ const UpdateUserProfile = () => {
   };
 
   return (
-    <Form {...form}>
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
-        <div className="w-full max-w-md p-8 space-y-4 bg-gray-800 shadow-2xl rounded-xl">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <Form {...form}>
+        <div className="w-full max-w-md p-8 space-y-4 shadow-2xl bg-gradient-to-bl from-gray-800 to-gray-900 rounded-l-xl min-h-[632px] flex flex-col justify-center">
           <h2 className="text-3xl font-bold text-center text-purple-400">
             Update Your Profile
           </h2>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <UpdateUserProfileInput
               type="text"
               name="userName"
@@ -136,8 +136,62 @@ const UpdateUserProfile = () => {
             </Button>
           </form>
         </div>
-      </div>
-    </Form>
+
+        <section className="w-full max-w-xl p-8 space-y-4 text-gray-200 shadow-2xl bg-gradient-to-br from-gray-800 to-gray-900 rounded-r-xl">
+          <h1 className="text-3xl font-bold text-purple-400">
+            Profile Update Guidelines
+          </h1>
+          <p className="text-gray-400">
+            Please adhere to the following instructions to ensure a smooth
+            profile update experience.
+          </p>
+
+          <div className="space-y-2">
+            <h2 className="flex items-center text-lg font-semibold text-purple-300">
+              <span className="mr-2">🔤</span> Username
+            </h2>
+            <ul className="pl-6 space-y-1 list-disc">
+              <li>Must be between 2 and 30 characters long.</li>
+              <li>
+                Can contain only letters (a-z, A-Z), numbers (0-9), and
+                underscores (_).
+              </li>
+              <li>
+                Example: <span className="text-purple-400">john_doe123</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="flex items-center text-lg font-semibold text-purple-300">
+              <span className="mr-2">🖼️</span> Profile Picture
+            </h2>
+            <ul className="pl-6 space-y-1 list-disc">
+              <li>File is required.</li>
+              <li>Allowed formats: JPEG, PNG, GIF.</li>
+              <li>
+                It's recommended that you use a picture that's at least 98 x 98
+                pixels and 4 MB or less.
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="flex items-center text-lg font-semibold text-purple-300">
+              <span className="mr-2">🖼️</span> Cover Image
+            </h2>
+            <ul className="pl-6 space-y-1 list-disc">
+              <li>File is optional.</li>
+              <li>Allowed formats: JPEG, PNG, GIF.</li>
+              <li>
+                For the best results on all devices, use an image that's at
+                least 2048 x 1152 pixels and 6 MB or less
+              </li>
+            </ul>
+          </div>
+        </section>
+      </Form>
+    </div>
   );
 };
 
