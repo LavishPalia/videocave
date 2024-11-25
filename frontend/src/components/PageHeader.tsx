@@ -104,7 +104,7 @@ export function PageHeaderFirstSection({
         <Menu size={20} />
       </Button>
       <a href="/">
-        <img src={Logo} className="h-4 sm:h-6" />
+        <img src={Logo} className="h-4 sm:h-6" loading="lazy" />
       </a>
     </div>
   );

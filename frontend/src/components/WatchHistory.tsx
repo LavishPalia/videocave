@@ -71,6 +71,7 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
               <img
                 src={item.thumbnail}
                 className="block w-full h-full object-cover transition-[border-radius] duration-200 rounded-xl"
+                loading="lazy"
               />
               <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark bg-opacity-90 text-white font-semibold text-[8px] md:text-sm px-1 py-0.5 rounded">
                 {formatDuration(item.duration)}

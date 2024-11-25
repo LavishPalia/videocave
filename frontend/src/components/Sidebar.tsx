@@ -215,14 +215,14 @@ const SmallSiderbarItem = ({
       to={url}
       className={twMerge(
         buttonStyles({ variant: "ghost" }),
-        `py-4 px-1 flex flex-col items-center rounded-lg gap-1 mt-1 ${
+        `py-2 sm:py-4 px-0 sm:px-1 flex flex-col items-center rounded-lg gap-1 mt-1 ${
           isActive
             ? "font-bold dark:bg-gray-300 bg-neutral-100 hover:bg-secondary-marginal text-black"
             : undefined
         }`
       )}
     >
-      <Icon className="size-6" />
+      <Icon className="size-4 sm:size-6" />
       <div className="text-[10px]">{title}</div>
     </Link>
   );
@@ -287,6 +287,7 @@ const LargeSidebarItem = ({
           src={Icon}
           className="object-cover object-center rounded-full size-6"
           alt="channel-image"
+          loading="lazy"
         />
       ) : (
         <Icon className="size-6" />

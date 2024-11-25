@@ -53,15 +53,23 @@ const VideoGridItems = ({
       setRemainingDuration(Math.max(remainingTime, 0));
     };
 
-    if (isVideoPlaying) {
-      videoElement.currentTime = 0;
-      videoElement.play();
-      videoElement.addEventListener("timeupdate", handleTimeUpdate);
-    } else {
-      videoElement.pause();
-      videoElement.removeEventListener("timeupdate", handleTimeUpdate);
-      setRemainingDuration(duration); // Reset remaining duration when video stops
-    }
+    const toggleVideoState = async () => {
+      if (isVideoPlaying) {
+        try {
+          videoElement.currentTime = 0;
+          await videoElement.play();
+          videoElement.addEventListener("timeupdate", handleTimeUpdate);
+        } catch (error) {
+          console.error("Error playing video", error);
+        }
+      } else {
+        videoElement.pause();
+        videoElement.removeEventListener("timeupdate", handleTimeUpdate);
+        setRemainingDuration(duration); // Reset remaining duration when video stops
+      }
+    };
+
+    toggleVideoState();
 
     return () => {
       videoElement.removeEventListener("timeupdate", handleTimeUpdate);
@@ -81,6 +89,7 @@ const VideoGridItems = ({
             className={`block w-full h-full object-cover transition-[border-radius] duration-200 ${
               isVideoPlaying ? "rounded-none" : "rounded-xl"
             }`}
+            loading="lazy"
           />
           <video
             ref={videoRef}
@@ -119,6 +128,7 @@ const VideoGridItems = ({
           <img
             src={owner.avatar}
             className="object-cover rounded-full size-10"
+            loading="lazy"
           />
         </a>
         <div className="flex flex-col w-[70%]">

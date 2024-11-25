@@ -60,6 +60,7 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
           src={loggedInUser?.data?.avatar}
           alt={loggedInUser?.data?.fullName}
           className="object-cover object-center rounded-full size-12"
+          loading="lazy"
         />
         <input
           type="text"
@@ -115,6 +116,7 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
               src={comment?.userDetails[0]?.avatar}
               alt={comment?.userDetails[0]?.fullName}
               className="object-cover object-center rounded-full size-12"
+              loading="lazy"
             />
             <div className="flex flex-col grow">
               <div className="flex gap-4">

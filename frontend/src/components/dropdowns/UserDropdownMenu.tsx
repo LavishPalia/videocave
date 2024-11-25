@@ -49,6 +49,7 @@ export function UserDropdownMenu({
               src={user?.avatar}
               alt={user?.fullName}
               className="object-cover object-center rounded-full size-14"
+              loading="lazy"
             />
             <div className="flex flex-col">
               <p className="text-lg">{user?.fullName}</p>

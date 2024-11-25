@@ -133,6 +133,7 @@ const CustomPlaylist = ({ playlist, queryParams }: PlaylistProps) => {
               <img
                 src={video.thumbnail}
                 className="block w-full h-full object-cover transition-[border-radius] duration-200 rounded-lg"
+                loading="lazy"
               />
               <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark bg-opacity-65 text-white font-semibold text-xs px-1 py-0.5 rounded">
                 {formatDuration(video.duration)}

@@ -95,6 +95,7 @@ const Channel = () => {
                 src={channel.data.coverImage || Channel_Cover}
                 alt={channel.data.userName}
                 className="object-cover object-center w-full h-40 rounded-lg"
+                loading="lazy"
               />
 
               <div className="flex flex-col gap-4 mt-4 sm:flex-row md:mt-8">
@@ -102,6 +103,7 @@ const Channel = () => {
                   src={channel.data.avatar}
                   alt=""
                   className="object-cover object-center mx-auto rounded-full size-24 md:size-40 sm:mx-0"
+                  loading="lazy"
                 />
                 <div className="flex flex-col gap-2 text-center md:gap-3 sm:text-left">
                   <div className="flex items-center justify-center gap-2 sm:justify-start">
@@ -215,6 +217,7 @@ const Channel = () => {
                             src={video.thumbnail}
                             alt={video.title}
                             className="object-cover object-center w-full h-full rounded-lg"
+                            loading="lazy"
                           />
                         </a>
 

@@ -44,8 +44,6 @@ const LoginForm = () => {
     if (!user?.isEmailVerified) {
       navigate("/verify-email");
     } else if (user?.userName === "dummy_user_name") {
-      console.log("navigate update-profile");
-
       navigate("/update-profile");
     } else {
       navigate("/");

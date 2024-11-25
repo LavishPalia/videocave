@@ -155,6 +155,7 @@ const VideoPlayerScreen = () => {
                     src={video?.data[0]?.owner.avatar}
                     alt={video?.data[0]?.owner.userName}
                     className="object-cover object-center rounded-full size-10 sm:size-12"
+                    loading="lazy"
                   />
                 </Link>
                 <div className="flex items-center justify-between w-full xl:flex-col xl:items-start">

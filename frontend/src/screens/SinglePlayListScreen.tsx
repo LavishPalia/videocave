@@ -114,6 +114,7 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                   src={playlist?.data?.videos[0]?.thumbnail || NoThumbnail}
                   alt="liked videos"
                   className="object-fill origin-center rounded-md aspect-video"
+                  loading="lazy"
                 />
                 <h1 className="mt-1 text-3xl font-semibold lg:mt-0 lg:text-2xl">
                   {playlist?.data?.name}
@@ -162,6 +163,7 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                           <img
                             src={video.thumbnail}
                             className="block w-full h-full object-cover transition-[border-radius] duration-200 rounded-xl"
+                            loading="lazy"
                           />
                           <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark bg-opacity-90 text-white font-semibold text-[8px] md:text-sm px-1 py-0.5 rounded">
                             {formatDuration(video.duration)}

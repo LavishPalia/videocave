@@ -71,6 +71,7 @@ const PlaylistsScreen = () => {
                         src={playlist?.videos[0]?.thumbnail || NoThumbnail}
                         alt={playlist.name}
                         className="object-cover w-full h-48 rounded-lg"
+                        loading="lazy"
                       />
                     </a>
                     <div className="relative py-2">
