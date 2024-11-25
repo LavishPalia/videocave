@@ -14,11 +14,9 @@ import {
   PlaySquare,
   Podcast,
   Radio,
-  Repeat,
   Shirt,
   ShoppingBag,
   Trophy,
-  User,
 } from "lucide-react";
 import { Children, ElementType, ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
