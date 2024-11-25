@@ -26,26 +26,11 @@ app.use(
   })
 );
 
-// Handle Preflight Requests
-app.options("*", cors());
-
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(morgan("dev"));
-
-const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-const clientUrl =
-  process.env.NODE_ENV === "development"
-    ? "localhost:5173"
-    : "videocave.vercel.app";
-
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", `${protocol}://${clientUrl}`);
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  next();
-});
 
 // import routes
 import userRouter from "./routes/user.routes.js";

@@ -20,6 +20,7 @@ import VerifyEmailScreen from "./screens/VerifyEmailScreen.tsx";
 import PlayListScreen from "./screens/PlayListScreen.tsx";
 import SubscriptionsScreen from "./screens/SubscriptionsScreen.tsx";
 import PlaylistsScreen from "./screens/PlaylistsScreen.tsx";
+import UpdateUserProfile from "./components/UpdateUserProfile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
   {
     path: "verify-email",
     element: <VerifyEmailScreen />,
+  },
+  {
+    path: "/update-profile",
+    element: <UpdateUserProfile />,
   },
   {
     path: "",

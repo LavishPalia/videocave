@@ -21,19 +21,24 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     // register request to backend
     register: builder.mutation({
       query: (data) => {
-        // console.log("usersApi slice register mutation", data);
+        return {
+          url: `${USERS_URL}/register/initial`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
 
+    updateProfileDetails: builder.mutation({
+      query: (data) => {
         const formData = new FormData();
 
-        formData.append("fullName", data.fullName);
         formData.append("userName", data.userName);
-        formData.append("password", data.password);
-        formData.append("email", data.email);
         formData.append("avatar", data.avatar);
         formData.append("coverImage", data.coverImage);
 
         return {
-          url: `${USERS_URL}/register`,
+          url: `${USERS_URL}/register/complete`,
           method: "POST",
           body: formData,
           formData: true,
@@ -42,7 +47,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       },
     }),
 
-    // get current loogedin user
+    // get current logged in user
     getCurrentUser: builder.query({
       query: () => ({
         url: `${USERS_URL}/current-user`,
@@ -86,8 +91,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     // resend verification email
     resendVerificationEmail: builder.mutation({
       query: (data) => {
-        console.log(data);
-
         return {
           url: `${USERS_URL}/resend-verification-email`,
           method: "POST",
@@ -107,4 +110,5 @@ export const {
   useResetPasswordMutation,
   useResendVerificationEmailMutation,
   useVerifyEmailMutation,
+  useUpdateProfileDetailsMutation,
 } = usersApiSlice;

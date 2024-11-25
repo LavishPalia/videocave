@@ -39,10 +39,21 @@ const authSlice = createSlice({
     clearLogoutMessage: (state) => {
       state.logoutMessage = null;
     },
+
+    updateUserPostEmailVerification: (state, action) => {
+      // console.log("updateUserPostEmailVerification ", action.payload);
+
+      state.user = action.payload;
+      localStorage.setItem("user", JSON.stringify(state.user));
+    },
   },
 });
 
-export const { logoutUser, setUserCredentials, clearLogoutMessage } =
-  authSlice.actions;
+export const {
+  logoutUser,
+  setUserCredentials,
+  clearLogoutMessage,
+  updateUserPostEmailVerification,
+} = authSlice.actions;
 
 export default authSlice.reducer;

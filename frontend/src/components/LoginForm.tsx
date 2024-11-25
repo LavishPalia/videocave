@@ -8,11 +8,11 @@ import LoginInput from "./LoginInput";
 import { useLoginMutation } from "@/slices/usersApiSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { clearLogoutMessage, setUserCredentials } from "@/slices/authSlice";
-import { Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const loginFormSchema = z.object({
   email: z.string().email(),
@@ -20,6 +20,8 @@ export const loginFormSchema = z.object({
 });
 
 const LoginForm = () => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   const [login, { isLoading }] = useLoginMutation();
 
   const dispatch = useAppDispatch();
@@ -39,10 +41,17 @@ const LoginForm = () => {
   }, [logoutMessage, dispatch]);
 
   useEffect(() => {
-    if (isLoggedIn && user.isEmailVerified) {
+    if (!isLoggedIn) return;
+    if (!user?.isEmailVerified) {
+      navigate("/verify-email");
+    } else if (user?.userName === "dummy_user_name") {
+      console.log("navigate update-profile");
+
+      navigate("/update-profile");
+    } else {
       navigate("/");
     }
-  }, []);
+  }, [isLoggedIn, user, navigate]);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -57,18 +66,11 @@ const LoginForm = () => {
     try {
       const response = await login({ ...userData }).unwrap();
 
+      console.log(response);
+
       dispatch(setUserCredentials(response.data));
 
-      if (!response.data?.user.isEmailVerified) {
-        toast.info("Please verify your email first");
-        navigate("/verify-email");
-        return;
-      }
-
       toast.success(`Logged In Successfully`);
-      setTimeout(() => {
-        navigate("/");
-      }, 800); // Delay of 2 seconds to allow the toast to be visible
     } catch (err: any) {
       console.error(err);
       toast.error(`${err?.data?.error}`);
@@ -77,7 +79,7 @@ const LoginForm = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800">
-      <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-2xl">
+      <div className="w-full max-w-lg p-8 bg-gray-800 rounded-lg shadow-2xl">
         <h2 className="mb-6 text-3xl font-bold text-center text-gray-100">
           Welcome to{" "}
           <span className="inline-block text-transparent transition-all delay-100 bg-transparent hover:scale-105 bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
@@ -94,11 +96,25 @@ const LoginForm = () => {
               control={form.control}
             />
             <LoginInput
-              type="password"
+              type={isPasswordVisible ? "text" : "password"}
               name="password"
               label="Password"
               placeholder="Enter your password"
               control={form.control}
+              trailingIcon={
+                // Add eye icon here
+                isPasswordVisible ? (
+                  <EyeOff
+                    className="text-gray-400"
+                    onClick={() => setIsPasswordVisible(false)}
+                  />
+                ) : (
+                  <Eye
+                    className="text-gray-400"
+                    onClick={() => setIsPasswordVisible(true)}
+                  />
+                )
+              }
             />
             <div className="flex items-center justify-center mb-6">
               {/* <label className="flex items-center">
@@ -134,7 +150,10 @@ const LoginForm = () => {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-400">
             Don't have an account?{" "}
-            <Link to="/register" className="text-blue-400 hover:underline">
+            <Link
+              to="/register"
+              className="text-lg text-blue-400 hover:underline"
+            >
               Sign up
             </Link>
           </p>

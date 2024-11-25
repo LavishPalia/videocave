@@ -8,8 +8,12 @@ const PrivateRoutes = () => {
     return <Navigate to="/login" />;
   }
 
-  if (isLoggedIn && !user.isEmailVerified) {
+  if (!user?.isEmailVerified) {
     return <Navigate to="/verify-email" />;
+  }
+
+  if (user?.isEmailVerified && user?.userName === "dummy_user_name") {
+    return <Navigate to="/update-profile" />;
   }
 
   return <Outlet />;

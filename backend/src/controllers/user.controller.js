@@ -124,18 +124,112 @@ const registerUser = asyncHandler(async (req, res, next) => {
     return next(new ApiError(422, errors.array()));
   }
 
-  const { userName, email, password, fullName } = req.body;
+  const { email, password, fullName } = req.body;
+  console.log({ email, password, fullName });
+
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    return next(new ApiError(400, `A user with email ${email} already exists`));
+  }
+
+  const defaultAvatarPath =
+    "/public/images/avatars/no-profile-picture-icon.png";
+
+  const user = await User.create({
+    email,
+    password,
+    fullName,
+    avatar: defaultAvatarPath,
+    userName: `dummy_user_name`,
+  });
+
+  if (!user) {
+    return next(
+      new ApiError(500, "something went wrong while registering the user")
+    );
+  }
+
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken -watchHistory -coverImage -avatar"
+  );
+
+  const payload = {
+    userId: createdUser._id,
+  };
+
+  // user email verification
+  const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "60m",
+  });
+
+  createdUser.emailVerificationToken = token;
+  await createdUser.save();
+
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const clientUrl =
+    process.env.NODE_ENV === "development"
+      ? "localhost:5173"
+      : "videocave.vercel.app";
+
+  const mailOptions = {
+    from: "lavishgarg1199@gmail.com",
+    to: createdUser.email,
+    subject: `${createdUser.fullName}, verify your email address for VideoCave`,
+    html: `
+      <html>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #4a4a4a;">Welcome to VideoCave, ${createdUser.fullName}!</h2>
+          <p>We're excited to have you on board. To get started, please verify your email address.</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${protocol}://${clientUrl}/verify-email/${token}" style="background-color: #4CAF50; color: white; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 4px; font-size: 16px;">Verify Your Email</a>
+          </div>
+          <p>This verification link will expire in 60 minutes for security reasons.</p>
+          <p>If you didn't create an account on VideoCave, you can safely ignore this email.</p>
+          <p>Thank you for joining our community!</p>
+          <p>Best regards,<br>The VideoCave Team</p>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  // send the email
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      return next(new ApiError(400, err.message));
+    }
+    console.log("(parameter) info: SMTPTransport.SentMessageInfo", info);
+  });
+
+  res
+    .status(201)
+    .json(new ApiResponse(200, createdUser, "User registered successfully"));
+});
+
+const finishAccountCreation = asyncHandler(async (req, res, next) => {
+  const errors = validationResult(req);
+
+  // console.log("214", errors.array());
+
+  if (!errors.isEmpty()) {
+    return next(new ApiError(422, errors.array()));
+  }
+
+  const { userName } = req.body;
+
+  console.log({ userName });
+  console.log(req.user._id);
 
   // console.log(userName, email, password, fullName);
 
-  const existingUser = await User.findOne({
-    $or: [{ userName }, { email }],
-  });
+  const existingUser = await User.findOne({ userName });
 
   if (existingUser) {
-    return next(new ApiError(400, "Email or username is taken"));
+    return next(new ApiError(400, `Username ${userName} is already taken`));
   }
-  // avatar will definitely be present at this point courtsey express validator
+  // avatar will definitely be present at this point courtesy express validator
   const avatarLocalPath = req.files?.avatar[0]?.path;
 
   let coverImageLocalPath;
@@ -174,77 +268,25 @@ const registerUser = asyncHandler(async (req, res, next) => {
     }
   }
 
-  const user = await User.create({
-    userName,
-    email,
-    password,
-    fullName,
-    avatar: avatar.url,
-    coverImage: coverImage?.url || "",
-  });
+  console.log({ avatar, coverImage });
 
-  const createdUser = await User.findById(user._id).select(
-    "-password -refreshToken"
-  );
-
-  if (!createdUser) {
-    return next(
-      new ApiError(500, "something went wrong while registering the user")
-    );
-  }
-
-  const payload = {
-    userId: createdUser._id,
-  };
-
-  // user email verification
-  const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "60m",
-  });
-
-  createdUser.emailVerificationToken = token;
-  await createdUser.save();
-
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-  const clientUrl =
-    process.env.NODE_ENV === "development"
-      ? "localhost:5173"
-      : "videocave.vercel.app";
-
-  const mailOptions = {
-    from: "lavishgarg1199@gmail.com",
-    to: createdUser.email,
-    subject: `${createdUser.fullName}, verify your email address for VideoCave`,
-    html: `
-    <html>
-    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-      <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #4a4a4a;">Welcome to VideoCave, ${createdUser.fullName}!</h2>
-        <p>We're excited to have you on board. To get started, please verify your email address.</p>
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${protocol}://${clientUrl}/verify-email/${token}" style="background-color: #4CAF50; color: white; padding: 14px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 4px; font-size: 16px;">Verify Your Email</a>
-        </div>
-        <p>This verification link will expire in 60 minutes for security reasons.</p>
-        <p>If you didn't create an account on VideoCave, you can safely ignore this email.</p>
-        <p>Thank you for joining our community!</p>
-        <p>Best regards,<br>The VideoCave Team</p>
-      </div>
-    </body>
-    </html>
-  `,
-  };
-
-  // send the email
-  transporter.sendMail(mailOptions, (err, info) => {
-    if (err) {
-      return next(new ApiError(400, err.message));
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      userName,
+      avatar: avatar.url,
+      coverImage: coverImage?.url || "",
+    },
+    {
+      new: true,
     }
-    console.log("(parameter) info: SMTPTransport.SentMessageInfo", info);
-  });
+  ).select("userName fullName email coverImage avatar isEmailVerified");
+
+  console.log({ updatedUser });
 
   res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "User registered successfully"));
+    .json(new ApiResponse(200, updatedUser, "User profile creation completed"));
 });
 
 const verifyEmail = asyncHandler(async (req, res, next) => {
@@ -258,7 +300,9 @@ const verifyEmail = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, "Invalid token"));
   }
 
-  const user = await User.findById(payload.userId);
+  const user = await User.findById(payload.userId).select(
+    "avatar email fullName isEmailVerified userName _id"
+  );
   if (!user) {
     return next(new ApiError(400, "User not found"));
   }
@@ -268,7 +312,7 @@ const verifyEmail = asyncHandler(async (req, res, next) => {
   }
 
   user.isEmailVerified = true;
-  user.emailVerificationToken = "";
+  user.emailVerificationToken = undefined; // remove field from user doc
   await user.save();
 
   res
@@ -361,9 +405,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return next(
-      new ApiError(422, "Please enter all the required fields", errors.array())
-    );
+    return next(new ApiError(422, errors.array()));
   }
 
   const { userName, email, password } = req.body;
@@ -515,9 +557,7 @@ const updateUserPassword = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return next(
-      new ApiError(422, "Please enter all the required fields", errors.array())
-    );
+    return next(new ApiError(422, errors.array()));
   }
 
   const { oldPassword, newPassword, confirmNewPassword } = req.body;
@@ -562,9 +602,7 @@ const updateAccountDetails = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return next(
-      new ApiError(422, "Please enter all the required fields", errors.array())
-    );
+    return next(new ApiError(422, errors.array()));
   }
 
   const { email, fullName } = req.body;
@@ -659,7 +697,7 @@ const updateUserCoverImage = asyncHandler(async (req, res, next) => {
     { new: true }
   ).select("-password");
 
-  // remove/delete old image after successfull update of new cover image
+  // remove/delete old image after successful update of new cover image
   const imagePublicId = loggedInUser.coverImage.split("/").pop().split(".")[0];
   await deleteFromCloudinary(imagePublicId);
 
@@ -674,9 +712,7 @@ const getUserChannelDetails = asyncHandler(async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return next(
-      new ApiError(422, "Please enter all the required fields", errors.array())
-    );
+    return next(new ApiError(422, errors.array()));
   }
 
   const { userName } = req.params;
@@ -761,54 +797,6 @@ const getUserChannelDetails = asyncHandler(async (req, res, next) => {
 });
 
 const getWatchHistory = asyncHandler(async (req, res, next) => {
-  const pipeline = [
-    {
-      $match: {
-        _id: req.user._id,
-      },
-    },
-    {
-      $lookup: {
-        from: "videos",
-        localField: "watchHistory",
-        foreignField: "_id",
-        as: "watchHistory",
-        pipeline: [
-          {
-            $lookup: {
-              from: "users",
-              localField: "owner",
-              foreignField: "_id",
-              as: "owner",
-              pipeline: [
-                {
-                  $project: {
-                    userName: 1,
-                    fullName: 1,
-                    avatar: 1,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $addFields: {
-              owner: {
-                $first: "$owner",
-              },
-            },
-          },
-        ],
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        watchHistory: 1,
-      },
-    },
-  ];
-
   const newPipeline = [
     {
       $match: {
@@ -976,4 +964,5 @@ export {
   verifyEmail,
   resendEmailVerification,
   checkEmailVerificationStatus,
+  finishAccountCreation,
 };

@@ -20,12 +20,34 @@ import {
   verifyEmail,
   resendEmailVerification,
   checkEmailVerificationStatus,
+  finishAccountCreation,
 } from "../controllers/user.controller.js";
 import { check, checkSchema } from "express-validator";
 
 const router = express.Router();
 
-router.route("/register").post(
+router.route("/register/initial").post(
+  [
+    check("email", "Please enter a valid email address").trim().isEmail(),
+    check("fullName", "Full name must be between 3 to 50 characters long")
+      .trim()
+      .isLength({ min: 3, max: 50 })
+      .matches(/^[a-zA-Z\s]+$/)
+      .withMessage(
+        "Full name must contain only alphabetical characters and spaces"
+      ),
+    check(
+      "password",
+      "Password must contain one uppercase, one lowercase, one special character, one digit and minimum 8 characters long"
+    )
+      .trim()
+      .isStrongPassword(),
+  ],
+  registerUser
+);
+
+router.route("/register/complete").post(
+  verifyToken,
   upload.fields([
     {
       name: "avatar",
@@ -37,59 +59,66 @@ router.route("/register").post(
     },
   ]),
   [
+    // Validate userName
     check(
       "userName",
-      "username should not be empty and without any special characters"
+      "Username should not be empty and can only contain letters, numbers, and underscores"
     )
       .trim()
-      .isAlphanumeric(),
-    check("email", "Please enter a valid email address").trim().isEmail(),
-    check(
-      "fullName",
-      "Full Name must be atleast 3 characters and atmost 50 characters"
-    )
-      .trim()
-      .isLength({ min: 3, max: 50 }),
-    check(
-      "password",
-      "Password must contain one uppercase, one lowercase, one special char, one digit and min 8 chars long"
-    )
-      .trim()
-      .isStrongPassword(),
+      .matches(/^[a-zA-Z0-9_]+$/),
+    // Validate avatar and coverImage
     checkSchema({
       avatar: {
         custom: {
-          options: (_value, { req, path }) => !!req.files[path],
-          errorMessage: "Please select an avatar image for your account",
+          options: (_value, { req, path }) => {
+            if (req.files && req.files[path]) {
+              const file = req.files[path][0];
+              const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
+              return allowedMimeTypes.includes(file.mimetype);
+            }
+            return false; // Avatar is required, so no file means validation fails
+          },
+          errorMessage:
+            "Avatar must be a valid image file (JPEG, PNG, GIF) and is required",
+        },
+      },
+      coverImage: {
+        optional: true, // This makes the field validation optional
+        custom: {
+          options: (_value, { req, path }) => {
+            if (req.files && req.files[path]) {
+              const file = req.files[path][0];
+              const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
+              return allowedMimeTypes.includes(file.mimetype);
+            }
+            return true; // If no file is provided, validation passes
+          },
+          errorMessage:
+            "Cover image must be a valid image file (JPEG, PNG, GIF)",
         },
       },
     }),
   ],
-  registerUser
+  finishAccountCreation
 );
 
 router.route("/verify-email/:token").post(verifyEmail);
 router.route("/resend-verification-email").post(resendEmailVerification);
 
-router
-  .route("/login")
-  .post(
-    [
-      check(
-        "userName",
-        "username should not be empty and without any special characters"
-      )
-        .trim()
-        .isAlphanumeric()
-        .optional(),
-      check("email", "Please enter a valid email address")
-        .trim()
-        .isEmail()
-        .optional(),
-      check("password", "please provide your password").trim().notEmpty(),
-    ],
-    loginUser
-  );
+router.route("/login").post(
+  [
+    check(
+      "userName",
+      "Username should not be empty and can only contain letters, numbers, and underscores"
+    )
+      .trim()
+      .matches(/^[a-zA-Z0-9_]+$/)
+      .optional(),
+    check("email", "Please enter a valid email address").trim().isEmail(),
+    check("password", "please provide your password").trim().notEmpty(),
+  ],
+  loginUser
+);
 
 router
   .route("/check-email-verification-status")

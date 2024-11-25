@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       index: true,
+      default: null,
     },
     email: {
       type: String,
@@ -29,6 +30,7 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       required: [true, "Please select an avatar image for your profile"],
+      default: null,
     },
     coverImage: { type: String },
     password: {

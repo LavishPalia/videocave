@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CheckCircle, XCircle } from "lucide-react";
 import { useVerifyEmailMutation } from "../slices/usersApiSlice";
+import { useAppDispatch } from "@/app/hooks";
+import { updateUserPostEmailVerification } from "@/slices/authSlice";
 
 const EmailVerificationConfirmation: React.FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { token } = useParams<{ token: string }>();
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(20);
   const [verificationStatus, setVerificationStatus] = useState<
     "pending" | "success" | "error"
   >("pending");
@@ -17,7 +20,9 @@ const EmailVerificationConfirmation: React.FC = () => {
     const performVerification = async () => {
       try {
         const result = await verifyEmail(token).unwrap();
-        console.log(result);
+        console.log(result.data);
+
+        dispatch(updateUserPostEmailVerification(result.data));
 
         setVerificationStatus("success");
       } catch (error: any) {
@@ -76,7 +81,7 @@ const EmailVerificationConfirmation: React.FC = () => {
           Your account has been successfully verified.
         </p>
         <p className="text-gray-400">
-          Redirecting to login in {countdown} seconds...
+          Redirecting to Profile screen in {countdown} seconds...
         </p>
       </div>
     </div>
