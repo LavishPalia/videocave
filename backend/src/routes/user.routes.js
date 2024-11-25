@@ -180,18 +180,16 @@ router
   .patch(verifyToken, upload.single("coverImage"), updateUserCoverImage);
 
 router.route("/current-user").get(verifyToken, getLoggedInUser);
-router
-  .route("/c/:userName")
-  .get(
-    verifyToken,
-    check(
-      "userName",
-      "username should not be empty and without any special characters"
-    )
-      .trim()
-      .isAlphanumeric(),
-    getUserChannelDetails
-  );
+router.route("/c/:userName").get(
+  verifyToken,
+  check(
+    "userName",
+    "Username should not be empty and can only contain letters, numbers, and underscore"
+  )
+    .trim()
+    .matches(/^[a-zA-Z0-9_]+$/),
+  getUserChannelDetails
+);
 router.route("/history").get(verifyToken, getWatchHistory);
 router
   .route("/history/clear/:videoId")
