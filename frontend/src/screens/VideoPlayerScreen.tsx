@@ -26,6 +26,7 @@ import { useToggleSubscriptionMutation } from "@/slices/subscriptionsApiSlice";
 import { toast } from "react-toastify";
 import { useGetPlaylistByIdQuery } from "@/slices/playlistApiSlice";
 import CustomPlaylist from "@/components/CustomPlayList";
+import { useGetCurrentUserQuery } from "@/slices/usersApiSlice";
 
 const VideoPlayerScreen = () => {
   const [videoId, setVideoId] = useState("");
@@ -73,9 +74,12 @@ const VideoPlayerScreen = () => {
   }, [location.search]);
 
   const { data: videos } = useGetAllVideosQuery(null);
+  const { data: loggedInUser } = useGetCurrentUserQuery(null);
 
-  const [toggleVideoLikes] = useToggleVideoLikesMutation();
-  const [toggleSubscription] = useToggleSubscriptionMutation();
+  const [toggleVideoLikes, { isLoading: isTogglingLike }] =
+    useToggleVideoLikesMutation();
+  const [toggleSubscription, { isLoading: isTogglingSubscription }] =
+    useToggleSubscriptionMutation();
 
   useEffect(() => {
     if (video?.data[0]?.isLiked !== undefined) {
@@ -177,19 +181,26 @@ const VideoPlayerScreen = () => {
                     </p>
                   </div>
 
-                  <Button
-                    onClick={() =>
-                      handleToggleSubscription(video?.data[0].owner._id)
-                    }
-                    className={`flex items-center gap-2 px-3 text-sm rounded-3xl w-max self-start flex-shrink-0 ml-2 xl:ml-0 ${
-                      isSubscribed
-                        ? "text-gray-100 dark:bg-gray-700"
-                        : "text-gray-900 dark:bg-gray-200"
-                    }`}
-                  >
-                    {isSubscribed ? <BellRing size={20} /> : <Bell size={20} />}
-                    <span>{isSubscribed ? "Subscribed" : "Subscribe"}</span>
-                  </Button>
+                  {loggedInUser?.data?._id !== video?.data[0].owner._id && (
+                    <Button
+                      onClick={() =>
+                        handleToggleSubscription(video?.data[0].owner._id)
+                      }
+                      className={`flex items-center gap-2 px-3 text-sm rounded-3xl w-max self-start flex-shrink-0 ml-2 xl:ml-0 ${
+                        isSubscribed
+                          ? "text-gray-100 dark:bg-gray-700"
+                          : "text-gray-900 dark:bg-gray-200"
+                      }`}
+                      disabled={isTogglingSubscription}
+                    >
+                      {isSubscribed ? (
+                        <BellRing size={20} />
+                      ) : (
+                        <Bell size={20} />
+                      )}
+                      <span>{isSubscribed ? "Subscribed" : "Subscribe"}</span>
+                    </Button>
+                  )}
                 </div>
                 {/* <Button variant="dark" className="px-3 rounded-full">
                 Join
@@ -202,6 +213,7 @@ const VideoPlayerScreen = () => {
                     variant="dark"
                     className="flex gap-1 items-center bg-[#31302f] rounded-full rounded-r-none px-2 sm:px-3 text-xs sm:text-sm"
                     onClick={handleToggleLike}
+                    disabled={isTogglingLike}
                   >
                     {isLiked ? <BiSolidLike size={20} /> : <BiLike size={20} />}
                     <p>{video?.data[0]?.likes}</p>
