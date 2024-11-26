@@ -30,7 +30,9 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     }),
 
     updateProfileDetails: builder.mutation({
-      query: (data) => {
+      query: ({ data, onProgress }) => {
+        console.log(data);
+
         const formData = new FormData();
 
         formData.append("userName", data.userName);
@@ -41,8 +43,9 @@ export const usersApiSlice = apiSlice.injectEndpoints({
           url: `${USERS_URL}/register/complete`,
           method: "POST",
           body: formData,
-          formData: true,
-          accept: "*/*",
+          headers: { "Content-Type": "multipart/form-data" },
+          useProgress: true, // Activate progress tracking
+          onProgress, // Pass the progress callback
         };
       },
     }),

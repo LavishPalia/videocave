@@ -1,5 +1,5 @@
 // src/api/apiSlice.js
-
+import axios, { AxiosRequestConfig } from "axios";
 import { BASE_URL } from "@/constants";
 import {
   BaseQueryFn,
@@ -71,8 +71,91 @@ const baseQueryWithReauth: BaseQueryFn<
 
   return result;
 };
+
+// Define the custom base query
+export const fetchBaseQueryWithProgress = ({
+  baseUrl,
+}: {
+  baseUrl: string;
+}): BaseQueryFn<
+  {
+    url: string;
+    method: AxiosRequestConfig["method"];
+    body?: any;
+    headers?: Record<string, string>;
+    onProgress?: (progress: number) => void;
+  },
+  unknown,
+  FetchBaseQueryError
+> => {
+  return async (args, api, _extraOptions) => {
+    const { url, method, body, headers, onProgress } = args;
+
+    const state = api.getState() as RootState;
+    const accessToken = state.auth.accessToken;
+
+    const source = axios.CancelToken.source();
+
+    try {
+      const response = await axios({
+        method,
+        url: `${baseUrl}${url}`,
+        data: body,
+        headers: {
+          ...headers,
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cancelToken: source.token,
+        onUploadProgress: (progressEvent) => {
+          if (onProgress) {
+            const progress = Math.round(
+              (progressEvent.loaded * 100) / (progressEvent.total || 1)
+            );
+            onProgress(progress);
+          }
+        },
+      });
+      return { data: response.data };
+    } catch (error: any) {
+      return { error: error.response?.data || error.message };
+    }
+  };
+};
+
+const dynamicBaseQuery: BaseQueryFn<
+  {
+    url: string;
+    method?: AxiosRequestConfig["method"]; // Optional here
+    body?: any;
+    headers?: Record<string, string>;
+    useProgress?: boolean;
+    onProgress?: (progress: number) => void;
+  },
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  const {
+    url,
+    method = "GET", // Default to 'GET'
+    body,
+    headers = {},
+    useProgress,
+    onProgress,
+  } = args;
+
+  if (useProgress) {
+    return fetchBaseQueryWithProgress({ baseUrl: BASE_URL })(
+      { url, method, body, headers, onProgress },
+      api,
+      extraOptions
+    );
+  }
+
+  return baseQueryWithReauth({ url, method, body, headers }, api, extraOptions);
+};
+
 export const apiSlice = createApi({
-  baseQuery: baseQueryWithReauth,
+  baseQuery: dynamicBaseQuery,
   tagTypes: [
     "Comment",
     "Like",
