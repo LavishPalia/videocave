@@ -53,7 +53,7 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
 
   return (
     <div className="px-4 md:px-10">
-      <h1 className="pb-16 text-4xl md:pb-8">Watch History</h1>
+      <h1 className="pb-4 text-4xl md:pb-8">Watch History</h1>
 
       {history?.data?.length === 0 ? (
         <div className="flex items-center justify-center text-xl text-gray-200">
@@ -62,17 +62,20 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
         </div>
       ) : (
         history?.data?.map((item) => (
-          <div className="relative flex gap-2 pb-4 md:gap-4" key={item._id}>
+          <div
+            className="relative flex flex-col gap-1 pb-4 md:gap-2 md:flex-row"
+            key={item._id}
+          >
             <a
               href={`/watch?v=${item._id}`}
-              className="relative block min-w-20 max-h-20 md:min-w-40 md:max-h-40 aspect-video shrink-0"
+              className="relative block max-w-48 md:min-w-40 aspect-video shrink-0"
             >
               <img
                 src={item.thumbnail}
                 className="block w-full h-full object-cover transition-[border-radius] duration-200 rounded-xl"
                 loading="lazy"
               />
-              <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark bg-opacity-90 text-white font-semibold text-[8px] md:text-sm px-1 py-0.5 rounded">
+              <div className="absolute right-6 bottom-1 md:bottom-1 md:right-1 bg-secondary-marginal-dark bg-opacity-90 text-white font-semibold text-[6px] md:text-sm px-1 py-0.5 rounded">
                 {formatDuration(item.duration)}
               </div>
             </a>
@@ -87,7 +90,10 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
                 <X size={28} className="cursor-pointer" />
               </Button>
             </div>
-            <VideoOptionsMenu videoId={item._id} playlistName="Watch Later" />
+
+            <div className="absolute right-0 top-1">
+              <VideoOptionsMenu videoId={item._id} playlistName="Watch Later" />
+            </div>
 
             <div className="flex flex-col w-[150px] md:w-[290px]">
               <a
@@ -101,7 +107,7 @@ const WatchHistory: React.FC<WatchHistoryProps> = ({
                 className="flex gap-2 items-center text-secondary-marginal-text text-[8px] md:text-xs"
               >
                 <p>{item.owner.fullName}</p>
-                <FaCircleCheck size={12} />
+                <FaCircleCheck className="size-2 md:size-3" />
                 <div className="text-secondary-marginal-text">
                   {VIEW_FORMATTER.format(item.views)} Views
                 </div>

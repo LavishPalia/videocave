@@ -46,9 +46,9 @@ const VideoOptionsMenu = ({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-0 top-1"
+            // className="absolute top-0 -right-4 md:right-0"
           >
-            <EllipsisVertical />
+            <EllipsisVertical className="size-5 md:size-6" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64 p-2 bg-[#202021]">

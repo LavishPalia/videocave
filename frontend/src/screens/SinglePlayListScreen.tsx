@@ -157,7 +157,7 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                           href={`/watch?v=${video._id}&list=${listId}&index=${
                             index + 1
                           }`}
-                          className="relative block min-w-20 max-h-20 md:min-w-40 md:max-h-40 aspect-video shrink-0"
+                          className="relative block max-h-24 md:max-h-40 aspect-video shrink-0"
                         >
                           <img
                             src={video.thumbnail}
@@ -169,9 +169,7 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                           </div>
                         </a>
 
-                        <div
-                          className={`flex gap-6 text-gray-400 absolute top-12 right-2`}
-                        >
+                        <div className={`absolute top-0 -right-4`}>
                           <VideoOptionsMenu
                             videoId={video._id}
                             listId={listId}
@@ -185,13 +183,13 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                         <div className="flex flex-col w-[150px] md:w-[480px]">
                           <a
                             href={`/watch?v=${video._id}&list=${listId}&index=${index}`}
-                            className="text-lg font-bold md:text-xl line-clamp-2 lg:line-clamp-3"
+                            className="text-[10px] font-bold md:text-xl max-w-[70%] md:max-w-[80%] line-clamp-2"
                           >
                             {video.title}
                           </a>
                           <a
                             href={`/user/${video.owner.userName}`}
-                            className="flex flex-wrap gap-2 items-center text-secondary-marginal-text text-[10px] lg:text-xs"
+                            className="flex flex-wrap md:gap-2 items-start gap-0 flex-col md:flex-row md:items-center text-secondary-marginal-text text-[10px] lg:text-xs"
                           >
                             <p className="font-medium">
                               {video.owner.fullName}
@@ -200,9 +198,8 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
                             <div className="text-secondary-marginal-text">
                               {VIEW_FORMATTER.format(video.views)} Views
                             </div>
-                            •
-                            <div>
-                              {formatTimeAgo(new Date(video.updatedAt))}
+                            <div className="hidden md:block">
+                              • {formatTimeAgo(new Date(video.updatedAt))}
                             </div>
                           </a>
                         </div>

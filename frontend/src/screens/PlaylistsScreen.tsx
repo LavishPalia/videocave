@@ -70,7 +70,7 @@ const PlaylistsScreen = () => {
                       <img
                         src={playlist?.videos[0]?.thumbnail || NoThumbnail}
                         alt={playlist.name}
-                        className="object-cover w-full h-48 rounded-lg"
+                        className="object-cover w-full h-full rounded-lg aspect-video"
                         loading="lazy"
                       />
                     </a>

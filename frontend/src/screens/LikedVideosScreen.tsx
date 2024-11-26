@@ -128,7 +128,7 @@ const LikedVideosScreen = () => {
                     >
                       <img
                         src={video.thumbnail}
-                        className="block w-full h-full object-cover transition-[border-radius] duration-200 rounded-xl"
+                        className="block h-full aspect-video object-cover transition-[border-radius] duration-200 rounded-xl"
                         loading="lazy"
                       />
                       <div className="absolute bottom-1 right-1 bg-secondary-marginal-dark bg-opacity-90 text-white font-semibold text-[8px] md:text-sm px-1 py-0.5 rounded">
@@ -137,29 +137,26 @@ const LikedVideosScreen = () => {
                     </a>
 
                     <div
-                      className={`flex gap-6 text-gray-400 absolute top-16 right-2`}
+                      className={`flex gap-6 text-gray-400 absolute top-0 right-2`}
                     >
                       <Button
                         variant="ghost"
                         className="rounded-full dark:hover:bg-gray-900"
                       >
-                        <EllipsisVertical
-                          size={24}
-                          className="cursor-pointer"
-                        />
+                        <EllipsisVertical className="cursor-pointer size-5 md:size-6" />
                       </Button>
                     </div>
 
-                    <div className="flex flex-col w-[150px] md:w-[480px]">
+                    <div className="flex flex-col w-[200px] md:w-[480px]">
                       <a
                         href={`/watch?v=${video._id}`}
-                        className="text-lg font-bold md:text-xl line-clamp-2 lg:line-clamp-3"
+                        className="text-[10px] font-bold md:text-xl max-w-[70%] md:max-w-[80%] line-clamp-2"
                       >
                         {video.title}
                       </a>
                       <a
                         href={`/user/${video.owner.userName}`}
-                        className="flex flex-wrap gap-2 items-center text-secondary-marginal-text text-[10px] lg:text-xs"
+                        className="flex flex-wrap gap-0 items-start md:flex-row md:gap-2 md:items-center flex-col text-secondary-marginal-text text-[8px] lg:text-xs"
                       >
                         <p className="font-medium">{video.owner.fullName}</p> •
                         <div className="text-secondary-marginal-text">
