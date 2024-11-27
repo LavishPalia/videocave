@@ -25,7 +25,7 @@ export const videosApiSlice = apiSlice.injectEndpoints({
     }),
 
     publishVideo: builder.mutation({
-      query: (data) => {
+      query: ({ data, onProgress }) => {
         console.log("videosApiSlice pulish video mutation: 29", data);
 
         const formData = new FormData();
@@ -39,8 +39,9 @@ export const videosApiSlice = apiSlice.injectEndpoints({
           url: VIDEOS_URL,
           method: "POST",
           body: formData,
-          formData: true,
-          accept: "*/*",
+          headers: { "Content-Type": "multipart/form-data" },
+          useProgress: true, // Activate progress tracking
+          onProgress, // Pass the progress callback
         };
       },
     }),
