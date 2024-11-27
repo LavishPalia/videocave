@@ -97,7 +97,7 @@ const UpdateUserProfile = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+    <div className="flex flex-wrap items-center justify-center min-h-screen bg-gray-900">
       {showUploadProgress ? (
         <section className="w-full max-w-xl min-h-[632px] flex flex-col justify-center p-8 space-y-6 text-gray-200 shadow-2xl bg-gradient-to-br from-gray-800 to-gray-900 rounded-r-xl animate-fade-in">
           {/* Heading */}
@@ -127,7 +127,7 @@ const UpdateUserProfile = () => {
         </section>
       ) : (
         <Form {...form}>
-          <div className="w-full max-w-md p-8 space-y-4 shadow-2xl bg-gradient-to-bl from-gray-800 to-gray-900 rounded-l-xl min-h-[632px] flex flex-col justify-center">
+          <div className="w-full max-w-md p-8 space-y-4 shadow-2xl bg-gradient-to-bl from-gray-800 to-gray-900 rounded-l-xl md:min-h-[584px] flex flex-col justify-starts md:justify-center">
             <h2 className="text-3xl font-bold text-center text-purple-400">
               Update Your Profile
             </h2>
@@ -208,8 +208,7 @@ const UpdateUserProfile = () => {
             <li>File is required.</li>
             <li>Allowed formats: JPEG, PNG, GIF.</li>
             <li>
-              It's recommended that you use a picture that's at least 98 x 98
-              pixels and 4 MB or less.
+              Use a picture that's at least 98 x 98 pixels and 4 MB or less.
             </li>
           </ul>
         </div>
@@ -222,8 +221,7 @@ const UpdateUserProfile = () => {
             <li>File is optional.</li>
             <li>Allowed formats: JPEG, PNG, GIF.</li>
             <li>
-              For the best results on all devices, use an image that's at least
-              2048 x 1152 pixels and 6 MB or less
+              Use an image that's at least 2048 x 1152 pixels and 6 MB or less
             </li>
           </ul>
         </div>

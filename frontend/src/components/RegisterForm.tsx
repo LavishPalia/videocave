@@ -84,10 +84,10 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+    <div className="flex flex-wrap items-center justify-center min-h-screen px-8 py-4 bg-gray-900 md:gap-2 lg:gap-0">
       {/* left section */}
       <Form {...form}>
-        <div className="w-full max-w-lg p-8 space-y-8 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl rounded-l-xl min-h-[656px] h-full">
+        <div className="w-full max-w-lg p-8 space-y-8 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl rounded-l-xl md:min-h-[656px] h-full">
           <h2 className="text-3xl font-bold text-center text-purple-400">
             Join VideoCave
           </h2>
@@ -181,7 +181,7 @@ const RegisterForm = () => {
       </Form>
 
       {/* Right side */}
-      <section className="w-full max-w-xl p-8 space-y-8 text-gray-200 shadow-2xl bg-gradient-to-br from-gray-800 to-gray-900 rounded-r-xl">
+      <section className="w-full max-w-xl py-8 pl-4 pr-2 space-y-8 text-gray-200 shadow-2xl bg-gradient-to-br from-gray-800 to-gray-900 rounded-r-xl">
         <h1 className="text-3xl font-bold text-center text-purple-400">
           Registration Guidelines
         </h1>
