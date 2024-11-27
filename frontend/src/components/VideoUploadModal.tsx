@@ -38,7 +38,6 @@ export function VideoUploadModel() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<VideoUploadFormData>();
 
@@ -224,7 +223,9 @@ export function VideoUploadModel() {
               </div>
 
               <DialogFooter>
-                <Button type="submit">Upload</Button>
+                <Button type="submit" disabled={isLoading}>
+                  Upload
+                </Button>
               </DialogFooter>
             </form>
           </>
