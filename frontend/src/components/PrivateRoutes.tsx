@@ -12,7 +12,7 @@ const PrivateRoutes = () => {
     return <Navigate to="/verify-email" />;
   }
 
-  if (user?.isEmailVerified && user?.userName === "dummy_user_name") {
+  if (user?.isEmailVerified && user?.userName.startsWith("dummy_user_name")) {
     return <Navigate to="/update-profile" />;
   }
 

@@ -43,7 +43,7 @@ const LoginForm = () => {
     if (!isLoggedIn) return;
     if (!user?.isEmailVerified) {
       navigate("/verify-email");
-    } else if (user?.userName === "dummy_user_name") {
+    } else if (user?.userName.startsWith("dummy_user_name")) {
       navigate("/update-profile");
     } else {
       navigate("/");
