@@ -141,7 +141,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     password,
     fullName,
     avatar: defaultAvatarPath,
-    userName: `dummy_user_name`,
+    userName: `user_${Date.now()}`,
   });
 
   if (!user) {
