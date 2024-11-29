@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")!) || null,
   isLoggedIn: JSON.parse(localStorage.getItem("loginStatus")!) || false,
-  accessToken: localStorage.getItem("at") || null,
-  refreshToken: localStorage.getItem("rt") || null,
+  accessToken: JSON.parse(localStorage.getItem("at")!) || null,
+  refreshToken: JSON.parse(localStorage.getItem("rt")!) || null,
   logoutMessage: null,
 };
 

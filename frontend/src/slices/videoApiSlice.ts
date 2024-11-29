@@ -18,9 +18,15 @@ export const videosApiSlice = apiSlice.injectEndpoints({
     }),
 
     // request to backend to get a single video
-    getChannelVideos: builder.query({
+    getPublishedVideosByChannel: builder.query({
+      query: ({ userId, sortBy, sortType }) => ({
+        url: `${VIDEOS_URL}/u/${userId}/published?sortBy=${sortBy}&sortType=${sortType}`,
+      }),
+    }),
+
+    getVideosDataByChannel: builder.query({
       query: (userId) => ({
-        url: `${VIDEOS_URL}/u/${userId}`,
+        url: `${VIDEOS_URL}/u/${userId}/all`,
       }),
     }),
 
@@ -51,6 +57,7 @@ export const videosApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetAllVideosQuery,
   useGetVideoByIdQuery,
-  useGetChannelVideosQuery,
+  useGetPublishedVideosByChannelQuery,
   usePublishVideoMutation,
+  useGetVideosDataByChannelQuery,
 } = videosApiSlice;

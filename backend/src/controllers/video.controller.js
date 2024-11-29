@@ -206,7 +206,80 @@ const getVideoById = asyncHandler(async (req, res, next) => {
     );
 });
 
-const getVideosByUserId = asyncHandler(async (req, res, next) => {
+const getPublishedVideosByChannel = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
+  const { sortBy } = req.query;
+
+  if (!userId) {
+    return next(new ApiError(400, "user id is missing"));
+  }
+
+  if (!isValidObjectId(userId)) {
+    return next(new ApiError(400, "Invalid User ID"));
+  }
+
+  const pipeline = [
+    {
+      $match: {
+        owner: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $match: {
+        isPublished: true,
+      },
+    },
+  ];
+
+  // Dynamically add the $sort stage based on sortBy
+  if (sortBy === "latest") {
+    pipeline.push({
+      $sort: { createdAt: -1 }, // Sort by newest first
+    });
+  } else if (sortBy === "oldest") {
+    pipeline.push({
+      $sort: { createdAt: 1 }, // Sort by oldest first
+    });
+  } else if (sortBy === "popular") {
+    pipeline.push({
+      $sort: { views: -1 }, // Sort by highest views
+    });
+  } else {
+    throw new Error(`Invalid sortBy value: ${sortBy}`);
+  }
+
+  // Add the $project stage
+  pipeline.push({
+    $project: {
+      thumbnail: 1,
+      title: 1,
+      duration: 1,
+      views: 1,
+      createdAt: 1,
+      updatedAt: 1,
+    },
+  });
+
+  const videos = await Video.aggregate(pipeline);
+
+  console.log("videos", videos);
+
+  if (!videos) {
+    return next(new ApiError("user does not exist in the DB"));
+  }
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        videos,
+        "all the published videos of the channel fetched successfully"
+      )
+    );
+});
+
+const getVideosDataByChannel = asyncHandler(async (req, res, next) => {
   const { userId } = req.params;
 
   if (!userId) {
@@ -224,29 +297,55 @@ const getVideosByUserId = asyncHandler(async (req, res, next) => {
       },
     },
     {
-      $group: {
-        _id: "owner",
-        videos: {
-          $push: "$_id",
-        },
+      $sort: {
+        isPublished: 1,
+        createdAt: -1,
       },
     },
     {
       $lookup: {
-        from: "videos",
-        localField: "videos",
-        foreignField: "_id",
-        as: "allVideos",
+        from: "comments",
+        localField: "_id",
+        foreignField: "video",
+        as: "comments",
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "video",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likes: {
+          $size: "$likes",
+        },
+        comments: {
+          $size: "$comments",
+        },
       },
     },
     {
       $project: {
-        allVideos: 1,
+        thumbnail: 1,
+        title: 1,
+        duration: 1,
+        views: 1,
+        isPublished: 1,
+        likes: 1,
+        comments: 1,
+        createdAt: 1,
+        updatedAt: 1,
       },
     },
   ];
 
   const videos = await Video.aggregate(pipeline);
+
+  console.log("videos", videos);
 
   if (!videos) {
     return next(new ApiError("user does not exist in the DB"));
@@ -257,8 +356,8 @@ const getVideosByUserId = asyncHandler(async (req, res, next) => {
     .json(
       new ApiResponse(
         200,
-        { videos: videos[0]?.allVideos },
-        "all the videos for the user fetched successfully"
+        videos,
+        "all the videos of the channel fetched successfully"
       )
     );
 });
@@ -448,7 +547,7 @@ const searchVideosAndChannels = asyncHandler(async (req, res, next) => {
 
 const getAllVideos = asyncHandler(async (req, res, next) => {
   const {
-    sortBy = "duration",
+    sortBy = "createdAt",
     limit = 100,
     page = 1,
     sortType = -1,
@@ -456,6 +555,11 @@ const getAllVideos = asyncHandler(async (req, res, next) => {
   // console.table([page, limit, query, sortBy, sortType, userId]);
 
   const pipeline = [
+    {
+      $match: {
+        isPublished: true,
+      },
+    },
     {
       $lookup: {
         from: "users",
@@ -563,5 +667,6 @@ export {
   deleteVideo,
   getAllVideos,
   togglePublishStatus,
-  getVideosByUserId,
+  getPublishedVideosByChannel,
+  getVideosDataByChannel,
 };

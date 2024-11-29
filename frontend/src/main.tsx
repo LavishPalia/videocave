@@ -21,6 +21,7 @@ import PlayListScreen from "./screens/PlayListScreen.tsx";
 import SubscriptionsScreen from "./screens/SubscriptionsScreen.tsx";
 import PlaylistsScreen from "./screens/PlaylistsScreen.tsx";
 import UpdateUserProfile from "./components/UpdateUserProfile.tsx";
+import ChannelContent from "./screens/ChannelContent.tsx";
 
 const router = createBrowserRouter([
   {
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
       {
         path: "user/:username",
         element: <Channel />,
+      },
+      {
+        path: "your-videos",
+        element: <ChannelContent />,
       },
       {
         path: "watch",

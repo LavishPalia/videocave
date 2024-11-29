@@ -145,7 +145,7 @@ const VideoPlayerScreen = () => {
           >
             <VideoPlayer isLoading={isVideoLoading} video={video?.data[0]} />
 
-            <p className="mt-4 text-lg font-semibold sm:text-xl md:text-2xl">
+            <p className="mt-4 text-base font-semibold sm:text-lg md:text-xl line-clamp-1">
               {video?.data[0]?.title}
             </p>
 
@@ -250,13 +250,13 @@ const VideoPlayerScreen = () => {
               </div>
             </div>
 
-            <div className="border shadow-custom bg-[#f2f2f2] p-4 my-4 rounded-md text-md dark:bg-[#09090b]">
+            <div className="border shadow-custom bg-[#f2f2f2] p-4 my-4 rounded-md text-md dark:bg-[#202021]">
               <p>
                 {VIEW_FORMATTER.format(video?.data[0]?.views)} views &nbsp;
                 {formatTimeAgo(new Date(video?.data[0]?.createdAt))}
               </p>
               <p
-                className={`${
+                className={`mt-4 ${
                   isDescriptionShown ? "" : "line-clamp-1 cursor-pointer"
                 }`}
                 onClick={() => setIsDescriptionShown(true)}
@@ -266,6 +266,7 @@ const VideoPlayerScreen = () => {
 
               <button
                 onClick={() => setIsDescriptionShown((descShown) => !descShown)}
+                className="mt-4"
               >
                 {isDescriptionShown ? "Show Less" : "...more"}
               </button>

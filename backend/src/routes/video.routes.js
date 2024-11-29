@@ -4,10 +4,11 @@ import {
   deleteVideo,
   getAllVideos,
   getVideoById,
-  getVideosByUserId,
+  getPublishedVideosByChannel,
   publishVideo,
   togglePublishStatus,
   updateVideo,
+  getVideosDataByChannel,
 } from "../controllers/video.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
 
@@ -28,7 +29,8 @@ router.route("/").post(
   publishVideo
 );
 
-router.route("/u/:userId").get(getVideosByUserId);
+router.route("/u/:userId/published").get(getPublishedVideosByChannel);
+router.route("/u/:userId/all").get(getVideosDataByChannel);
 
 router
   .route("/:videoId")

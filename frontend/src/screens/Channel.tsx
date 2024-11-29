@@ -6,8 +6,8 @@ import {
   useGetCurrentUserQuery,
   useGetUserChannelDetailsQuery,
 } from "@/slices/usersApiSlice";
-import Button from "@/components/Button";
-import { useGetChannelVideosQuery } from "@/slices/videoApiSlice";
+import { Button } from "@/components/ui/button";
+import { useGetPublishedVideosByChannelQuery } from "@/slices/videoApiSlice";
 import { formatDuration } from "@/utils/formatDuration";
 import { VIEW_FORMATTER } from "@/components/VideoGridItems";
 import { formatTimeAgo } from "@/utils/formatTimeAgo";
@@ -23,6 +23,9 @@ import Channel_Cover from "../assets/channel_cover.png";
 
 const Channel = () => {
   const [activeTab, setActiveTab] = useState("Videos");
+  const [sortBy, setSortBy] = useState<"latest" | "popular" | "oldest">(
+    "latest"
+  ); // Default is "latest"
   const { username } = useParams<{ username: string }>();
   const { user } = useAppSelector((state) => state.auth);
   const userId = user?._id;
@@ -30,12 +33,19 @@ const Channel = () => {
   const { data: channel, isLoading: isChannelLoading } =
     useGetUserChannelDetailsQuery(username);
 
+  const handleSortChange = (sortOption: "latest" | "popular" | "oldest") => {
+    setSortBy(sortOption);
+  };
+
   // Added conditional check for channelId
   const channelId = channel?.data?._id;
-  const { data: videos, isLoading: isVideosLoading } = useGetChannelVideosQuery(
-    channelId,
-    { skip: !channelId }
-  );
+  const { data: videos, isLoading: isVideosLoading } =
+    useGetPublishedVideosByChannelQuery(
+      { userId: channelId, sortBy },
+      { skip: !channelId }
+    );
+
+  console.log(videos);
 
   const [toggleSubscription, { isLoading: isTogglingSubscription }] =
     useToggleSubscriptionMutation();
@@ -119,7 +129,7 @@ const Channel = () => {
                     <p>{subscribersCount} Subscribers</p>
                     <span className="hidden sm:inline">•</span>
 
-                    <p>{videos?.data?.videos?.length || 0} Videos</p>
+                    <p>{videos?.data?.length || 0} Videos</p>
                   </div>
                   {loggedInUser?.data?._id === channel?.data?._id && (
                     <p>email : {channel.data.email}</p>
@@ -145,8 +155,12 @@ const Channel = () => {
                 <Button
                   variant="ghost"
                   className={`dark:hover:bg-transparent tracking-wider p-0 relative
-          ${activeTab === "Videos" ? "text-gray-100" : "text-gray-400"}
-        `}
+                  ${
+                    activeTab === "Videos"
+                      ? "text-gray-100 font-bold"
+                      : "text-gray-400"
+                  }
+                `}
                   onClick={() => setActiveTab("Videos")}
                 >
                   Videos
@@ -161,8 +175,12 @@ const Channel = () => {
                 <Button
                   variant="ghost"
                   className={`dark:hover:bg-transparent tracking-wider p-0 relative
-          ${activeTab === "Playlists" ? "text-gray-100" : "text-gray-400"}
-        `}
+                  ${
+                    activeTab === "Playlists"
+                      ? "text-gray-100 font-bold"
+                      : "text-gray-400"
+                  }
+                `}
                   onClick={() => setActiveTab("Playlists")}
                 >
                   Playlists
@@ -177,8 +195,12 @@ const Channel = () => {
                 <Button
                   variant="ghost"
                   className={`dark:hover:bg-transparent tracking-wider p-0 relative
-          ${activeTab === "Community" ? "text-gray-100" : "text-gray-400"}
-        `}
+                  ${
+                    activeTab === "Community"
+                      ? "text-gray-100 font-bold"
+                      : "text-gray-400"
+                  }
+                `}
                   onClick={() => setActiveTab("Community")}
                 >
                   Community
@@ -194,6 +216,44 @@ const Channel = () => {
 
               <hr className="mt-2" />
 
+              {activeTab === "Videos" && (
+                <div className="flex gap-4 mt-2">
+                  <Button
+                    variant="ghost"
+                    className={`hover:bg-gray-400 hover:text-black ${
+                      sortBy === "latest"
+                        ? "bg-gray-200 text-black font-bold"
+                        : undefined
+                    }`}
+                    onClick={() => handleSortChange("latest")}
+                  >
+                    Latest
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className={`hover:bg-gray-400 hover:text-black ${
+                      sortBy === "popular"
+                        ? "bg-gray-200 font-bold  text-black"
+                        : undefined
+                    }`}
+                    onClick={() => handleSortChange("popular")}
+                  >
+                    Popular
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className={`hover:bg-gray-400 hover:text-black ${
+                      sortBy === "oldest"
+                        ? "bg-gray-200 text-black font-bold"
+                        : undefined
+                    }`}
+                    onClick={() => handleSortChange("oldest")}
+                  >
+                    Oldest
+                  </Button>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {isVideosLoading && (
                   <div className="flex items-center justify-center min-h-screen">
@@ -201,7 +261,7 @@ const Channel = () => {
                     &nbsp;<p className="text-3xl">Loading videos...</p>
                   </div>
                 )}
-                {videos?.data?.videos?.map(
+                {videos?.data?.map(
                   (video: {
                     thumbnail: string;
                     title: string;

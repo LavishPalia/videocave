@@ -46,7 +46,7 @@ const VideoOptionsMenu = ({
           <Button
             variant="ghost"
             size="icon"
-            // className="absolute top-0 -right-4 md:right-0"
+            className="absolute top-0 -right-4 md:right-0"
           >
             <EllipsisVertical className="size-5 md:size-6" />
           </Button>

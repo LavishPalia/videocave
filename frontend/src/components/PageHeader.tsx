@@ -7,13 +7,12 @@ import { UserDropdownMenu } from "./dropdowns/UserDropdownMenu";
 import { useAppSelector } from "@/app/hooks";
 import { VideoUploadModel } from "./VideoUploadModal";
 import { useSidebarContext } from "@/contexts/SidebarContext";
-// import { useGetCurrentUserQuery } from "@/slices/usersApiSlice";
+import { useLocation } from "react-router-dom";
 
 const PageHeader = () => {
   const [showFullWidthSearch, setShowFullWidthSearch] = useState(false);
+  const location = useLocation();
 
-  // const { data } = useGetCurrentUserQuery(null);
-  // console.log(data);
   const { user } = useAppSelector((state) => state.auth);
 
   return (
@@ -71,9 +70,10 @@ const PageHeader = () => {
           <Mic size={20} />
         </Button>
 
+        {location.pathname === "/your-videos" && <VideoUploadModel />}
+
         <ModeToggle />
 
-        <VideoUploadModel />
         <Button size="icon" variant="ghost">
           <Bell size={20} />
         </Button>
