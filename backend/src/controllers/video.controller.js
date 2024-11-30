@@ -597,7 +597,7 @@ const getAllVideos = asyncHandler(async (req, res, next) => {
 
   const videos = await Video.aggregate(pipeline);
 
-  const totalVideos = await Video.countDocuments();
+  const totalVideos = await Video.countDocuments({ isPublished: true });
 
   res.status(200).json(
     new ApiResponse(

@@ -5,8 +5,8 @@ export const videosApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // request to backend to get all videos
     getAllVideos: builder.query({
-      query: () => ({
-        url: VIDEOS_URL,
+      query: ({ page = 1, limit = 10 }) => ({
+        url: `${VIDEOS_URL}?page=${page}&limit=${limit}&sortBy=createdAt&sortType=-1`,
       }),
     }),
 
