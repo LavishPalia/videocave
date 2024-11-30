@@ -17,8 +17,6 @@ const History = () => {
     refetch: refetchHistory,
   } = useGetWatchHistoryQuery(null);
 
-  // console.log(history);
-
   const [deleteVideoFromWatchHistory] =
     useDeleteVideoFromWatchHistoryMutation();
 

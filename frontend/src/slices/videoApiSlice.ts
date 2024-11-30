@@ -32,8 +32,6 @@ export const videosApiSlice = apiSlice.injectEndpoints({
 
     publishVideo: builder.mutation({
       query: ({ data, onProgress }) => {
-        console.log("videosApiSlice pulish video mutation: 29", data);
-
         const formData = new FormData();
 
         formData.append("title", data.title);

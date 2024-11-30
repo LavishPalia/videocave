@@ -49,6 +49,7 @@ const VideoPlayerScreen = () => {
   const [isSubscribed, setIsSubscribed] = useState(
     video?.data[0]?.isSubscribed
   );
+
   const [subscribersCount, setSubscribersCount] = useState<number>(
     video?.data[0]?.subscribers
   );
@@ -62,8 +63,6 @@ const VideoPlayerScreen = () => {
     const list = searchParams.get("list");
     const index = searchParams.get("index") || 1;
 
-    // console.log(list, index);
-
     if (id) {
       setVideoId(id);
     }
@@ -73,7 +72,10 @@ const VideoPlayerScreen = () => {
     }
   }, [location.search]);
 
-  const { data: videos } = useGetAllVideosQuery(null);
+  const { data: videos } = useGetAllVideosQuery({
+    page: 1,
+    limit: 12,
+  });
   const { data: loggedInUser } = useGetCurrentUserQuery(null);
 
   const [toggleVideoLikes, { isLoading: isTogglingLike }] =
@@ -102,11 +104,8 @@ const VideoPlayerScreen = () => {
     // isLoading: isPlaylistLoading,
     // error: playlistError,
   } = useGetPlaylistByIdQuery(queryParams.list, {
-    skip: !queryParams.list, // Skip query if no `list` parameter
+    skip: !queryParams.list,
   });
-
-  // console.log(playlist);
-  console.log(playlist?.data?.videos?.length, queryParams.index);
 
   const handleToggleLike = async () => {
     try {

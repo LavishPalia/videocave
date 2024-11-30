@@ -35,8 +35,6 @@ const HomeScreen = () => {
     }
   }, [data]);
 
-  // console.log(videos);
-
   const handleScroll = useCallback(() => {
     const container = contentRef.current;
     if (!container) return;

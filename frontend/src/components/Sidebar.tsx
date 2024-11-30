@@ -32,7 +32,6 @@ const Sidebar = () => {
   const currentPath = location.pathname + location.search;
 
   const { user } = useAppSelector((state) => state.auth);
-  // console.log(user?._id);
   const userId = user?._id;
 
   const { data: subscriptions } = useGetUserSubscriptionsQuery(userId);

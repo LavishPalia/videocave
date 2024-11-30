@@ -26,10 +26,8 @@ export function UserDropdownMenu({
     userName: string;
   };
 }) {
-  // console.log(user);
   const dispatch = useAppDispatch();
   const handleLogoutUser = () => {
-    console.log("ran");
     toast.success("Logout Successful");
     setTimeout(() => {
       dispatch(logoutUser(null));

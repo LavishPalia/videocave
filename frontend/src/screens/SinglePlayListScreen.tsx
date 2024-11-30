@@ -44,8 +44,6 @@ const SinglePlayListScreen = ({ listId }: { listId: string }) => {
   const [removeVideoFromPlaylist, { isLoading }] =
     useRemoveVideoFromPlaylistMutation();
 
-  // console.log(playlist);
-
   useEffect(() => {
     const img = document.createElement("img");
     img.crossOrigin = "Anonymous";

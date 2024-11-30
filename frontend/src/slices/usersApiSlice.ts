@@ -31,8 +31,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 
     updateProfileDetails: builder.mutation({
       query: ({ data, onProgress }) => {
-        console.log(data);
-
         const formData = new FormData();
 
         formData.append("userName", data.userName);

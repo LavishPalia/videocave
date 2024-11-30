@@ -75,8 +75,6 @@ const RegisterForm = () => {
 
       setRegisteredEmail(userData.email);
       setIsModalOpen(true);
-
-      console.log("user registered successfully");
     } catch (err: any) {
       console.error("error registering user", err);
       toast.error(`${err?.data?.error}`);

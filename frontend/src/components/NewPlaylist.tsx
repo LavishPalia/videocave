@@ -38,7 +38,6 @@ const NewPlaylist = ({ close, videoId }: INewPlaylistProps) => {
         description: playlistDescription,
       }).unwrap();
 
-      console.log(response);
       const createdPlaylist = response.data;
 
       await addVideoToPlaylist({

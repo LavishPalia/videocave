@@ -19,8 +19,6 @@ const SubscriptionsScreen = () => {
     refetch: refetchLatestVideos,
   } = useGetLatestVideoFromSubscribedChannelsQuery(user?._id);
 
-  console.log(latestVideos);
-
   const videoData = latestVideos?.data || [];
   const noVideosFound = !isLoading && videoData.length === 0;
 
@@ -31,8 +29,6 @@ const SubscriptionsScreen = () => {
   const renderedVideos = useMemo(
     () =>
       videoData?.map((video: VideoGridItemProps) => {
-        // console.log(video);
-
         return <VideoGridItems key={video._id} {...video} />;
       }),
     [videoData]

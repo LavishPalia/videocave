@@ -10,9 +10,6 @@ const PlayListScreen = () => {
 
   const navigate = useNavigate();
 
-  console.log(listType);
-  console.log(!listType);
-
   useEffect(() => {
     if (!listType) {
       navigate("/playlists", {

@@ -20,14 +20,12 @@ const EmailVerificationConfirmation: React.FC = () => {
     const performVerification = async () => {
       try {
         const result = await verifyEmail(token).unwrap();
-        console.log(result.data);
 
         dispatch(updateUserPostEmailVerification(result.data));
 
         setVerificationStatus("success");
       } catch (error: any) {
         console.error("Email verification failed:", error.data.error);
-        console.log(error);
         setVerificationStatus("error");
       }
     };

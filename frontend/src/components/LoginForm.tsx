@@ -63,8 +63,6 @@ const LoginForm = () => {
     try {
       const response = await login({ ...userData }).unwrap();
 
-      console.log(response);
-
       dispatch(setUserCredentials(response.data));
 
       toast.success(`Logged In Successfully`);

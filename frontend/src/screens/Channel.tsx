@@ -45,8 +45,6 @@ const Channel = () => {
       { skip: !channelId }
     );
 
-  console.log(videos);
-
   const [toggleSubscription, { isLoading: isTogglingSubscription }] =
     useToggleSubscriptionMutation();
 
@@ -84,8 +82,6 @@ const Channel = () => {
       toast.error("Failed to update subscription");
     }
   };
-
-  console.log(videos?.data);
 
   return (
     <div className="flex flex-col max-h-screen">

@@ -41,8 +41,6 @@ const authSlice = createSlice({
     },
 
     updateUserPostEmailVerification: (state, action) => {
-      // console.log("updateUserPostEmailVerification ", action.payload);
-
       state.user = action.payload;
       localStorage.setItem("user", JSON.stringify(state.user));
     },

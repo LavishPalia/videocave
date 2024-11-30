@@ -18,7 +18,6 @@ const CommentsSection = ({ videoId }: { videoId: string }) => {
     videoId,
     { skip: !videoId }
   );
-  console.log(comments);
 
   const { data: loggedInUser } = useGetCurrentUserQuery(null);
   const [addComment, { isLoading: isAddingComment }] = useAddCommentMutation();

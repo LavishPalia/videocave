@@ -55,8 +55,6 @@ const UpdateUserProfile = () => {
 
   const { user } = useAppSelector((state) => state.auth);
 
-  // console.log(user);
-
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -79,8 +77,6 @@ const UpdateUserProfile = () => {
         data: userData,
         onProgress: (progress: number) => setUploadProgress(progress), // Update progress during upload
       }).unwrap();
-
-      // console.log(response);
 
       toast.success("🎉 Profile updated");
 

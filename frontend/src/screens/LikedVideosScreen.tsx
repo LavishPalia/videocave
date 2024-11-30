@@ -35,10 +35,7 @@ const LikedVideosScreen = () => {
     refetch: refetchLikedVideos,
   } = useGetLikedVideosQuery({});
 
-  console.log(likedVideos);
-
   const { data: loggedInUser } = useGetCurrentUserQuery(null);
-  // console.log(loggedInUser);
 
   useEffect(() => {
     refetchLikedVideos();

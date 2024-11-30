@@ -30,8 +30,6 @@ const PlaylistsScreen = () => {
   const { data: playlists, isLoading: isPlaylistsLoading } =
     useGetUserPlaylistsQuery(userId);
 
-  // console.log(playlists);
-
   const noPlaylistsFound = !isPlaylistsLoading && playlists?.data?.length === 0;
 
   return (

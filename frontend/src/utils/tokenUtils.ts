@@ -10,7 +10,6 @@ export const checkIfTokenNeedsRefresh = (token: string) => {
     const timeLeft = decoded?.exp! - currentTime; // Remaining time until expiration
 
     // Return true if less than 5 minutes (300 seconds) are left
-    console.log(timeLeft);
 
     return timeLeft <= 300;
   } catch (error) {

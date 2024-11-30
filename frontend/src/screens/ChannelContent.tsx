@@ -27,8 +27,6 @@ const ChannelContent = () => {
   const { data: videos, isLoading: isVideosLoading } =
     useGetVideosDataByChannelQuery(channelId, { skip: !channelId });
 
-  console.log(videos?.data);
-
   const noVideosFound = videos?.data?.length === 0;
 
   return (

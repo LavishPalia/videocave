@@ -12,7 +12,6 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
 
     addComment: builder.mutation({
       query: ({ videoId, comment }) => {
-        // console.log(videoId, comment);
         return {
           url: `${COMMENTS_URL}/${videoId}`,
           method: "POST",

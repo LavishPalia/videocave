@@ -42,7 +42,6 @@ const VideoGridItems = ({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // console.log("useEffect fired");
     const videoElement = videoRef.current;
 
     if (!videoElement) return;
