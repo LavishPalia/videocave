@@ -5,7 +5,7 @@ import { Subscription } from "../models/Subscription.model.js";
 import { User } from "../models/User.model.js";
 import mongoose, { isValidObjectId } from "mongoose";
 
-const toogleSubscription = asyncHandler(async (req, res, next) => {
+const toggleSubscription = asyncHandler(async (req, res, next) => {
   const { channelId } = req.params;
 
   if (!channelId) {
@@ -375,7 +375,7 @@ const getLatestVideoFromSubscribedChannels = asyncHandler(
 );
 
 export {
-  toogleSubscription,
+  toggleSubscription,
   getChannelSubscribers,
   getUserSubscriptions,
   getLatestVideoFromSubscribedChannels,

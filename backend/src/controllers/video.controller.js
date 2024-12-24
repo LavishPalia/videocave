@@ -8,6 +8,8 @@ import {
 import { Video } from "../models/Video.model.js";
 import { User } from "../models/User.model.js";
 import mongoose, { isValidObjectId } from "mongoose";
+import { pipeline } from "stream";
+import { create } from "domain";
 
 const publishVideo = asyncHandler(async (req, res, next) => {
   const { title, description } = req.body;
@@ -488,16 +490,72 @@ const searchVideosAndChannels = asyncHandler(async (req, res, next) => {
 
   // Channel search pipeline
   const channelPipeline = [
-    { $match: { userName: { $regex: new RegExp(query, "i") } } },
+    {
+      $match: {
+        $or: [
+          { userName: { $regex: new RegExp(query, "i") } },
+          { fullName: { $regex: new RegExp(query, "i") } },
+        ],
+      },
+    },
     {
       $lookup: {
         from: "videos",
-        localField: "_id",
-        foreignField: "owner",
+        let: { ownerId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$owner", "$$ownerId"],
+              },
+            },
+          },
+          {
+            $sort: {
+              createdAt: -1,
+            },
+          },
+          {
+            $limit: 10,
+          },
+        ],
         as: "videos",
       },
     },
-    { $match: { "videos.0": { $exists: true } } },
+    { $match: { "videos.0": { $exists: true } } }, // Ensure the channel has videos
+    {
+      $lookup: {
+        from: "subscriptions",
+        let: { channelId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$channel", "$$channelId"],
+              },
+            },
+          },
+        ],
+        as: "subscriptions",
+      },
+    },
+    {
+      $addFields: {
+        subscriberCount: { $size: "$subscriptions" }, // Count total subscribers
+        isSubscribedByCurrentUser: {
+          $in: [
+            req.user._id,
+            {
+              $map: {
+                input: "$subscriptions",
+                as: "sub",
+                in: "$$sub.subscriber",
+              },
+            },
+          ],
+        }, // Check if current user is subscribed
+      },
+    },
     {
       $project: {
         _id: 1,
@@ -505,6 +563,9 @@ const searchVideosAndChannels = asyncHandler(async (req, res, next) => {
         avatar: 1,
         userName: 1,
         videoCount: { $size: "$videos" },
+        latestVideos: { $slice: ["$videos", 10] },
+        subscriberCount: 1,
+        isSubscribedByCurrentUser: 1,
       },
     },
     { $limit: 1 },
@@ -669,4 +730,5 @@ export {
   togglePublishStatus,
   getPublishedVideosByChannel,
   getVideosDataByChannel,
+  searchVideosAndChannels,
 };

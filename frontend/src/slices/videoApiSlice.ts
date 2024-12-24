@@ -49,6 +49,12 @@ export const videosApiSlice = apiSlice.injectEndpoints({
         };
       },
     }),
+
+    searchVideosAndChannels: builder.query({
+      query: (query) => ({
+        url: `${VIDEOS_URL}/search?query=${query}`,
+      }),
+    }),
   }),
 });
 
@@ -58,4 +64,5 @@ export const {
   useGetPublishedVideosByChannelQuery,
   usePublishVideoMutation,
   useGetVideosDataByChannelQuery,
+  useSearchVideosAndChannelsQuery,
 } = videosApiSlice;

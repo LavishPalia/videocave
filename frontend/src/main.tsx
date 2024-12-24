@@ -22,6 +22,7 @@ import SubscriptionsScreen from "./screens/SubscriptionsScreen.tsx";
 import PlaylistsScreen from "./screens/PlaylistsScreen.tsx";
 import UpdateUserProfile from "./components/UpdateUserProfile.tsx";
 import ChannelContent from "./screens/ChannelContent.tsx";
+import SearchScreen from "./screens/SearchScreen.tsx";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <HomeScreen />,
+      },
+      {
+        path: "/results",
+        element: <SearchScreen />,
       },
       {
         path: "/subscriptions",

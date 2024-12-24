@@ -9,6 +9,7 @@ import {
   togglePublishStatus,
   updateVideo,
   getVideosDataByChannel,
+  searchVideosAndChannels,
 } from "../controllers/video.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
 
@@ -31,6 +32,8 @@ router.route("/").post(
 
 router.route("/u/:userId/published").get(getPublishedVideosByChannel);
 router.route("/u/:userId/all").get(getVideosDataByChannel);
+
+router.route("/search").get(searchVideosAndChannels);
 
 router
   .route("/:videoId")

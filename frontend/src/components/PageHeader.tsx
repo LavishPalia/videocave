@@ -7,18 +7,37 @@ import { UserDropdownMenu } from "./dropdowns/UserDropdownMenu";
 import { useAppSelector } from "@/app/hooks";
 import { VideoUploadModel } from "./VideoUploadModal";
 import { useSidebarContext } from "@/contexts/SidebarContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const PageHeader = () => {
+interface PageHeaderProps {
+  onSearch?: (newQuery: string) => void;
+}
+
+const PageHeader = ({ onSearch }: PageHeaderProps) => {
   const [showFullWidthSearch, setShowFullWidthSearch] = useState(false);
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
   const location = useLocation();
 
   const { user } = useAppSelector((state) => state.auth);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (query.trim()) {
+      if (onSearch) {
+        onSearch(query);
+      } else {
+        navigate(`/results?query=${encodeURIComponent(query)}`);
+      }
+    }
+  };
 
   return (
     <div className="flex justify-between gap-2 pt-2 mx-2 mb-4 sm:gap-4 md:gap-10 sm:mx-4 sm:mb-8 lg:gap-20">
       <PageHeaderFirstSection hidden={showFullWidthSearch} />
       <form
+        onSubmit={handleSearchSubmit}
         className={`gap-4 flex-grow justify-center items-center ${
           showFullWidthSearch ? "flex" : "hidden md:flex "
         }`}
@@ -38,6 +57,9 @@ const PageHeader = () => {
           <input
             type="search"
             placeholder="Search"
+            aria-label="Search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             className="rounded-l-full border dark:bg-[#121212] dark:shadow-none dark:border-gray-600 dark:focus:border-blue-500 border-secondary-marginal-border shadow-inner shadow-secondary-marginal
              py-1 px-4 text-lg w-full focus:border-blue-500 outline-none"
           />

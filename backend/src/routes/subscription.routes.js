@@ -3,7 +3,7 @@ import { verifyToken } from "../middlewares/auth.middleware.js";
 import {
   getUserSubscriptions,
   getChannelSubscribers,
-  toogleSubscription,
+  toggleSubscription,
   getLatestVideoFromSubscribedChannels,
 } from "../controllers/subscription.controller.js";
 
@@ -13,7 +13,7 @@ router.use(verifyToken);
 
 router
   .route("/c/:channelId")
-  .post(toogleSubscription)
+  .post(toggleSubscription)
   .get(getChannelSubscribers);
 
 router.route("/u/:subscriberId").get(getUserSubscriptions);

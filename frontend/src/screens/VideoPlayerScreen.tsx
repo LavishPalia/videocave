@@ -74,7 +74,7 @@ const VideoPlayerScreen = () => {
 
   const { data: videos } = useGetAllVideosQuery({
     page: 1,
-    limit: 12,
+    limit: 50,
   });
   const { data: loggedInUser } = useGetCurrentUserQuery(null);
 
