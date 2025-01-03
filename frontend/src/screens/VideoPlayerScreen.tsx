@@ -137,151 +137,168 @@ const VideoPlayerScreen = () => {
       <PageHeader />
       <div className="grid grid-cols-[auto,1fr] xl:grid-cols-[auto,2fr,1fr] gap-4 h-[calc(100vh-64px)]">
         <Sidebar />
-        <div className="px-4 pb-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] md:px-4">
-          <div
-            key={videoId}
-            className="w-full max-w-[1000px] flex flex-col mx-auto relative group"
-          >
-            <VideoPlayer isLoading={isVideoLoading} video={video?.data[0]} />
-
-            <p className="mt-4 text-base font-semibold sm:text-lg md:text-xl line-clamp-1">
-              {video?.data[0]?.title}
+        {!video || !video.data[0] ? (
+          <div className="flex flex-col items-center h-full">
+            <p className="mt-4 text-3xl text-center">
+              Sorry, the video you are looking for is not available.
             </p>
+            <p className="mt-4 text-3xl text-center">
+              Please check out our other videos.
+            </p>
+          </div>
+        ) : (
+          <div className="px-4 pb-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] md:px-4">
+            <div
+              key={videoId}
+              className="w-full max-w-[1000px] flex flex-col mx-auto relative group"
+            >
+              <VideoPlayer isLoading={isVideoLoading} video={video?.data[0]} />
 
-            <div className="flex flex-col items-start justify-between gap-4 mt-4 lg:flex-row">
-              <div className="flex items-start gap-3 lg:w-1/2 xl:w-2/3 sm:w-auto">
-                <a
-                  href={`/user/${video?.data[0]?.owner.userName}`}
-                  className="flex-shrink-0"
-                >
-                  <img
-                    src={video?.data[0]?.owner.avatar}
-                    alt={video?.data[0]?.owner.userName}
-                    className="object-cover object-center rounded-full size-10 sm:size-12"
-                    loading="lazy"
-                  />
-                </a>
-                <div className="flex items-center justify-between w-full xl:flex-col xl:items-start">
-                  <div className="flex-grow min-w-0 max-w-[70%] md:max-w-full">
-                    <span className="flex items-center gap-2">
-                      <a
-                        href={`/user/${video?.data[0]?.owner.userName}`}
-                        className="truncate"
+              <p className="mt-4 text-base font-semibold sm:text-lg md:text-xl line-clamp-1">
+                {video?.data[0]?.title}
+              </p>
+
+              <div className="flex flex-col items-start justify-between gap-4 mt-4 lg:flex-row">
+                <div className="flex items-start gap-3 lg:w-1/2 xl:w-2/3 sm:w-auto">
+                  <a
+                    href={`/user/${video?.data[0]?.owner.userName}`}
+                    className="flex-shrink-0"
+                  >
+                    <img
+                      src={video?.data[0]?.owner.avatar}
+                      alt={video?.data[0]?.owner.userName}
+                      className="object-cover object-center rounded-full size-10 sm:size-12"
+                      loading="lazy"
+                    />
+                  </a>
+                  <div className="flex items-center justify-between w-full xl:flex-col xl:items-start">
+                    <div className="flex-grow min-w-0 max-w-[70%] md:max-w-full">
+                      <span className="flex items-center gap-2">
+                        <a
+                          href={`/user/${video?.data[0]?.owner.userName}`}
+                          className="truncate"
+                        >
+                          <h1 className="text-sm truncate sm:text-base">
+                            {video?.data[0]?.owner.fullName}
+                          </h1>
+                        </a>
+                        <FaCircleCheck size={16} />
+                      </span>
+                      <p className="text-sm text-gray-500 sm:text-base">
+                        {subscribersCount}{" "}
+                        <span className="text-sm">subscribers</span>
+                      </p>
+                    </div>
+
+                    {loggedInUser?.data?._id !== video?.data[0].owner._id && (
+                      <Button
+                        onClick={() =>
+                          handleToggleSubscription(video?.data[0].owner._id)
+                        }
+                        className={`flex items-center gap-2 px-3 text-sm rounded-3xl w-max self-start flex-shrink-0 ml-2 xl:ml-0 ${
+                          isSubscribed
+                            ? "text-gray-100 dark:bg-gray-700"
+                            : "text-gray-900 dark:bg-gray-200"
+                        }`}
+                        disabled={isTogglingSubscription}
                       >
-                        <h1 className="text-sm truncate sm:text-base">
-                          {video?.data[0]?.owner.fullName}
-                        </h1>
-                      </a>
-                      <FaCircleCheck size={16} />
-                    </span>
-                    <p className="text-sm text-gray-500 sm:text-base">
-                      {subscribersCount}{" "}
-                      <span className="text-sm">subscribers</span>
-                    </p>
+                        {isSubscribed ? (
+                          <BellRing size={20} />
+                        ) : (
+                          <Bell size={20} />
+                        )}
+                        <span>{isSubscribed ? "Subscribed" : "Subscribe"}</span>
+                      </Button>
+                    )}
                   </div>
-
-                  {loggedInUser?.data?._id !== video?.data[0].owner._id && (
-                    <Button
-                      onClick={() =>
-                        handleToggleSubscription(video?.data[0].owner._id)
-                      }
-                      className={`flex items-center gap-2 px-3 text-sm rounded-3xl w-max self-start flex-shrink-0 ml-2 xl:ml-0 ${
-                        isSubscribed
-                          ? "text-gray-100 dark:bg-gray-700"
-                          : "text-gray-900 dark:bg-gray-200"
-                      }`}
-                      disabled={isTogglingSubscription}
-                    >
-                      {isSubscribed ? (
-                        <BellRing size={20} />
-                      ) : (
-                        <Bell size={20} />
-                      )}
-                      <span>{isSubscribed ? "Subscribed" : "Subscribe"}</span>
-                    </Button>
-                  )}
-                </div>
-                {/* <Button variant="dark" className="px-3 rounded-full">
+                  {/* <Button variant="dark" className="px-3 rounded-full">
                 Join
               </Button> */}
-              </div>
-
-              <div className="flex flex-wrap items-center justify-start gap-2 full sm:gap-3 lg:flex-nowrap lg:w-1/2 xl:w-1/3 lg:justify-end">
-                <div className="flex items-center bg-[#31302f] rounded-full">
-                  <Button
-                    variant="dark"
-                    className="flex gap-1 items-center bg-[#31302f] rounded-full rounded-r-none px-2 sm:px-3 text-xs sm:text-sm"
-                    onClick={handleToggleLike}
-                    disabled={isTogglingLike}
-                  >
-                    {isLiked ? <BiSolidLike size={20} /> : <BiLike size={20} />}
-                    <p>{video?.data[0]?.likes}</p>
-                  </Button>
-
-                  <div className="border-l border-gray-300 h-5 bg-[#31302f]" />
-
-                  <Button
-                    variant="dark"
-                    className="flex gap-1 items-center bg-[#31302f] rounded-full rounded-l-none px-2 sm:px-3"
-                  >
-                    <BiDislike size={20} />
-                  </Button>
                 </div>
 
-                <Button
-                  variant="dark"
-                  className="bg-[#31302f] flex gap-1 items-center justify-center rounded-full px-2 sm:px-3 text-xs sm:text-sm"
-                >
-                  <RiShareForwardLine size={24} className="text-gray-400" />
-                  <p className="hidden sm:inline">Share</p>
-                </Button>
-                <Button
-                  variant="dark"
-                  className="bg-[#31302f] flex gap-1 items-center rounded-full justify-center px-2 sm:px-3 text-xs sm:text-sm"
-                >
-                  <HiDownload size={24} className="text-gray-400" />
-                  <p className="hidden sm:inline">Download</p>
-                </Button>
+                <div className="flex flex-wrap items-center justify-start gap-2 full sm:gap-3 lg:flex-nowrap lg:w-1/2 xl:w-1/3 lg:justify-end">
+                  <div className="flex items-center bg-[#31302f] rounded-full">
+                    <Button
+                      variant="dark"
+                      className="flex gap-1 items-center bg-[#31302f] rounded-full rounded-r-none px-2 sm:px-3 text-xs sm:text-sm"
+                      onClick={handleToggleLike}
+                      disabled={isTogglingLike}
+                    >
+                      {isLiked ? (
+                        <BiSolidLike size={20} />
+                      ) : (
+                        <BiLike size={20} />
+                      )}
+                      <p>{video?.data[0]?.likes}</p>
+                    </Button>
 
-                {/* <Button variant="dark" size="icon" className="rounded-full">
+                    <div className="border-l border-gray-300 h-5 bg-[#31302f]" />
+
+                    <Button
+                      variant="dark"
+                      className="flex gap-1 items-center bg-[#31302f] rounded-full rounded-l-none px-2 sm:px-3"
+                    >
+                      <BiDislike size={20} />
+                    </Button>
+                  </div>
+
+                  <Button
+                    variant="dark"
+                    className="bg-[#31302f] flex gap-1 items-center justify-center rounded-full px-2 sm:px-3 text-xs sm:text-sm"
+                  >
+                    <RiShareForwardLine size={24} className="text-gray-400" />
+                    <p className="hidden sm:inline">Share</p>
+                  </Button>
+                  <Button
+                    variant="dark"
+                    className="bg-[#31302f] flex gap-1 items-center rounded-full justify-center px-2 sm:px-3 text-xs sm:text-sm"
+                  >
+                    <HiDownload size={24} className="text-gray-400" />
+                    <p className="hidden sm:inline">Download</p>
+                  </Button>
+
+                  {/* <Button variant="dark" size="icon" className="rounded-full">
                 <FaEllipsisH />
               </Button> */}
+                </div>
+              </div>
+
+              <div className="border shadow-custom bg-[#f2f2f2] p-4 my-4 rounded-md text-md dark:bg-[#202021]">
+                <p>
+                  {VIEW_FORMATTER.format(video?.data[0]?.views)} views &nbsp;
+                  {formatTimeAgo(new Date(video?.data[0]?.createdAt))}
+                </p>
+                <p
+                  className={`mt-4 ${
+                    isDescriptionShown ? "" : "line-clamp-1 cursor-pointer"
+                  }`}
+                  onClick={() => setIsDescriptionShown(true)}
+                >
+                  {video?.data[0]?.description}
+                </p>
+
+                <button
+                  onClick={() =>
+                    setIsDescriptionShown((descShown) => !descShown)
+                  }
+                  className="mt-4"
+                >
+                  {isDescriptionShown ? "Show Less" : "...more"}
+                </button>
+              </div>
+              <CommentsSection videoId={videoId} />
+              <div className="block mt-4 xl:hidden">
+                {playlist && (
+                  <CustomPlaylist
+                    playlist={playlist}
+                    queryParams={{ index: Number(queryParams.index) }}
+                  />
+                )}
+                <SuggestedVideos videos={videos} setVideoId={setVideoId} />
               </div>
             </div>
-
-            <div className="border shadow-custom bg-[#f2f2f2] p-4 my-4 rounded-md text-md dark:bg-[#202021]">
-              <p>
-                {VIEW_FORMATTER.format(video?.data[0]?.views)} views &nbsp;
-                {formatTimeAgo(new Date(video?.data[0]?.createdAt))}
-              </p>
-              <p
-                className={`mt-4 ${
-                  isDescriptionShown ? "" : "line-clamp-1 cursor-pointer"
-                }`}
-                onClick={() => setIsDescriptionShown(true)}
-              >
-                {video?.data[0]?.description}
-              </p>
-
-              <button
-                onClick={() => setIsDescriptionShown((descShown) => !descShown)}
-                className="mt-4"
-              >
-                {isDescriptionShown ? "Show Less" : "...more"}
-              </button>
-            </div>
-            <CommentsSection videoId={videoId} />
-            <div className="block mt-4 xl:hidden">
-              {playlist && (
-                <CustomPlaylist
-                  playlist={playlist}
-                  queryParams={{ index: Number(queryParams.index) }}
-                />
-              )}
-              <SuggestedVideos videos={videos} setVideoId={setVideoId} />
-            </div>
           </div>
-        </div>
+        )}
 
         <div className="hidden overflow-y-auto xl:block">
           {playlist && (

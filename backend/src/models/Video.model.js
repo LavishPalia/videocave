@@ -17,7 +17,6 @@ const videoSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, "Please enter description of the video"],
     },
     duration: {
       type: Number,
@@ -30,7 +29,7 @@ const videoSchema = new mongoose.Schema(
     },
     isPublished: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,

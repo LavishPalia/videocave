@@ -8,17 +8,66 @@ import {
 import { Video } from "../models/Video.model.js";
 import { User } from "../models/User.model.js";
 import mongoose, { isValidObjectId } from "mongoose";
-import { pipeline } from "stream";
-import { create } from "domain";
+import { Playlist } from "../models/Playlist.model.js";
+import { authorizedOwner } from "./playlist.controller.js";
+
+const addVideoToPlaylistUtility = asyncHandler(
+  async (videoId, playlistId, req) => {
+    if (!videoId || !playlistId) {
+      return next(new ApiError(400, "video id or playlist id is not provided"));
+    }
+
+    if (!isValidObjectId(videoId) || !isValidObjectId(playlistId)) {
+      return next(new ApiError(400, "Invalid video id or playlist id"));
+    }
+
+    console.log("21 ", videoId, playlistId);
+
+    // find playlist and if found add the video id in the videos array
+    const playlist = await Playlist.findById(playlistId);
+
+    if (!playlist) {
+      return next(new ApiError(400, "Playlist does not exist in DB"));
+    }
+
+    if (!authorizedOwner(playlist.owner, req)) {
+      return next(new ApiError(401, "unauthorized access"));
+    }
+
+    if (playlist.videos.includes(videoId)) {
+      // check if the video is already part of the playlist
+      return;
+    }
+
+    const updatedPlaylist = await Playlist.findByIdAndUpdate(
+      playlist,
+      {
+        $push: { videos: videoId },
+      },
+      { new: true }
+    );
+
+    if (!updatedPlaylist) {
+      return next(new ApiError(500, "Failed to update playlist"));
+    }
+
+    console.log("48 -> video added to playlist successfully");
+    console.log("49 ", updatedPlaylist);
+
+    return { success: true, playlist: updatedPlaylist };
+  }
+);
 
 const publishVideo = asyncHandler(async (req, res, next) => {
-  const { title, description } = req.body;
+  const { title, description, visibility } = req.body;
 
-  if (!(title && description)) {
-    return next(new ApiError(400, "title or description cannot be empty"));
+  let playlistIds = [];
+  playlistIds = JSON.parse(req.body.playlistIds || "[]");
+
+  if (!title) {
+    return next(new ApiError(400, "title cannot be empty"));
   }
 
-  //   console.log(req.files);
   if (!req.files || !req.files.videoFile || !req.files.thumbnail) {
     return next(
       new ApiError(400, "Please select a video and a thumbnail image to upload")
@@ -35,14 +84,14 @@ const publishVideo = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // console.log("data returned after video upload \n", video);
-
   const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
   if (!thumbnail) {
     return next(
       new ApiError(500, "something went wrong while uploading thumbnail")
     );
   }
+
+  const isPublished = visibility === "public" ? true : false;
 
   // create a Video document and save in DB
   const videoDoc = await Video.create({
@@ -52,12 +101,22 @@ const publishVideo = asyncHandler(async (req, res, next) => {
     thumbnail: thumbnail.url,
     duration: video.duration,
     owner: req.user._id,
+    isPublished,
   });
 
   if (!videoDoc) {
     return next(
       new ApiError(500, "something went wrong while saving video in database")
     );
+  }
+
+  // Handle adding the video to playlists
+  if (Array.isArray(playlistIds) && playlistIds.length > 0) {
+    for (const playlistId of playlistIds) {
+      console.log(`Adding video to playlist ${playlistId}`);
+
+      await addVideoToPlaylistUtility(videoDoc._id, playlistId, req);
+    }
   }
 
   res
@@ -159,9 +218,6 @@ const getVideoById = asyncHandler(async (req, res, next) => {
   ];
 
   video = await Video.aggregate(pipeline);
-  // console.log(video);
-
-  // TODO: write a pipeline to fetch details like owner, subscriber count, isSubscribed, like count etc
 
   // check if the videoId already exists in the watchHistory of the user
   const currentWatchHistory = req.user.watchHistory;
@@ -321,6 +377,28 @@ const getVideosDataByChannel = asyncHandler(async (req, res, next) => {
       },
     },
     {
+      $lookup: {
+        from: "playlists",
+        let: { videoId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $in: ["$$videoId", "$videos"] },
+                  { $eq: ["$owner", new mongoose.Types.ObjectId(userId)] },
+                ],
+              },
+            },
+          },
+          {
+            $project: { _id: 1 },
+          },
+        ],
+        as: "playlistIds",
+      },
+    },
+    {
       $addFields: {
         likes: {
           $size: "$likes",
@@ -328,13 +406,24 @@ const getVideosDataByChannel = asyncHandler(async (req, res, next) => {
         comments: {
           $size: "$comments",
         },
+        playlists: {
+          $map: {
+            input: "$playlistIds",
+            as: "pl",
+            in: "$$pl._id",
+          },
+        },
       },
     },
+
     {
       $project: {
         thumbnail: 1,
+        videoFile: 1,
+        description: 1,
         title: 1,
         duration: 1,
+        playlists: 1,
         views: 1,
         isPublished: 1,
         likes: 1,
@@ -347,7 +436,7 @@ const getVideosDataByChannel = asyncHandler(async (req, res, next) => {
 
   const videos = await Video.aggregate(pipeline);
 
-  console.log("videos", videos);
+  // console.log("videos", videos);
 
   if (!videos) {
     return next(new ApiError("user does not exist in the DB"));
@@ -375,8 +464,10 @@ const updateVideo = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, "invalid video id"));
   }
 
-  const { title, description } = req.body;
-  console.log("199 ", title, description);
+  const { title, description, visibility } = req.body;
+
+  let playlistIds = [];
+  playlistIds = JSON.parse(req.body.playlistIds || "[]");
 
   // get local path of thumbnail, get old thumbnail public id for deletion
   let thumbnailLocalPath, newThumbnail, oldThumbnail;
@@ -409,9 +500,21 @@ const updateVideo = asyncHandler(async (req, res, next) => {
     }
 
     // delete old thumbnail from cloudinary
-    console.log("232", oldThumbnail[0].thumbnail);
-    await deleteFromCloudinary(oldThumbnail[0].thumbnail);
+    console.log("529", oldThumbnail[0].thumbnail);
+    await deleteFromCloudinary(
+      oldThumbnail[0].thumbnail.split("/").pop().split(".")[0]
+    );
   }
+
+  if (Array.isArray(playlistIds) && playlistIds.length > 0) {
+    for (const playlistId of playlistIds) {
+      console.log(`Adding video to playlist ${playlistId}`);
+
+      await addVideoToPlaylistUtility(videoId, playlistId, req);
+    }
+  }
+
+  const isPublished = visibility === "public" ? true : false;
 
   const updatedVideo = await Video.findByIdAndUpdate(
     videoId,
@@ -420,6 +523,7 @@ const updateVideo = asyncHandler(async (req, res, next) => {
         title,
         description,
         thumbnail: newThumbnail?.url,
+        isPublished,
       },
     },
     { new: true }
@@ -433,7 +537,9 @@ const updateVideo = asyncHandler(async (req, res, next) => {
 
   res
     .status(200)
-    .json(new ApiResponse(200, updatedVideo, "Video updated successfully"));
+    .json(
+      new ApiResponse(200, updatedVideo, "Video details updated successfully")
+    );
 });
 
 const deleteVideo = asyncHandler(async (req, res, next) => {
@@ -447,7 +553,7 @@ const deleteVideo = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, "invalid video id"));
   }
 
-  // if the video with provided id is deleted then retuen error
+  // if the video with provided id is deleted then return error
   let video = await Video.findById(videoId);
 
   if (!video) {

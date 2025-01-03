@@ -5,7 +5,7 @@ import { Playlist } from "../models/Playlist.model.js";
 import { Video } from "../models/Video.model.js";
 import mongoose, { isValidObjectId } from "mongoose";
 
-const authorizedOwner = (userId, req) => {
+export const authorizedOwner = (userId, req) => {
   console.log({ userId });
 
   return userId.toString() === req.user._id.toString();
@@ -117,12 +117,58 @@ const getUserPlaylists = asyncHandler(async (req, res, next) => {
 
   const userPlaylists = await Playlist.aggregate(pipeline);
 
-  console.log(userPlaylists);
+  // console.log(userPlaylists);
 
   res
     .status(200)
     .json(
       new ApiResponse(200, userPlaylists, "user playlists fetched successfully")
+    );
+});
+
+const getUserPlaylistNames = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return next(new ApiError(400, "user Id is missing"));
+  }
+
+  if (!isValidObjectId(userId)) {
+    return next(new ApiError(400, "Invalid user Id"));
+  }
+
+  if (!authorizedOwner(userId, req)) {
+    return next(
+      new ApiError(401, "unauthorized access, you don't own this user")
+    );
+  }
+
+  const pipeline = [
+    {
+      $match: {
+        owner: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+      },
+    },
+  ];
+
+  const userPlaylists = await Playlist.aggregate(pipeline);
+
+  // console.log(userPlaylists);
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        userPlaylists,
+        "user playlist names fetched successfully"
+      )
     );
 });
 
@@ -516,6 +562,7 @@ export {
   addVideoToPlaylist,
   removeVideoFromPlaylist,
   getUserPlaylists,
+  getUserPlaylistNames,
   updatePlaylist,
   deletePlaylist,
   fetchPlaylistsWithVideoFlag,

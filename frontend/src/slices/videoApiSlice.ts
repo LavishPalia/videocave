@@ -38,6 +38,8 @@ export const videosApiSlice = apiSlice.injectEndpoints({
         formData.append("description", data.description);
         formData.append("thumbnail", data.thumbnail);
         formData.append("videoFile", data.videoFile);
+        formData.append("playlistIds", JSON.stringify(data.playlistIds)); // Convert array to JSON string
+        formData.append("visibility", data.visibility);
 
         return {
           url: VIDEOS_URL,
@@ -46,6 +48,24 @@ export const videosApiSlice = apiSlice.injectEndpoints({
           headers: { "Content-Type": "multipart/form-data" },
           useProgress: true, // Activate progress tracking
           onProgress, // Pass the progress callback
+        };
+      },
+    }),
+
+    updateVideo: builder.mutation({
+      query: ({ data }) => {
+        const formData = new FormData();
+
+        formData.append("title", data.title);
+        formData.append("description", data.description);
+        formData.append("thumbnail", data.thumbnail);
+        formData.append("playlistIds", JSON.stringify(data.playlistIds)); // Convert array to JSON string
+        formData.append("visibility", data.visibility);
+
+        return {
+          url: `${VIDEOS_URL}/${data._id}`,
+          method: "PATCH",
+          body: formData,
         };
       },
     }),
@@ -63,6 +83,7 @@ export const {
   useGetVideoByIdQuery,
   useGetPublishedVideosByChannelQuery,
   usePublishVideoMutation,
+  useUpdateVideoMutation,
   useGetVideosDataByChannelQuery,
   useSearchVideosAndChannelsQuery,
 } = videosApiSlice;

@@ -1,4 +1,4 @@
-import { Edit, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Sidebar from "@/components/Sidebar";
 
@@ -11,6 +11,7 @@ import { extractDate } from "@/utils/extractDate";
 import { RiDraftLine } from "react-icons/ri";
 import { BiTask } from "react-icons/bi";
 import { VideoUploadModel } from "@/components/VideoUploadModal";
+import StepwiseUpload from "@/components/upload/StepwiseUpload";
 // import { toast } from "react-toastify";
 
 /**
@@ -145,6 +146,8 @@ const ChannelContent = () => {
                   title: string;
                   duration: number;
                   likes: number;
+                  videoFile: string;
+                  description: string;
                   comments: number;
                   isPublished: boolean;
                   _id: string;
@@ -177,13 +180,16 @@ const ChannelContent = () => {
                           {video.title}
                         </a>
 
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="dark:hover:bg-transparent"
-                        >
-                          <Edit size={12} />
-                        </Button>
+                        <StepwiseUpload
+                          initialStep={2}
+                          type="Edit"
+                          editData={{
+                            ...video,
+                            visibility: video.isPublished
+                              ? "public"
+                              : "private",
+                          }}
+                        />
                       </div>
                     </section>
 

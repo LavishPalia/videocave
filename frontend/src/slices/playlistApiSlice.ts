@@ -10,6 +10,12 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    getUserPlaylistNames: builder.query({
+      query: (userId) => ({
+        url: `${PLAYLISTS_URL}/user/${userId}/playlistNames`,
+      }),
+    }),
+
     // get playlist by id
     getPlaylistById: builder.query({
       query: (playlistId) => ({
@@ -59,6 +65,7 @@ export const playlistApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetUserPlaylistsQuery,
+  useGetUserPlaylistNamesQuery,
   useGetPlaylistByIdQuery,
   useGetVideoFlagAndPlayListNamesQuery,
   useAddVideoToPlaylistMutation,

@@ -5,9 +5,9 @@ import { useState } from "react";
 import { ModeToggle } from "./mode-toggle";
 import { UserDropdownMenu } from "./dropdowns/UserDropdownMenu";
 import { useAppSelector } from "@/app/hooks";
-import { VideoUploadModel } from "./VideoUploadModal";
 import { useSidebarContext } from "@/contexts/SidebarContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import StepwiseUpload from "./upload/StepwiseUpload";
 
 interface PageHeaderProps {
   onSearch?: (newQuery: string) => void;
@@ -92,7 +92,9 @@ const PageHeader = ({ onSearch }: PageHeaderProps) => {
           <Mic size={20} />
         </Button>
 
-        {location.pathname === "/your-videos" && <VideoUploadModel />}
+        {location.pathname === "/your-videos" && (
+          <StepwiseUpload initialStep={1} type="Upload" />
+        )}
 
         <ModeToggle />
 

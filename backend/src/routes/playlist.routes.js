@@ -9,6 +9,7 @@ import {
   removeVideoFromPlaylist,
   updatePlaylist,
   fetchPlaylistsWithVideoFlag,
+  getUserPlaylistNames,
 } from "../controllers/playlist.controller.js";
 
 const router = express.Router();
@@ -23,6 +24,7 @@ router
 
 router.route("/add/:videoId/:playlistId").patch(addVideoToPlaylist);
 router.route("/remove/:videoId/:playlistId").patch(removeVideoFromPlaylist);
+router.route("/user/:userId/playlistNames").get(getUserPlaylistNames);
 router.route("/user/:userId").get(getUserPlaylists);
 router.route("/contains-video/:videoId").get(fetchPlaylistsWithVideoFlag);
 
