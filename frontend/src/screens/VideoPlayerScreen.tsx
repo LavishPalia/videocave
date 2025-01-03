@@ -41,17 +41,16 @@ const VideoPlayerScreen = () => {
   const {
     data: video,
     isLoading: isVideoLoading,
+    isFetching: isFetchingVideo,
     refetch: refetchVideo,
   } = useGetVideoByIdQuery(videoId, { skip: !videoId });
 
   const [isDescriptionShown, setIsDescriptionShown] = useState(false);
-  const [isLiked, setIsLiked] = useState(video?.data[0]?.isLiked);
-  const [isSubscribed, setIsSubscribed] = useState(
-    video?.data[0]?.isSubscribed
-  );
+  const [isLiked, setIsLiked] = useState(video?.data?.isLiked);
+  const [isSubscribed, setIsSubscribed] = useState(video?.data?.isSubscribed);
 
   const [subscribersCount, setSubscribersCount] = useState<number>(
-    video?.data[0]?.subscribers
+    video?.data?.subscribers
   );
 
   const location = useLocation();
@@ -84,18 +83,18 @@ const VideoPlayerScreen = () => {
     useToggleSubscriptionMutation();
 
   useEffect(() => {
-    if (video?.data[0]?.isLiked !== undefined) {
-      setIsLiked(video?.data[0]?.isLiked);
+    if (video?.data?.isLiked !== undefined) {
+      setIsLiked(video?.data?.isLiked);
     }
   }, [video]);
 
   useEffect(() => {
-    if (video?.data[0]?.isSubscribed !== undefined) {
-      setIsSubscribed(video?.data[0]?.isSubscribed);
+    if (video?.data?.isSubscribed !== undefined) {
+      setIsSubscribed(video?.data?.isSubscribed);
     }
 
-    if (video?.data[0]?.subscribers !== undefined) {
-      setSubscribersCount(video?.data[0]?.subscribers);
+    if (video?.data?.subscribers !== undefined) {
+      setSubscribersCount(video?.data?.subscribers);
     }
   }, [video]);
 
@@ -137,8 +136,8 @@ const VideoPlayerScreen = () => {
       <PageHeader />
       <div className="grid grid-cols-[auto,1fr] xl:grid-cols-[auto,2fr,1fr] gap-4 h-[calc(100vh-64px)]">
         <Sidebar />
-        {!video || !video.data[0] ? (
-          <div className="flex flex-col items-center h-full">
+        {(!video || !video.data) && !(isVideoLoading || isFetchingVideo) ? (
+          <div className="flex flex-col items-center justify-center h-full">
             <p className="mt-4 text-3xl text-center">
               Sorry, the video you are looking for is not available.
             </p>
@@ -152,21 +151,21 @@ const VideoPlayerScreen = () => {
               key={videoId}
               className="w-full max-w-[1000px] flex flex-col mx-auto relative group"
             >
-              <VideoPlayer isLoading={isVideoLoading} video={video?.data[0]} />
+              <VideoPlayer isLoading={isVideoLoading} video={video?.data} />
 
               <p className="mt-4 text-base font-semibold sm:text-lg md:text-xl line-clamp-1">
-                {video?.data[0]?.title}
+                {video?.data?.title}
               </p>
 
               <div className="flex flex-col items-start justify-between gap-4 mt-4 lg:flex-row">
                 <div className="flex items-start gap-3 lg:w-1/2 xl:w-2/3 sm:w-auto">
                   <a
-                    href={`/user/${video?.data[0]?.owner.userName}`}
+                    href={`/user/${video?.data?.owner.userName}`}
                     className="flex-shrink-0"
                   >
                     <img
-                      src={video?.data[0]?.owner.avatar}
-                      alt={video?.data[0]?.owner.userName}
+                      src={video?.data?.owner.avatar}
+                      alt={video?.data?.owner.userName}
                       className="object-cover object-center rounded-full size-10 sm:size-12"
                       loading="lazy"
                     />
@@ -175,11 +174,11 @@ const VideoPlayerScreen = () => {
                     <div className="flex-grow min-w-0 max-w-[70%] md:max-w-full">
                       <span className="flex items-center gap-2">
                         <a
-                          href={`/user/${video?.data[0]?.owner.userName}`}
+                          href={`/user/${video?.data?.owner.userName}`}
                           className="truncate"
                         >
                           <h1 className="text-sm truncate sm:text-base">
-                            {video?.data[0]?.owner.fullName}
+                            {video?.data?.owner.fullName}
                           </h1>
                         </a>
                         <FaCircleCheck size={16} />
@@ -190,10 +189,10 @@ const VideoPlayerScreen = () => {
                       </p>
                     </div>
 
-                    {loggedInUser?.data?._id !== video?.data[0].owner._id && (
+                    {loggedInUser?.data?._id !== video?.data.owner._id && (
                       <Button
                         onClick={() =>
-                          handleToggleSubscription(video?.data[0].owner._id)
+                          handleToggleSubscription(video?.data.owner._id)
                         }
                         className={`flex items-center gap-2 px-3 text-sm rounded-3xl w-max self-start flex-shrink-0 ml-2 xl:ml-0 ${
                           isSubscribed
@@ -229,7 +228,7 @@ const VideoPlayerScreen = () => {
                       ) : (
                         <BiLike size={20} />
                       )}
-                      <p>{video?.data[0]?.likes}</p>
+                      <p>{video?.data?.likes}</p>
                     </Button>
 
                     <div className="border-l border-gray-300 h-5 bg-[#31302f]" />
@@ -265,8 +264,8 @@ const VideoPlayerScreen = () => {
 
               <div className="border shadow-custom bg-[#f2f2f2] p-4 my-4 rounded-md text-md dark:bg-[#202021]">
                 <p>
-                  {VIEW_FORMATTER.format(video?.data[0]?.views)} views &nbsp;
-                  {formatTimeAgo(new Date(video?.data[0]?.createdAt))}
+                  {VIEW_FORMATTER.format(video?.data?.views)} views &nbsp;
+                  {formatTimeAgo(new Date(video?.data?.createdAt))}
                 </p>
                 <p
                   className={`mt-4 ${
@@ -274,7 +273,7 @@ const VideoPlayerScreen = () => {
                   }`}
                   onClick={() => setIsDescriptionShown(true)}
                 >
-                  {video?.data[0]?.description}
+                  {video?.data?.description}
                 </p>
 
                 <button

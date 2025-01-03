@@ -258,7 +258,7 @@ const getVideoById = asyncHandler(async (req, res, next) => {
     .json(
       new ApiResponse(
         200,
-        video,
+        video[0],
         `video with id ${videoId} fetched successfully`
       )
     );

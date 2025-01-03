@@ -120,7 +120,7 @@ const Step1 = ({ data, onNext }: Step1Props) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files && e.dataTransfer.files[0];
     if (droppedFile && validateFileSize(droppedFile, MAX_VIDEO_FILE_SIZE_MB)) {
-      onNext({ videoFile: droppedFile });
+      onNext({ videoFile: droppedFile, title: droppedFile.name });
     }
   };
 
