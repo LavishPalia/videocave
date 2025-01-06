@@ -6,7 +6,7 @@ import { ModeToggle } from "./mode-toggle";
 import { UserDropdownMenu } from "./dropdowns/UserDropdownMenu";
 import { useAppSelector } from "@/app/hooks";
 import { useSidebarContext } from "@/contexts/SidebarContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import StepwiseUpload from "./upload/StepwiseUpload";
 
 interface PageHeaderProps {
@@ -127,9 +127,14 @@ export function PageHeaderFirstSection({
       <Button variant="ghost" size="icon" onClick={toggle}>
         <Menu size={20} />
       </Button>
-      <a href="/">
-        <img src={Logo} className="h-4 sm:h-6" loading="lazy" />
-      </a>
+      <Link to="/">
+        <img
+          src={Logo}
+          className="h-4 sm:h-6"
+          alt="VideoCave Logo"
+          loading="lazy"
+        />
+      </Link>
     </div>
   );
 }

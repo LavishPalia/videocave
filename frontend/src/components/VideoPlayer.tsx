@@ -20,7 +20,7 @@ const VideoPlayer = ({
   return (
     <>
       <video
-        className="w-full rounded-lg dark:shadow-custom dark:shadow-neutral-900"
+        className="w-full rounded-lg dark:shadow-custom dark:shadow-neutral-900 aspect-video"
         src={video?.videoFile}
         autoPlay
         controls

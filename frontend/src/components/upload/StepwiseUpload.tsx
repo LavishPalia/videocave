@@ -309,7 +309,7 @@ const Step2 = ({ data, onNext, navigateToStep }: Step2Props) => {
         <section className="flex justify-between">
           <div className="grid w-[60%] gap-4">
             <div className="relative group">
-              <p className="absolute hidden text-sm font-bold text-gray-500 right-4 bottom-3 group-focus-within:block">
+              <p className="absolute hidden text-xs font-bold text-gray-500 right-4 bottom-3 group-focus-within:block">
                 {title.length}/{MAX_TITLE_LENGTH}
               </p>
               <textarea
@@ -317,12 +317,12 @@ const Step2 = ({ data, onNext, navigateToStep }: Step2Props) => {
                 value={title}
                 rows={3}
                 placeholder="Add a title that describes your video"
-                className="peer bg-[#282828] text-white overflow-hidden resize-none placeholder-gray-500 border border-gray-600 rounded-lg px-3 pt-8 focus:outline-none focus:ring-2 focus:ring-gray-500 w-full"
+                className="peer bg-[#282828] text-sm text-white overflow-hidden resize-none placeholder-gray-500 border border-gray-600 rounded-lg px-3 pt-8 focus:outline-none focus:ring-2 focus:ring-gray-500 w-full"
                 onChange={handleTitleChange}
               />
               <label
                 htmlFor="name"
-                className="absolute left-3 top-3 text-gray-400 text-sm transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-[4px] peer-focus:text-xs peer-focus:text-gray-300"
+                className="absolute left-3 top-2 text-gray-400 text-sm transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-[4px] peer-focus:text-xs peer-focus:text-gray-300"
               >
                 Title (required)
               </label>
@@ -332,20 +332,20 @@ const Step2 = ({ data, onNext, navigateToStep }: Step2Props) => {
             </div>
 
             <div className="relative group">
-              <p className="absolute hidden text-sm font-bold text-right text-gray-500 bottom-3 right-4 group-focus-within:block">
+              <p className="absolute hidden text-xs font-bold text-right text-gray-500 bottom-3 right-4 group-focus-within:block">
                 {description.length}/{MAX_DESCRIPTION_LENGTH}
               </p>
               <textarea
                 id="description"
                 value={description}
                 placeholder="Tell viewers about your video"
-                rows={6}
-                className="peer bg-[#282828] text-white overflow-hidden resize-none placeholder-gray-500 border border-gray-600 rounded-lg px-3 pt-8 focus:outline-none focus:ring-2 focus:ring-gray-500 w-full"
+                rows={12}
+                className="peer bg-[#282828] text-sm text-white overflow-hidden resize-none placeholder-gray-500 border border-gray-600 rounded-lg pl-3 pr-20 pt-8 focus:outline-none focus:ring-2 focus:ring-gray-500 w-full"
                 onChange={handleDescriptionChange}
               />
               <label
                 htmlFor="description"
-                className="absolute left-3 top-3 text-gray-400 text-sm transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-[4px] peer-focus:text-sm peer-focus:text-gray-300"
+                className="absolute left-3 top-2 text-gray-400 text-sm transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-focus:top-[4px] peer-focus:text-xs peer-focus:text-gray-300"
               >
                 Description
               </label>
