@@ -4,7 +4,7 @@ import chalk from "chalk";
 const formatTime = () => {
   const now = new Date();
   return now
-    .toLocaleString("en-IN", {
+    .toLocaleString("en-US", {
       timeZone: "UTC",
       month: "short",
       day: "2-digit",
