@@ -1,7 +1,6 @@
 import morgan from "morgan";
 import chalk from "chalk";
 
-// Helper function to format time
 const formatTime = () => {
   const now = new Date();
   return now
@@ -17,22 +16,27 @@ const formatTime = () => {
 };
 
 morgan.token("time", () => formatTime());
-morgan.token("username", (req) => (req.user ? req.user.userName : "Guest"));
+
+morgan.token("username", (req) =>
+  req.user && req.user.userName ? req.user.userName : "Guest"
+);
+
 morgan.token("params", (req) => {
-  return Object.keys(req.params).length
+  return req.params && Object.keys(req.params).length
     ? `Params: ${JSON.stringify(req.params)}`
     : "";
 });
 morgan.token("query", (req) => {
-  return Object.keys(req.query).length
+  return req.query && Object.keys(req.query).length
     ? `Query: ${JSON.stringify(req.query)}`
     : "";
 });
 morgan.token("body", (req) => {
-  return Object.keys(req.body).length
+  return req.body && Object.keys(req.body).length
     ? `Body: ${JSON.stringify(req.body)}`
     : "";
 });
+
 morgan.token("method-colored", (req) => {
   const method = req.method;
   switch (method) {
@@ -50,6 +54,7 @@ morgan.token("method-colored", (req) => {
       return chalk.white(method);
   }
 });
+
 morgan.token("status-colored", (req, res) => {
   const status = res.statusCode;
   if (status >= 500) return chalk.red(status);
