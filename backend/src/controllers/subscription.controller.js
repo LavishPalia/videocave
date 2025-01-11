@@ -5,6 +5,56 @@ import { Subscription } from "../models/Subscription.model.js";
 import { User } from "../models/User.model.js";
 import mongoose, { isValidObjectId } from "mongoose";
 
+const getSubscribedChannelsAggregation = async (subscriberId) => {
+  const pipeline = [
+    {
+      $match: {
+        subscriber: subscriberId,
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        channel: 1,
+      },
+    },
+    {
+      $group: {
+        _id: "channels",
+        subscribedChannels: {
+          $push: "$channel",
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "subscribedChannels",
+        foreignField: "_id",
+        as: "subscribedChannels",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              fullName: 1,
+              avatar: 1,
+              userName: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        subscribedChannels: 1,
+      },
+    },
+  ];
+
+  return Subscription.aggregate(pipeline);
+};
+
 const toggleSubscription = asyncHandler(async (req, res, next) => {
   const { channelId } = req.params;
 
@@ -16,7 +66,7 @@ const toggleSubscription = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, `${channelId} is not a valid channel id`));
   }
 
-  // handle the case when the channel Id is correctly formatted  but doesn't exist in DB
+  // handle the case when the channel Id is correctly formatted but doesn't exist in DB
   const channel = await User.findById(channelId);
 
   if (!channel) {
@@ -25,13 +75,13 @@ const toggleSubscription = asyncHandler(async (req, res, next) => {
     );
   }
 
-  const subscriber = req.user._id;
+  const subscriberId = req.user._id;
 
   // check if user is already subscribed,
   // check using both channel and subscriber fields otherwise other channel subscription might get deleted
   //as single user can subscribe to multiple channels
   const isSubscribed = await Subscription.findOne({
-    subscriber,
+    subscriber: subscriberId,
     channel: channelId,
   });
 
@@ -39,19 +89,24 @@ const toggleSubscription = asyncHandler(async (req, res, next) => {
 
   if (isSubscribed) {
     // remove subscription
-    const deletedSubscription = await Subscription.findByIdAndDelete(
-      isSubscribed._id
-    );
+    await Subscription.findByIdAndDelete(isSubscribed._id);
 
-    // console.log("deleted subscription details: ", deletedSubscription);
+    const subscriptionsList =
+      await getSubscribedChannelsAggregation(subscriberId);
 
     return res
       .status(200)
-      .json(new ApiResponse(200, {}, "Subscription removed successfully"));
+      .json(
+        new ApiResponse(
+          200,
+          subscriptionsList[0].subscribedChannels,
+          "Subscription removed successfully"
+        )
+      );
   }
 
   const subscriptionAdded = await Subscription.create({
-    subscriber,
+    subscriber: subscriberId,
     channel: channelId,
   });
 
@@ -63,9 +118,18 @@ const toggleSubscription = asyncHandler(async (req, res, next) => {
 
   //   console.log("Subscription details: \n", subscriptionAdded);
 
+  const subscriptionsList =
+    await getSubscribedChannelsAggregation(subscriberId);
+
   res
     .status(200)
-    .json(new ApiResponse(200, {}, "Subscription added successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        subscriptionsList[0].subscribedChannels,
+        "Subscription added successfully"
+      )
+    );
 });
 
 const getChannelSubscribers = asyncHandler(async (req, res, next) => {

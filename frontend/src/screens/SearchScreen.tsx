@@ -12,6 +12,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Bell, BellRing } from "lucide-react";
 import { useToggleSubscriptionMutation } from "@/slices/subscriptionsApiSlice";
 import { toast } from "react-toastify";
+import { saveUserSubscriptions } from "@/slices/subscriptionsSlice";
+import { useAppDispatch } from "@/app/hooks";
 
 interface IVideo {
   _id: string;
@@ -40,6 +42,7 @@ interface IChannel {
 const SearchScreen = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const searchParams = new URLSearchParams(location.search);
   const initialQuery = searchParams.get("query");
@@ -66,12 +69,13 @@ const SearchScreen = () => {
 
       console.log(response);
 
+      dispatch(saveUserSubscriptions(response.data));
+      refetch();
+
       if (response.success) {
         if (response.message === "Subscription removed successfully")
           toast.success(`Subscription removed`);
         else toast.success(`Subscription Added`);
-
-        refetch();
       }
     } catch (error) {
       console.error("Failed to toggle subscription:", error);

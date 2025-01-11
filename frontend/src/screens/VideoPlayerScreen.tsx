@@ -27,6 +27,8 @@ import { toast } from "react-toastify";
 import { useGetPlaylistByIdQuery } from "@/slices/playlistApiSlice";
 import CustomPlaylist from "@/components/CustomPlayList";
 import { useGetCurrentUserQuery } from "@/slices/usersApiSlice";
+import { saveUserSubscriptions } from "@/slices/subscriptionsSlice";
+import { useAppDispatch } from "@/app/hooks";
 
 const VideoPlayerScreen = () => {
   const [videoId, setVideoId] = useState("");
@@ -54,6 +56,7 @@ const VideoPlayerScreen = () => {
   );
 
   const location = useLocation();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -121,7 +124,9 @@ const VideoPlayerScreen = () => {
     setSubscribersCount((prev) => (isSubscribed ? prev - 1 : prev + 1));
 
     try {
-      await toggleSubscription(userId);
+      const response = await toggleSubscription(userId).unwrap();
+      dispatch(saveUserSubscriptions(response.data));
+
       toast.success(`Subscription ${isSubscribed ? "removed" : "added"}!`);
     } catch (error) {
       setIsSubscribed((prev: boolean) => !prev);

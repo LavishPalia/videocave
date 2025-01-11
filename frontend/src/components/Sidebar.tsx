@@ -8,16 +8,17 @@ import {
   PlaySquare,
 } from "lucide-react";
 
-import { Children, ElementType, ReactNode, useState } from "react";
+import { Children, ElementType, ReactNode, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Button, { buttonStyles } from "./Button";
 import { twMerge } from "tailwind-merge";
 import { BiLike } from "react-icons/bi";
 import { useGetUserSubscriptionsQuery } from "@/slices/subscriptionsApiSlice";
-import { useAppSelector } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { BiSolidPlaylist } from "react-icons/bi";
 import { useSidebarContext } from "@/contexts/SidebarContext";
 import { PageHeaderFirstSection } from "./PageHeader";
+import { saveUserSubscriptions } from "@/slices/subscriptionsSlice";
 
 type channelDetail = {
   _id: string;
@@ -34,8 +35,27 @@ const Sidebar = () => {
   const { user } = useAppSelector((state) => state.auth);
   const userId = user?._id;
 
-  const { data: subscriptions } = useGetUserSubscriptionsQuery(userId);
+  const dispatch = useAppDispatch();
+  const subscriptions = useAppSelector((state) => state.subscriptions);
+  const rehydrated = useAppSelector(
+    (state) => state.subscriptions._persist.rehydrated
+  );
+
+  console.log(subscriptions);
+
+  const { data: fetchedSubscriptions } = useGetUserSubscriptionsQuery(userId, {
+    skip: rehydrated && Object.keys(subscriptions).length > 1 ? true : false,
+  });
+
   const { isLargeOpen, isSmallOpen, close } = useSidebarContext();
+
+  useEffect(() => {
+    if (fetchedSubscriptions) {
+      dispatch(
+        saveUserSubscriptions(fetchedSubscriptions?.data?.subscribedChannels)
+      );
+    }
+  }, [fetchedSubscriptions?.data?.subscribedChannels]);
 
   return (
     <>
@@ -143,18 +163,23 @@ const Sidebar = () => {
         <hr />
 
         <LargeSidebarSection title="Subscriptions" visibleItemCount={3}>
-          {subscriptions?.data?.subscribedChannels.map(
-            (channel: channelDetail) => (
-              <LargeSidebarItem
-                key={channel._id}
-                Icon={channel.avatar}
-                title={channel.fullName}
-                url={`/user/${channel.userName}`}
-                isActive={currentPath === `/user/${channel.userName}`}
-              />
-            )
-          )}
+          {subscriptions &&
+            Object.values(subscriptions).length > 0 &&
+            Object.values(subscriptions)
+              .filter((channel) => typeof channel === "object" && channel._id) // Filter out invalid entries
+              .map((channel: channelDetail) => {
+                return (
+                  <LargeSidebarItem
+                    key={channel._id}
+                    Icon={channel.avatar}
+                    title={channel.fullName}
+                    url={`/user/${channel.userName}`}
+                    isActive={currentPath === `/user/${channel.userName}`}
+                  />
+                );
+              })}
         </LargeSidebarSection>
+
         <hr />
 
         {/* <LargeSidebarSection title="Explore">

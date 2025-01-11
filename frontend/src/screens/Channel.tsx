@@ -11,24 +11,22 @@ import { useGetPublishedVideosByChannelQuery } from "@/slices/videoApiSlice";
 import { formatDuration } from "@/utils/formatDuration";
 import { VIEW_FORMATTER } from "@/components/VideoGridItems";
 import { formatTimeAgo } from "@/utils/formatTimeAgo";
-import {
-  useGetUserSubscriptionsQuery,
-  useToggleSubscriptionMutation,
-} from "@/slices/subscriptionsApiSlice";
-import { useAppSelector } from "@/app/hooks";
+import { useToggleSubscriptionMutation } from "@/slices/subscriptionsApiSlice";
+import { useAppDispatch } from "@/app/hooks";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { FaCircleCheck } from "react-icons/fa6";
 import Channel_Cover from "../assets/channel_cover.png";
+import { saveUserSubscriptions } from "@/slices/subscriptionsSlice";
 
 const Channel = () => {
   const [activeTab, setActiveTab] = useState("Videos");
   const [sortBy, setSortBy] = useState<"latest" | "popular" | "oldest">(
     "latest"
-  ); // Default is "latest"
+  );
   const { username } = useParams<{ username: string }>();
-  const { user } = useAppSelector((state) => state.auth);
-  const userId = user?._id;
+
+  const dispatch = useAppDispatch();
 
   const { data: channel, isLoading: isChannelLoading } =
     useGetUserChannelDetailsQuery(username);
@@ -47,9 +45,6 @@ const Channel = () => {
 
   const [toggleSubscription, { isLoading: isTogglingSubscription }] =
     useToggleSubscriptionMutation();
-
-  const { refetch: refetchSubscriptions } =
-    useGetUserSubscriptionsQuery(userId);
 
   const { data: loggedInUser } = useGetCurrentUserQuery(null);
 
@@ -70,8 +65,12 @@ const Channel = () => {
       : subscribersCount + 1;
     setSubscribersCount(newSubscribersCount);
     try {
-      await toggleSubscription(userId).unwrap();
-      refetchSubscriptions();
+      const response = await toggleSubscription(userId).unwrap();
+
+      // console.log(response);
+
+      dispatch(saveUserSubscriptions(response.data));
+
       toast.success(`Subscription ${isSubscribed ? "removed" : "added"}!`, {
         autoClose: 500,
       });
